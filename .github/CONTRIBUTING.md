@@ -29,7 +29,9 @@ git commit -s -m "Describe your change"
 - Appendix A and B embed `examples/` and `schema/ois.schema.json`; keep them identical as parsed
   JSON.
 - Fixtures are generated: change `fixtures/generate.py`, never the JSON files, and describe how a
-  rule is read in `fixtures/README.md`.
+  rule is read in `fixtures/README.md`. The keyless signed passport cannot be generated: when
+  `generate.py --check` asks for it, a maintainer runs the workflow "Record the keyless signed
+  fixtures" and commits its artifact as `fixtures/sigstore/passport.sigstore.json`.
 - CI must pass: examples validate against the schema, fixtures are up to date and behave as
   tagged.
 

@@ -7,7 +7,7 @@ OIS is a data format, and its tools run where you run them. No `ois` command ope
 connection, except `ois trust update` when you run it to fetch a Sigstore trusted root: OIS
 records stay in your organization until you send them somewhere.
 
-[![Data flows: the tools run inside your organization; only installing the package contacts PyPI, and records reach others only when you send them](/images/data-flows.svg)](/images/data-flows.svg)
+[![Data flows: the tools run inside your organization; installing, pulling the image, keyless signing and fetching a trusted root contact outside services, and records reach others only when you send them](/images/data-flows.svg)](/images/data-flows.svg)
 
 ## Who receives what
 
@@ -27,8 +27,8 @@ records stay in your organization until you send them somewhere.
 | Signing keylessly with `actions/attest` or cosign | The workflow's identity token and the signature | Sigstore (Fulcio and the public transparency log Rekor) or your own instance; on GitHub also the repository's attestations | The log is public by design: it records the identity, the time and the digest, not the passport |
 | Fetching a trusted root with `ois trust update` | The request for Sigstore's signed TUF metadata and trusted root | Sigstore's TUF repository (`tuf-repo-cdn.sigstore.dev`), or your own instance's | Keep a reviewed copy and refresh it on your schedule |
 | Fetching a trusted root with `gh attestation trusted-root` | The request | GitHub | Keep a reviewed copy and refresh it on your schedule |
-| Verifying a Sigstore bundle with `ois validate` | Nothing. The trusted root is a local file | Nobody | |
-| Sharing a signed bundle or passport | Its records, the signatures and the key ids | The recipients you choose | Recipients verify with the public keys you give them |
+| Verifying a Sigstore bundle with `ois validate`, `ois coverage` or `ois passport build` | Nothing. The trusted root is a local file | Nobody | |
+| Sharing a signed bundle or passport | Its records, the signatures and the key ids | The recipients you choose | Recipients verify with the public keys you give them, or with a Sigstore trusted root for keyless signatures |
 | Storing bundles | The bundle file | Wherever your pipeline keeps artifacts | Your retention rules apply |
 | Sharing a bundle or passport | Its records (below) | The recipients you choose, such as an auditor or a customer | Review before sharing (specification section 12) |
 | Visiting this website | The request: IP address, page, browser | GitHub Pages, which hosts the site | The site loads nothing from other domains and sets no cookies; your theme choice stays in your browser |
@@ -50,9 +50,10 @@ leaves your organization; test names must not contain personal data (specificati
 
 ## How this was checked
 
-Every `ois` command, and the whole test suite of the tools, were run in a sandbox that blocks all network access. All of them work unchanged;
+Every `ois` command except `ois trust update`, whose job is fetching a trusted root, and the whole
+test suite of the tools, were run in a sandbox that blocks all network access. All of them work unchanged;
 a network request in that sandbox fails. The container image runs them with
-`docker run --network none` in the validator's CI. What pip
+`docker run --network none` in the CI of the tools. What pip
 and uv send to PyPI is taken from their documentation, not measured here.
 
 ## In the specification

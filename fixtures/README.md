@@ -9,7 +9,7 @@ fixture, exactly the rules and levels the manifest expects.
 manifest.json            every fixture with its description and expected reports
 valid/                   inputs that conform: no violation (warnings may be expected)
 invalid/schema/          inputs that break Appendix B
-invalid/signature/       DSSE envelopes whose signature does not hold
+invalid/signature/       DSSE envelopes and Sigstore bundles whose signature does not hold
 invalid/<rule>/          inputs that trigger one rule of section 5, R1 to R17
 keys/                    public test keys and the Sigstore trusted root the verifier trusts
 sigstore/                input for keyless signing and the recorded Sigstore bundle
@@ -17,9 +17,8 @@ generate.py              builds all of the above
 ```
 
 Each fixture is one OIS document: a single record, a bundle, or a Quality Passport as an in-toto
-Statement v1. Fixtures named `signed-…` and those in `invalid/signature/` are DSSE envelopes
-around a bundle or passport (section 8.3); `keyless-…` fixtures are Sigstore bundles around a
-passport. Feed every fixture to a validator as it is, with the keys listed in `trustedKeys` and
+Statement v1. Fixtures named `signed-…` are DSSE envelopes around a bundle or passport (section
+8.3), `keyless-…` fixtures Sigstore bundles around a passport; `invalid/signature/` holds both. Feed every fixture to a validator as it is, with the keys listed in `trustedKeys` and
 the Sigstore trusted roots listed in `trustedRoots` as what it trusts.
 
 ## Manifest
@@ -46,7 +45,7 @@ the Sigstore trusted roots listed in `trustedRoots` as what it trusts.
 reported, the path and the message are up to the validator. A fixture conforms when `expect`
 holds no violation.
 
-`rule` is `schema` for Appendix B ([proposed in #1](https://github.com/openintentschema/openintentschema/issues/1)), `signature` for the DSSE envelope
+`rule` is `schema` for Appendix B ([proposed in #1](https://github.com/openintentschema/openintentschema/issues/1)), `signature` for DSSE envelopes and Sigstore bundles
 (section 8.3, *proposed, RFC pending*) and `R1` to `R17` for section 5. `level` is `violation`,
 `warning` or `info` (section 11.1).
 

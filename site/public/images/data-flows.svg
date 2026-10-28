@@ -10,7 +10,7 @@
   <rect width="760" height="612" fill="#ffffff"/>
 
   <text x="16" y="32" font-size="18" font-weight="600" fill="#1b1f24">OIS records stay in your organization unless you send them</text>
-  <text x="16" y="54" font-size="13.5" fill="#57606a">What the OIS tools read, write and transmit</text>
+  <text x="16" y="54" font-size="13.5" fill="#57606a">What the OIS tools read, write and transmit, shown for recording test results</text>
 
   <!-- your organization -->
   <rect x="16" y="72" width="728" height="326" rx="10" fill="#f3f8f4" stroke="#2f7d4f" stroke-width="1.5" stroke-dasharray="6 4"/>
@@ -58,8 +58,8 @@
   <text x="446" y="222" text-anchor="end" font-size="12.5" fill="#57606a">and remote URL,</text>
   <text x="446" y="238" text-anchor="end" font-size="12.5" fill="#57606a">credentials removed</text>
 
-  <text x="36" y="350" font-size="14" font-weight="600" fill="#1f5c38">Neither tool opens a network connection.</text>
-  <text x="36" y="370" font-size="12.5" fill="#1f5c38">Verified: both run with all network access blocked.</text>
+  <text x="36" y="350" font-size="14" font-weight="600" fill="#1f5c38">No ois command opens a network connection, except ois trust update when you run it.</text>
+  <text x="36" y="370" font-size="12.5" fill="#1f5c38">Verified: the commands and their tests run with all network access blocked.</text>
 
   <!-- links leaving the organization -->
   <g fill="none" stroke="#b7791f" stroke-width="1.25">
@@ -70,7 +70,7 @@
     <path d="M629 398V470" marker-end="url(#arrow)"/>
   </g>
   <g font-size="12.5" fill="#57606a">
-    <text x="141" y="438">install only</text>
+    <text x="141" y="438">install, keyless signing</text>
     <text x="390" y="438">only if you send it</text>
     <text x="639" y="438">only what you post</text>
   </g>
@@ -78,11 +78,11 @@
   <!-- outside -->
   <g font-size="14" fill="#1b1f24">
     <rect x="16" y="470" width="230" height="122" rx="8" fill="#fff8ec" stroke="#b7791f"/>
-    <text x="32" y="496" font-weight="600">PyPI (pypi.org)</text>
-    <text x="32" y="518" font-size="12.5" fill="#57606a">on install: IP address,</text>
-    <text x="32" y="536" font-size="12.5" fill="#57606a">installer, Python and OS</text>
-    <text x="32" y="554" font-size="12.5" fill="#57606a">version, CI or not</text>
-    <text x="32" y="576" font-size="12.5" fill="#57606a">avoid: internal mirror</text>
+    <text x="32" y="496" font-weight="600">PyPI, ghcr.io, Sigstore</text>
+    <text x="32" y="518" font-size="12.5" fill="#57606a">install or pull: IP address,</text>
+    <text x="32" y="536" font-size="12.5" fill="#57606a">installer and platform</text>
+    <text x="32" y="554" font-size="12.5" fill="#57606a">keyless signing, trusted roots</text>
+    <text x="32" y="576" font-size="12.5" fill="#57606a">avoid: mirrors, own keys</text>
 
     <rect x="265" y="470" width="230" height="122" rx="8" fill="#ffffff" stroke="#5b6472"/>
     <text x="281" y="496" font-weight="600">Recipients you choose</text>

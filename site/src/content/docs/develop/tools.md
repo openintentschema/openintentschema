@@ -17,9 +17,13 @@ They are one command, `ois`, open source under Apache-2.0, published on PyPI as
 | Implementation | code artifact, the context an agent was given | `ois record artifact` | [Record artifacts, decisions and findings](/record/) |
 | Test | evidence per criterion | `ois junit`, `ois record evidence` | [Getting started](/getting-started/) |
 | Merge | merge decision | `ois record decision --gate merge` | [Record artifacts, decisions and findings](/record/) |
-| Release | build, release decision, signed passport with intent coverage | `ois record`, `ois passport --sign` | [Build a Quality Passport](/build-a-passport/), [Sign](/sign/) |
+| Release | build, release decision, signed passport with intent coverage | `ois record`, `ois passport build --sign` | [Build a Quality Passport](/build-a-passport/), [Sign](/sign/) |
 | Operation | findings, their classification and resolution | `ois record finding`, `ois record supersede` | [Record artifacts, decisions and findings](/record/) |
 | Review by others | check a passport and recompute its coverage | `ois validate`, `ois coverage` | [Build a Quality Passport](/build-a-passport/#check-it) |
+
+`ois key`, `ois sign` and `ois trust` sign and verify along the way: DSSE with your own keys, or
+keylessly through Sigstore, for example with GitHub Actions; see
+[Sign bundles and passports](/sign/).
 
 The tools record and check; they do not enforce. Whether a merge or a release is blocked, for
 example below a coverage threshold or with an open critical finding, is the policy of your
@@ -67,8 +71,8 @@ same-producer.json: violation [R5] $.records[12].derivedFrom: test and subject a
 
 | Level | Meaning | Rules |
 | --- | --- | --- |
-| violation | A MUST is broken; the input does not conform. | the schema, R1–R5, R10, R11, R14–R17 |
-| warning | A rule asks for a report; the input still conforms. | R8, R12, R13 |
+| violation | A MUST is broken; the input does not conform. | the schema, the signature, R1–R5, R10, R11, R14–R17 |
+| warning | A rule asks for a report; the input still conforms. | the signature (key or root not trusted), R8, R12, R13 |
 | info | A SHOULD is not followed. | R1, R9, R15 |
 
 R16, R17 and the rule IDs `schema` and `signature` are proposed in RFCs. A signed document is

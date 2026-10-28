@@ -86,4 +86,5 @@ who signed the passport (rule R12). In an unsigned passport it is 0.
 Level 3 conformance requires a signed passport, and a recipient can then attribute it to its
 issuer. Add `--sign issuer.key` (and the key of the runtime that recorded the contexts) to
 `ois passport build`, and check the result with `ois validate passport.dsse.json --trusted-key
-keys/`. See [Sign bundles and passports](/sign/).
+keys/`. In a pipeline, the passport can also be signed keylessly, for example with
+`actions/attest` on GitHub. See [Sign bundles and passports](/sign/).

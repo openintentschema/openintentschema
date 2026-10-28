@@ -1,13 +1,15 @@
 ---
 title: Sign bundles and passports
-description: Sign OIS bundles and Quality Passports with DSSE, so that recipients can attribute them and recorded contexts count as attested.
+description: Sign OIS bundles and Quality Passports with your own keys or keylessly with Sigstore, so that recipients can attribute them and recorded contexts count as attested.
 ---
 
 A signature makes a bundle or a Quality Passport attributable: a recipient can check who issued
 it and that nothing changed since. It is also what turns a recorded `context` from self-declared
 into attested (rule R12), and what Level 3 conformance requires (specification sections 8.3 and
-11.2). `ois sign`, `ois key` and `ois passport build --sign`, part of the
-[`ois-tools`](/develop/tools/) package, sign with DSSE.
+11.2). `ois key`, `ois sign` and `ois passport build --sign`, part of the
+[`ois-tools`](/develop/tools/) package, sign with DSSE and your own keys; in a pipeline,
+[keyless signing](#keyless-with-sigstore) through Sigstore needs no key at all, and `ois trust`
+fetches what verifiers need for it.
 
 ## 1. Create keys
 

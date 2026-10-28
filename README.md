@@ -29,7 +29,7 @@ progress (see the change history in the specification). Any part may change befo
 | [`fixtures/`](fixtures/) | The conformance test suite: valid and invalid documents with the reports a validator must give |
 | [`profiles/`](profiles/) | The registry of profiles (section 10.2), with an example profile for regulated industries |
 | [`site/`](site/) | The website [openintentschema.io](https://openintentschema.io): getting started, reference pages, the published schema |
-| [`.github/`](.github/) | CI for examples, fixtures and the website; issue and pull request templates; contributing guide, Code of Conduct and security policy |
+| [`.github/`](.github/) | CI for examples, fixtures and the website, and the workflow that records the keyless signed fixture; issue and pull request templates; contributing guide, Code of Conduct and security policy |
 
 ## Conformance
 
@@ -42,7 +42,8 @@ problem with its rule and level. The conformance fixtures are the test suite it 
 also cover the rules R16 and R17 and the clarifications proposed in the open RFCs.
 
 The reference tools, one command `ois` with the validator (`ois validate`) and the tools that
-write records (JUnit XML adapter, intents, records, passports, intent coverage), live in
+write records (JUnit XML adapter, intents, records, passports, intent coverage) and sign and
+verify them (DSSE with own keys, Sigstore keyless), live in
 [openintentschema/tools](https://github.com/openintentschema/tools) and are published on
 PyPI as [`ois-tools`](https://pypi.org/project/ois-tools/) and as the container image
 `ghcr.io/openintentschema/ois-tools`, for projects in any language.
