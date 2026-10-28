@@ -9,18 +9,23 @@ fixture, exactly the rules and levels the manifest expects.
 manifest.json            every fixture with its description and expected reports
 valid/                   inputs that conform: no violation (warnings may be expected)
 invalid/schema/          inputs that break Appendix B
+invalid/signature/       DSSE envelopes whose signature does not hold
 invalid/<rule>/          inputs that trigger one rule of section 5, R1 to R17
+keys/                    public test keys the verifier trusts (PEM, Ed25519)
 generate.py              builds all of the above
 ```
 
-Each fixture is one unmodified OIS document: a single record, a bundle, or a Quality Passport as
-an in-toto Statement v1 (not wrapped in DSSE). Feed it to a validator as it is.
+Each fixture is one OIS document: a single record, a bundle, or a Quality Passport as an in-toto
+Statement v1. Fixtures named `signed-…` and those in `invalid/signature/` are DSSE envelopes
+around a bundle or passport (section 8.3). Feed every fixture to a validator as it is, with the
+keys listed in `trustedKeys` as the keys it trusts.
 
 ## Manifest
 
 ```json
 {
   "ois": "0.1",
+  "trustedKeys": ["keys/agent-runtime.pub", "keys/ci-recorder.pub", "keys/passport-issuer.pub"],
   "fixtures": [
     {
       "path": "invalid/R5/same-producer.json",
@@ -38,12 +43,12 @@ an in-toto Statement v1 (not wrapped in DSSE). Feed it to a validator as it is.
 reported, the path and the message are up to the validator. A fixture conforms when `expect`
 holds no violation.
 
-`rule` is `schema` for Appendix B ([proposed in #1](https://github.com/openintentschema/openintentschema/issues/1)) and `R1` to `R17` for section 5. `level` is `violation`,
+`rule` is `schema` for Appendix B ([proposed in #1](https://github.com/openintentschema/openintentschema/issues/1)), `signature` for the DSSE envelope
+(section 8.3, *proposed, RFC pending*) and `R1` to `R17` for section 5. `level` is `violation`,
 `warning` or `info` (section 11.1).
 
-The fixtures are unsigned. Every fixture whose records carry a `context` therefore expects the R12
-warning for self-declared context. Signed fixtures, where R12 stays silent, will follow with
-DSSE support.
+Most fixtures are unsigned, so every one whose records carry a `context` expects the R12 warning
+for self-declared context. In the signed fixtures, R12 stays silent where the recorder signed.
 
 ## How the rules are read
 
@@ -81,7 +86,7 @@ unresolved reference is reported once, under R10 (record missing) or R2 (criteri
 | R9 | info | A decision with outcome `waived` whose `decidedBy` is not human. The MUST (rationale) is in Appendix B. |
 | R10 | violation | A reference that does not resolve, or two records with the same `id` (and `version` for intents and actors) that differ in content. Intents are compared without `status` and `digest`, so a draft and its approved record count as one; every other record type is compared in full, `digest` included. *Limiting the exception to intents is [proposed in #5](https://github.com/openintentschema/openintentschema/issues/5); not yet in the specification.* `supersedes` is a reference like any other, so the history a document claims is always carried and checkable. |
 | R11 | violation | A decision with gate `evidence-revocation` whose `subject` is not an evidence record. Rationale and outcome are in Appendix B. |
-| R12 | warning | An artifact with `context` whose `contextRecordedBy` is missing or equals `producedBy` by actor `id`, or whose document is not signed by that actor. |
+| R12 | warning | An artifact with `context` whose `contextRecordedBy` is missing or equals `producedBy` by actor `id`, or whose document is not signed by that actor (see Signatures). |
 | R13 | warning | A passport lists an intent version that a current finding with severity `high` or `critical` references through `intent`, or through a `criterion` of that version, and that finding is not resolved. The current finding is the last of its `supersedes` chain. It is resolved if a decision with gate `finding-resolution`, outcome `approved` and the current finding as `subject` exists, made by an actor whose `id` is not `producedBy`, `recordedBy` or `decidedBy` of any record in its `resolvedBy` (R14). |
 | R14 | violation | Two findings supersede the same finding. |
 | R15 | violation | A passport lists an intent version that is not `approved`, or for which a later version with status `withdrawn` exists. |
@@ -91,6 +96,34 @@ unresolved reference is reported once, under R10 (record missing) or R2 (criteri
 
 R6 and R7 are not checked (section 5) and have no fixtures. The parts of R9 and R11 that
 Appendix B already enforces are fixtures under `invalid/schema/`.
+
+## Signatures
+
+The test keys are Ed25519 keys derived from a fixed seed in `generate.py`; anyone can derive the
+private keys, so they serve for fixtures only. Ed25519 signs deterministically, which keeps the
+signed fixtures reproducible.
+
+- **Envelope.** A DSSE envelope has `payloadType`, `payload` (standard base64) and `signatures`,
+  each with `keyid` and `sig` (standard base64). A signature covers the DSSE v1 pre-authentication
+  encoding of payload type and payload. The payload is the JSON of a passport (payload type
+  `application/vnd.in-toto+json`) or of a bundle (`application/vnd.ois+json`); the rules apply
+  to it as to an unwrapped document.
+- **Key ids.** A `keyid` is the lowercase hexadecimal SHA-256 of the key's DER-encoded
+  SubjectPublicKeyInfo, so a verifier derives it from the key it trusts.
+- **Trust.** The verifier decides which public keys it trusts; nothing in the document can make
+  it trust a key. The fixtures trust the keys in `trustedKeys`.
+- **Attribution.** An actor signed the document when a signature verifies under a trusted key
+  whose key id equals the actor's `identity.keyId` (section 8.3). Certificate identities
+  (`issuer` and `subject`, Sigstore keyless) are not used by the fixtures yet.
+
+| Rule | Level | What the fixtures expect |
+| --- | --- | --- |
+| signature | violation | An envelope without signatures, with a payload type other than the one its payload requires, or with a signature under a trusted key id that does not verify. |
+| signature | warning | A signature whose key id is not trusted: it cannot be checked. |
+
+An envelope with a `signature` violation counts as unsigned: no actor signed it. A signature by
+an untrusted key attributes nothing either. R12 then reports the recorded contexts as
+self-declared, as for an unsigned document.
 
 ## Digests
 

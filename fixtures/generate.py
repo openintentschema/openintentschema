@@ -1,6 +1,7 @@
 # /// script
 # requires-python = ">=3.13"
 # dependencies = [
+#     "cryptography>=50.0.2",
 #     "jsonschema[format-nongpl]>=4.26.0",
 #     "rfc8785>=0.1.4",
 # ]
@@ -9,7 +10,9 @@
 
 Every fixture starts from one of three consistent bases (a bundle, a passport and a Level 1
 bundle) and changes exactly one thing. Intent and criterion digests are computed with RFC 8785,
-independently of any validator. See README.md for the format and the rule semantics.
+independently of any validator. Signed fixtures are DSSE envelopes signed with fixed Ed25519 test
+keys; Ed25519 signs deterministically, so they are reproducible too. See README.md for the format
+and the rule semantics.
 
     uv run fixtures/generate.py           # write the fixtures and manifest.json
     uv run fixtures/generate.py --check   # fail if a file is out of date or a fixture does
@@ -17,6 +20,7 @@ independently of any validator. See README.md for the format and the rule semant
 """
 
 import argparse
+import base64
 import copy
 import hashlib
 import json
@@ -27,6 +31,8 @@ from pathlib import Path
 from typing import Any
 
 import rfc8785
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from jsonschema import Draft202012Validator
 from referencing import Registry, Resource
 
@@ -42,6 +48,11 @@ Doc = dict[str, Any]
 Expect = tuple[str, str]
 
 R12_UNSIGNED: Expect = ("R12", "warning")
+SIGNATURE_UNVERIFIED: Expect = ("signature", "warning")
+
+IN_TOTO = "application/vnd.in-toto+json"
+OIS_BUNDLE = "application/vnd.ois+json"
+TRUSTED_KEYS = ("agent-runtime", "ci-recorder", "passport-issuer")  # keys/<name>.pub
 
 
 # --- digests -----------------------------------------------------------------------------
@@ -1043,6 +1054,112 @@ def _() -> Doc:
     return result
 
 
+# --- signing ------------------------------------------------------------------------------
+
+
+def test_key(name: str) -> Ed25519PrivateKey:
+    """A fixed Ed25519 test key derived from its name. For fixtures only: anyone can derive it."""
+    seed = hashlib.sha256(f"ois fixture key: {name}".encode()).digest()
+    return Ed25519PrivateKey.from_private_bytes(seed)
+
+
+def public_pem(name: str) -> str:
+    key = test_key(name).public_key()
+    pem = key.public_bytes(serialization.Encoding.PEM, serialization.PublicFormat.SubjectPublicKeyInfo)
+    return pem.decode()
+
+
+def keyid(name: str) -> str:
+    """Lowercase hex SHA-256 of the DER SubjectPublicKeyInfo of the public key."""
+    key = test_key(name).public_key()
+    der = key.public_bytes(serialization.Encoding.DER, serialization.PublicFormat.SubjectPublicKeyInfo)
+    return hashlib.sha256(der).hexdigest()
+
+
+def pae(payload_type: str, body: bytes) -> bytes:
+    """DSSE pre-authentication encoding (DSSE v1.0)."""
+    kind = payload_type.encode()
+    return b"DSSEv1 %d %s %d %s" % (len(kind), kind, len(body), body)
+
+
+def envelope(doc: Doc, *signers: str, payload_type: str | None = None) -> Doc:
+    """The document as a DSSE envelope, signed by the test keys named."""
+    kind = payload_type or (IN_TOTO if doc.get("_type") == STATEMENT_TYPE else OIS_BUNDLE)
+    body = rfc8785.dumps(doc)
+    signatures = [
+        {"keyid": keyid(name), "sig": base64.b64encode(test_key(name).sign(pae(kind, body))).decode()}
+        for name in signers
+    ]
+    return {"payloadType": kind, "payload": base64.b64encode(body).decode(), "signatures": signatures}
+
+
+def payload(doc: Doc) -> Doc:
+    """The document inside an envelope, or the document itself."""
+    if "payloadType" in doc:
+        decoded: Doc = json.loads(base64.b64decode(doc["payload"]))
+        return decoded
+    return doc
+
+
+def with_key_ids(doc: Doc) -> Doc:
+    """Give the actors that hold a test key that key's id as their identity (section 4.4)."""
+    for name in TRUSTED_KEYS:
+        for record in records(doc):
+            if record["type"] == "actor" and record["id"] == ref("actors", name):
+                record["identity"] = {**record.get("identity", {}), "keyId": keyid(name)}
+    return doc
+
+
+# signed fixtures --------------------------------------------------------------------------
+
+fixture("valid/signed-bundle.json",
+        "The bundle as a DSSE envelope, signed by the agent runtime, which recorded every "
+        "context, and by the CI recorder. Both keys are trusted, so every context is attested "
+        "and R12 stays silent.")(
+    lambda: envelope(with_key_ids(base_bundle()), "agent-runtime", "ci-recorder"))
+
+fixture("valid/signed-passport.json",
+        "The passport as a DSSE envelope with payload type application/vnd.in-toto+json, signed "
+        "by the passport issuer and the agent runtime.")(
+    lambda: envelope(with_key_ids(passport()), "passport-issuer", "agent-runtime"))
+
+fixture("valid/signed-without-recorder.json",
+        "Signed by the CI recorder only. The signature is valid, but the agent runtime that "
+        "recorded the contexts did not sign, so they stay self-declared.",
+        R12_UNSIGNED)(
+    lambda: envelope(with_key_ids(base_bundle()), "ci-recorder"))
+
+fixture("valid/signed-by-untrusted-key.json",
+        "Signed by a key the verifier does not trust. The signature cannot be checked, so the "
+        "envelope counts as unsigned.",
+        SIGNATURE_UNVERIFIED, R12_UNSIGNED)(
+    lambda: envelope(with_key_ids(base_bundle()), "untrusted-recorder"))
+
+
+@fixture("invalid/signature/tampered-payload.json",
+         "The payload was changed after the agent runtime signed it: the signature does not "
+         "verify, and the envelope counts as unsigned.",
+         violation("signature"), R12_UNSIGNED)
+def _() -> Doc:
+    signed = envelope(with_key_ids(base_bundle()), "agent-runtime")
+    changed = payload(signed)
+    changed["createdAt"] = "2026-10-21T15:00:00Z"
+    signed["payload"] = base64.b64encode(rfc8785.dumps(changed)).decode()
+    return signed
+
+
+fixture("invalid/signature/wrong-payload-type.json",
+        "A bundle signed with the payload type of an in-toto Statement. Section 8.3 gives bundles "
+        "application/vnd.ois+json.",
+        violation("signature"), R12_UNSIGNED)(
+    lambda: envelope(with_key_ids(base_bundle()), "agent-runtime", payload_type=IN_TOTO))
+
+fixture("invalid/signature/no-signature.json",
+        "A DSSE envelope without any signature.",
+        violation("signature"), R12_UNSIGNED)(
+    lambda: envelope(with_key_ids(base_bundle())))
+
+
 # --- output and checks -------------------------------------------------------------------
 
 
@@ -1056,16 +1173,20 @@ def manifest() -> str:
          "expect": [{"rule": rule, "level": level} for rule, level in f.expect]}
         for f in FIXTURES
     ]
-    return render({"ois": "0.1", "fixtures": entries})
+    keys = [f"keys/{name}.pub" for name in TRUSTED_KEYS]
+    return render({"ois": "0.1", "trustedKeys": keys, "fixtures": entries})
 
 
 def outputs() -> dict[Path, str]:
     result = {HERE / f.path: render(f.build()) for f in FIXTURES}
     result[HERE / "manifest.json"] = manifest()
+    for name in TRUSTED_KEYS:
+        result[HERE / "keys" / f"{name}.pub"] = public_pem(name)
     return result
 
 
 def schema_errors(doc: Doc) -> list[str]:
+    doc = payload(doc)
     root = json.loads(SCHEMA.read_text(encoding="utf-8"))
     registry: Registry[Any] = Registry().with_resource(root["$id"], Resource.from_contents(root))
     target, pointer = doc, ""
