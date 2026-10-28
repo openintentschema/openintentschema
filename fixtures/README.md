@@ -11,14 +11,16 @@ valid/                   inputs that conform: no violation (warnings may be expe
 invalid/schema/          inputs that break Appendix B
 invalid/signature/       DSSE envelopes whose signature does not hold
 invalid/<rule>/          inputs that trigger one rule of section 5, R1 to R17
-keys/                    public test keys the verifier trusts (PEM, Ed25519)
+keys/                    public test keys and the Sigstore trusted root the verifier trusts
+sigstore/                input for keyless signing and the recorded Sigstore bundle
 generate.py              builds all of the above
 ```
 
 Each fixture is one OIS document: a single record, a bundle, or a Quality Passport as an in-toto
 Statement v1. Fixtures named `signed-…` and those in `invalid/signature/` are DSSE envelopes
-around a bundle or passport (section 8.3). Feed every fixture to a validator as it is, with the
-keys listed in `trustedKeys` as the keys it trusts.
+around a bundle or passport (section 8.3); `keyless-…` fixtures are Sigstore bundles around a
+passport. Feed every fixture to a validator as it is, with the keys listed in `trustedKeys` and
+the Sigstore trusted roots listed in `trustedRoots` as what it trusts.
 
 ## Manifest
 
@@ -26,6 +28,7 @@ keys listed in `trustedKeys` as the keys it trusts.
 {
   "ois": "0.1",
   "trustedKeys": ["keys/agent-runtime.pub", "keys/ci-recorder.pub", "keys/passport-issuer.pub"],
+  "trustedRoots": ["keys/sigstore-public-good.trusted_root.json"],
   "fixtures": [
     {
       "path": "invalid/R5/same-producer.json",
@@ -113,13 +116,31 @@ signed fixtures reproducible.
 - **Trust.** The verifier decides which public keys it trusts; nothing in the document can make
   it trust a key. The fixtures trust the keys in `trustedKeys`.
 - **Attribution.** An actor signed the document when a signature verifies under a trusted key
-  whose key id equals the actor's `identity.keyId` (section 8.3). Certificate identities
-  (`issuer` and `subject`, Sigstore keyless) are not used by the fixtures yet.
+  whose key id equals the actor's `identity.keyId` (section 8.3), or, for keyless signatures,
+  when its certificate identity equals the actor's `identity.issuer` and `identity.subject`.
+
+**Keyless signatures (Sigstore).** A Sigstore bundle (media type
+`application/vnd.dev.sigstore.bundle.v0.3+json`, as `actions/attest`, cosign and sigstore-python
+write it) carries a DSSE envelope, a short-lived certificate and a transparency log entry. It is
+verified against the trusted roots of `trustedRoots`: certificate chain, log entry and signature.
+A verified signature is attributed to the actor whose `identity.issuer` equals the certificate's
+OIDC issuer (extension 1.3.6.1.4.1.57264.1.8) and whose `identity.subject` equals its subject
+alternative name, exactly. For a GitHub Actions workflow these are
+`https://token.actions.githubusercontent.com` and
+`https://github.com/<owner>/<repo>/.github/workflows/<file>@<ref>`. Without a trusted root the
+bundle cannot be checked (warning); a bundle that does not verify counts as unsigned (violation).
+
+Keyless signatures cannot be generated reproducibly, so they are recorded:
+`.github/workflows/sigstore-fixtures.yml` signs `sigstore/passport-predicate.json` and its bundle
+is committed as `sigstore/passport.sigstore.json`. `generate.py --check` fails when the predicate
+changed and the bundle must be recorded again. The trusted root is a snapshot of the public-good
+instance's; it keeps verifying the recorded bundle, while bundles signed after a key rotation need
+a newer one.
 
 | Rule | Level | What the fixtures expect |
 | --- | --- | --- |
 | signature | violation | An envelope without signatures, with a payload type other than the one its payload requires, or with a signature under a trusted key id that does not verify. |
-| signature | warning | A signature whose key id is not trusted: it cannot be checked. |
+| signature | warning | A signature whose key id is not trusted, or a Sigstore bundle without a trusted root: it cannot be checked. |
 
 An envelope with a `signature` violation counts as unsigned: no actor signed it. A signature by
 an untrusted key attributes nothing either. R12 then reports the recorded contexts as

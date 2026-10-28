@@ -54,6 +54,17 @@ IN_TOTO = "application/vnd.in-toto+json"
 OIS_BUNDLE = "application/vnd.ois+json"
 TRUSTED_KEYS = ("agent-runtime", "ci-recorder", "passport-issuer")  # keys/<name>.pub
 
+# Keyless (Sigstore) fixtures cannot be generated: a GitHub Actions workflow signs the passport
+# predicate written below (.github/workflows/sigstore-fixtures.yml) and its bundle is recorded.
+SIGSTORE = HERE / "sigstore"
+RECORDED = SIGSTORE / "passport.sigstore.json"
+TRUSTED_ROOTS = ("keys/sigstore-public-good.trusted_root.json",)
+GITHUB_ACTIONS = "https://token.actions.githubusercontent.com"
+RECORDING_WORKFLOW = (
+    "https://github.com/openintentschema/openintentschema/.github/workflows/"
+    "sigstore-fixtures.yml@refs/heads/main"
+)
+
 
 # --- digests -----------------------------------------------------------------------------
 
@@ -1094,7 +1105,9 @@ def envelope(doc: Doc, *signers: str, payload_type: str | None = None) -> Doc:
 
 
 def payload(doc: Doc) -> Doc:
-    """The document inside an envelope, or the document itself."""
+    """The document inside an envelope or a Sigstore bundle, or the document itself."""
+    if "dsseEnvelope" in doc:
+        doc = doc["dsseEnvelope"]
     if "payloadType" in doc:
         decoded: Doc = json.loads(base64.b64decode(doc["payload"]))
         return decoded
@@ -1160,6 +1173,45 @@ fixture("invalid/signature/no-signature.json",
     lambda: envelope(with_key_ids(base_bundle())))
 
 
+# keyless fixtures --------------------------------------------------------------------------
+
+
+def keyless_passport() -> Doc:
+    """The passport, with the agent runtime and the issuer identified as the recording workflow,
+    which signs it keylessly: every recorded context is then attested."""
+    statement = passport()
+    for record in records(statement):
+        if record["type"] == "actor" and record["id"] in (ref("actors", "agent-runtime"),
+                                                         ref("actors", "passport-issuer")):
+            record["identity"] = {"issuer": GITHUB_ACTIONS, "subject": RECORDING_WORKFLOW}
+    return statement
+
+
+def recorded() -> Doc | None:
+    if not RECORDED.exists():
+        return None
+    loaded: Doc = json.loads(RECORDED.read_text(encoding="utf-8"))
+    return loaded
+
+
+if recorded() is not None:
+    fixture("valid/keyless-passport.json",
+            "The passport, signed keylessly by a GitHub Actions workflow through the public-good "
+            "Sigstore instance (a recorded Sigstore bundle). The workflow is the agent runtime's "
+            "certificate identity, so every recorded context is attested.")(
+        lambda: copy.deepcopy(recorded()))
+
+    @fixture("invalid/signature/keyless-tampered.json",
+             "The recorded keyless passport with its payload changed after signing.",
+             violation("signature"), R12_UNSIGNED)
+    def _() -> Doc:
+        bundle = copy.deepcopy(recorded())
+        changed = payload(bundle["dsseEnvelope"])
+        changed["predicate"]["issuedAt"] = "2026-10-22T09:00:00Z"
+        bundle["dsseEnvelope"]["payload"] = base64.b64encode(rfc8785.dumps(changed)).decode()
+        return bundle
+
+
 # --- output and checks -------------------------------------------------------------------
 
 
@@ -1174,7 +1226,8 @@ def manifest() -> str:
         for f in FIXTURES
     ]
     keys = [f"keys/{name}.pub" for name in TRUSTED_KEYS]
-    return render({"ois": "0.1", "trustedKeys": keys, "fixtures": entries})
+    return render({"ois": "0.1", "trustedKeys": keys, "trustedRoots": list(TRUSTED_ROOTS),
+                   "fixtures": entries})
 
 
 def outputs() -> dict[Path, str]:
@@ -1182,6 +1235,9 @@ def outputs() -> dict[Path, str]:
     result[HERE / "manifest.json"] = manifest()
     for name in TRUSTED_KEYS:
         result[HERE / "keys" / f"{name}.pub"] = public_pem(name)
+    statement = keyless_passport()
+    result[SIGSTORE / "passport-predicate.json"] = render(statement["predicate"])
+    result[SIGSTORE / "passport-subject.json"] = render(statement["subject"][0])
     return result
 
 
@@ -1199,14 +1255,23 @@ def schema_errors(doc: Doc) -> list[str]:
     return [e.message for e in validator.iter_errors(target)]
 
 
+def generated_on_disk() -> set[Path]:
+    """Fixture files; recorded bundles and trusted roots are inputs, never removed."""
+    return {p for folder in ("valid", "invalid") for p in (HERE / folder).glob("**/*.json")}
+
+
 def check(files: dict[Path, str]) -> list[str]:
     problems = []
     for path, text in files.items():
         if not path.exists() or path.read_text(encoding="utf-8") != text:
             problems.append(f"{path.relative_to(HERE)}: out of date, run generate.py")
-    on_disk = {p for p in HERE.glob("*/**/*.json")}
+    on_disk = generated_on_disk()
     for stray in sorted(on_disk - files.keys()):
         problems.append(f"{stray.relative_to(HERE)}: not generated, remove it")
+    bundle = recorded()
+    if bundle is not None and payload(bundle) != keyless_passport():
+        problems.append(f"{RECORDED.relative_to(HERE)}: signs another passport than "
+                        "passport-predicate.json; record it again")
     for f in FIXTURES:
         errors = schema_errors(f.build())
         if f.path.startswith("invalid/schema/") and not errors:
@@ -1226,7 +1291,7 @@ def main() -> int:
         for problem in problems:
             print(problem, file=sys.stderr)
         return 1 if problems else 0
-    for stray in set(HERE.glob("*/**/*.json")) - files.keys():
+    for stray in generated_on_disk() - files.keys():
         stray.unlink()
     for path, text in files.items():
         path.parent.mkdir(parents=True, exist_ok=True)

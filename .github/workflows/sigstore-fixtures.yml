@@ -1,0 +1,41 @@
+name: Record the keyless signed fixtures
+
+# Signs the passport predicate that fixtures/generate.py writes with actions/attest, keylessly,
+# through the public-good Sigstore instance. Run it by hand after the predicate changed, download
+# the artifact and commit its file as fixtures/sigstore/passport.sigstore.json; generate.py then
+# derives the keyless fixtures from it. The workflow's own identity is the signer named in the
+# predicate, so it must run on main.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  record:
+    name: Sign the passport predicate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - id: subject
+        run: |
+          echo "name=$(jq -r .name fixtures/sigstore/passport-subject.json)" >> "$GITHUB_OUTPUT"
+          echo "digest=sha256:$(jq -r .digest.sha256 fixtures/sigstore/passport-subject.json)" >> "$GITHUB_OUTPUT"
+      - id: attest
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-name: ${{ steps.subject.outputs.name }}
+          subject-digest: ${{ steps.subject.outputs.digest }}
+          predicate-type: https://ois.example/passport/v0.1
+          predicate-path: fixtures/sigstore/passport-predicate.json
+      - name: The bundle as one JSON document (the action may write JSON lines)
+        run: jq -c . "${{ steps.attest.outputs.bundle-path }}" | head -n 1 | jq . > passport.sigstore.json
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sigstore-fixtures
+          path: passport.sigstore.json
