@@ -4,8 +4,8 @@ description: What the OIS tools read, write and transmit, and where OIS records 
 ---
 
 OIS is a data format, and its tools run where you run them. `ois-validator`, `ois-junit`,
-`ois-intent`, `ois-record` and `ois-passport` open no network connection: OIS records stay in your
-organization until you send them somewhere.
+`ois-intent`, `ois-record`, `ois-passport` and `ois-coverage` open no network connection: OIS
+records stay in your organization until you send them somewhere.
 
 [![Data flows: the tools run inside your organization; only installing the package contacts PyPI, and records reach others only when you send them](/images/data-flows.svg)](/images/data-flows.svg)
 
@@ -20,6 +20,7 @@ organization until you send them somewhere.
 | Running `ois-intent` | Nothing. It reads and writes intent and decision files locally | Nobody | |
 | Running `ois-record` | Nothing. It reads the files it records and the local Git checkout (`git rev-parse`, `ls-files`, `diff`, `remote get-url`; never `fetch` or `push`) and writes record files | Nobody | |
 | Running `ois-passport` | Nothing. It reads records and writes the passport file locally | Nobody | |
+| Running `ois-coverage` | Nothing. It reads records or a passport and prints the result | Nobody | |
 | Storing bundles | The bundle file | Wherever your pipeline keeps artifacts | Your retention rules apply |
 | Sharing a bundle or passport | Its records (below) | The recipients you choose, such as an auditor or a customer | Review before sharing (specification section 12) |
 | Visiting this website | The request: IP address, page, browser | GitHub Pages, which hosts the site | The site loads nothing from other domains and sets no cookies; your theme choice stays in your browser |
@@ -41,8 +42,8 @@ leaves your organization; test names must not contain personal data (specificati
 
 ## How this was checked
 
-`ois-validator`, `ois-junit`, `ois-intent`, `ois-record` and `ois-passport`, and the validator's
-whole test suite, were run in a sandbox that blocks all network access. All of them work unchanged;
+`ois-validator`, `ois-junit`, `ois-intent`, `ois-record`, `ois-passport` and `ois-coverage`, and
+the validator's whole test suite, were run in a sandbox that blocks all network access. All of them work unchanged;
 a network request in that sandbox fails. What pip
 and uv send to PyPI is taken from their documentation, not measured here.
 

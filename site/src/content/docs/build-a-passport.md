@@ -50,6 +50,9 @@ uvx --from ois-validator ois-passport build .ois/ ci-bundles/ \
   example with `ois-record decision --gate release`.
 - **Subject:** the statement's subject is the build artifact and its digest, which is what a
   consumer compares with the artifact they received.
+- **Coverage:** from version 0.5.0 the passport reports intent coverage by the
+  [reference method](/methods/basic-intent-coverage/v0.1/) in `assessments`. Leave it out with
+  `--no-coverage` if you report your own method.
 
 `ois-passport` validates the passport before writing it. If it would break a rule, it names the
 rule and writes nothing. Warnings, such as self-declared contexts (R12) or open high findings
@@ -57,11 +60,26 @@ rule and writes nothing. Warnings, such as self-declared contexts (R12) or open 
 
 ## Check it
 
-Anyone can check a passport with the validator:
+Anyone can check a passport with the validator, and recompute the coverage it declares:
 
 ```bash
 uvx ois-validator passport.json
+uvx --from ois-validator ois-coverage passport.json
 ```
+
+```
+https://ois.acme.example/intents/INT-142@1#AC-1  not covered
+    https://ois.acme.example/evidence/EV-9022: derivedFrom is unknown
+https://ois.acme.example/intents/INT-142@1#AC-2  covered  https://ois.acme.example/evidence/EV-9021
+intentCoverage 0.5 (declared 0.5)
+```
+
+`ois-coverage` shows per criterion which evidence counts and why the rest does not. It exits with
+1 if a declared value differs from the computed one. Before the passport exists,
+`ois-coverage .ois/ --build "$BUILD"` shows what is still missing.
+
+`intentCoverageAttested` stays 0 for now: it counts only evidence whose test context was recorded
+and signed by another actor (rule R12), and signatures are not verified yet.
 
 Passports are not signed yet. DSSE signing, which Level 3 conformance requires and which lets a
 recipient attribute the passport to its issuer, follows in a later version.

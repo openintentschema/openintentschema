@@ -49,7 +49,10 @@ The package also brings commands that write OIS records and validate them before
 | `ois-junit` | A Level 1 bundle from JUnit XML | [Getting started](/getting-started/) |
 | `ois-intent` | Sealed and approved intents, new versions | [Write and approve intents](/approve-intents/) |
 | `ois-record` | Actors, artifacts, evidence, decisions, findings, bundles | [Record artifacts, decisions and findings](/record/) |
-| `ois-passport` | A Quality Passport for a release | [Build a Quality Passport](/build-a-passport/) |
+| `ois-passport` | A Quality Passport for a release, with its intent coverage | [Build a Quality Passport](/build-a-passport/) |
+
+`ois-coverage` writes nothing: it shows the [intent coverage](/methods/basic-intent-coverage/v0.1/)
+of records or a passport per criterion and checks the values a passport declares.
 
 ## Test your own implementation
 

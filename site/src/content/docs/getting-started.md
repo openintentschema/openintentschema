@@ -95,7 +95,7 @@ here (every record also carries `ois`, `id` and `createdAt`):
   "criterion": "https://ois.acme.example/intents/team-billing-characterization@1#TC-f8c16e8744a9",
   "test": "https://ois.acme.example/artifacts/test-eaf5767278f44715",
   "derivedFrom": "unknown", "result": "pass", "observedAt": "2026-10-28T15:19:57Z",
-  "recordedBy": "https://ois.acme.example/actors/ois-junit@0.4.0",
+  "recordedBy": "https://ois.acme.example/actors/ois-junit@0.5.0",
   "run": "https://ci.acme.example/pipelines/billing/runs/42" }
 ```
 
@@ -144,7 +144,7 @@ GitHub Actions, after the step that runs the tests:
 
 `if: ${{ !cancelled() }}` records results when tests fail too; those are the results that matter
 most. Any other CI works the same way: the job needs `git`, `uv` and the checkout the tests ran
-in. Pin the version (for example `uvx --from ois-validator==0.4.0 …`) once you depend on it.
+in. Pin the version (for example `uvx --from ois-validator==0.5.0 …`) once you depend on it.
 
 ## Before you share a bundle
 
