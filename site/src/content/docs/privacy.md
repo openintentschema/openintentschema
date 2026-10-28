@@ -3,8 +3,9 @@ title: Privacy and data flows
 description: What the OIS tools read, write and transmit, and where OIS records go.
 ---
 
-OIS is a data format, and its tools run where you run them. None of the `ois` commands opens a
-network connection: OIS records stay in your organization until you send them somewhere.
+OIS is a data format, and its tools run where you run them. No `ois` command opens a network
+connection, except `ois trust update` when you run it to fetch a Sigstore trusted root: OIS
+records stay in your organization until you send them somewhere.
 
 [![Data flows: the tools run inside your organization; only installing the package contacts PyPI, and records reach others only when you send them](/images/data-flows.svg)](/images/data-flows.svg)
 
@@ -24,6 +25,7 @@ network connection: OIS records stay in your organization until you send them so
 | Running `ois coverage` | Nothing. It reads records or a passport and prints the result | Nobody | |
 | Running `ois key` and `ois sign` | Nothing. Keys are created and used locally; the private key never leaves the file you keep it in | Nobody | Keep private keys in a secret store |
 | Signing keylessly with `actions/attest` or cosign | The workflow's identity token and the signature | Sigstore (Fulcio and the public transparency log Rekor) or your own instance; on GitHub also the repository's attestations | The log is public by design: it records the identity, the time and the digest, not the passport |
+| Fetching a trusted root with `ois trust update` | The request for Sigstore's signed TUF metadata and trusted root | Sigstore's TUF repository (`tuf-repo-cdn.sigstore.dev`), or your own instance's | Keep a reviewed copy and refresh it on your schedule |
 | Fetching a trusted root with `gh attestation trusted-root` | The request | GitHub | Keep a reviewed copy and refresh it on your schedule |
 | Verifying a Sigstore bundle with `ois validate` | Nothing. The trusted root is a local file | Nobody | |
 | Sharing a signed bundle or passport | Its records, the signatures and the key ids | The recipients you choose | Recipients verify with the public keys you give them |

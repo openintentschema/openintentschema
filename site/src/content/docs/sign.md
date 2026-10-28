@@ -133,9 +133,13 @@ root (Sigstore rotates keys now and then, so refresh it):
 
 ```bash
 pip install 'ois-tools[sigstore]'                     # the container image includes it
-gh attestation trusted-root > trusted_root.jsonl
-ois validate passport.sigstore.json --trusted-root trusted_root.jsonl
+ois trust update --output trusted_root.json          # through TUF, the only command with network
+ois validate passport.sigstore.json --trusted-root trusted_root.json
 ```
+
+`gh attestation trusted-root > trusted_root.jsonl` gives the same, plus the root of GitHub's own
+instance, which signs for private repositories. An organization's own instance:
+`ois trust update --tuf-url https://tuf.acme.example --tuf-root root.json --output acme.json`.
 
 **Other providers** work the same way: GitLab CI, Google Cloud, Buildkite or an organization's own
 Sigstore instance are another trusted root and another issuer in the certificate. Outside GitHub,
