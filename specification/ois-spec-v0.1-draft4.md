@@ -23,7 +23,7 @@ Sections marked *normative* define requirements for conforming implementations. 
 | 0.1-draft.2 | 2026-10-25 | Finding record (first named observation); context recorded by the runtime and attestation rule; evidence revocation; gate registry; targets for non-functional criteria; language tags; passport bundles and scope; build inputs; reference method for intent coverage; carry-over fix in R4; forward-compatibility rule; change history. |
 | 0.1-draft.3 | 2026-10-25 | Actor identity for signature attribution; subject digests on decisions; Level 3 aligned with R12; observation renamed to finding; validator report levels; releases with several builds; R14 clarified; example completed with build artifact and signed bundle. |
 | 0.1-draft.4 | 2026-10-25 | Intent digest excludes status; R10 compares content without status; Level 3 wording for multi-signature bundles; pseudonymous identities for humans; R15 for withdrawn intents; diverse coverage variant; quick start for Level 1. |
-| 0.1-draft.5 | in progress | Appendix A.2 names all four records the passport adds, including the QE lead. |
+| 0.1-draft.5 | in progress | Appendix A uses intent version 1, so the example carries no history it does not show (R10); A.2 names all four records the passport adds, including the QE lead. |
 
 ## 1. Introduction (informative)
 
@@ -260,7 +260,7 @@ Rules:
 {
   "ois": "0.1", "type": "finding", "id": "https://ois.acme.example/findings/FND-18",
   "createdAt": "2026-11-03T07:40:00Z",
-  "intent": "https://ois.acme.example/intents/INT-142@3",
+  "intent": "https://ois.acme.example/intents/INT-142@1",
   "subject": "https://ois.acme.example/artifacts/ART-305",
   "source": "production",
   "severity": "high",
@@ -605,13 +605,12 @@ The bundle holds the actors, the approved intent, four artifacts, one evidence r
       "createdAt": "2026-09-01T08:00:00Z", "kind": "tool", "name": "CI evidence recorder", "version": "1.2" },
     {
       "ois": "0.1", "type": "intent", "id": "https://ois.acme.example/intents/INT-142",
-      "createdAt": "2026-10-14T09:12:00Z", "version": 3,
+      "createdAt": "2026-10-14T09:12:00Z", "version": 1,
       "title": "Customers change their address in the portal",
       "status": "approved",
       "language": "en",
       "producedBy": "https://ois.acme.example/actors/requirement-agent@1.4",
       "source": "https://jira.acme.example/browse/PORTAL-1187",
-      "supersedes": "https://ois.acme.example/intents/INT-142@2",
       "risk": "high",
       "criteria": [
         { "key": "AC-1", "notation": "gherkin", "kind": "functional", "criticality": "high",
@@ -634,7 +633,7 @@ The bundle holds the actors, the approved intent, four artifacts, one evidence r
       "path": "api/address.openapi.yaml",
       "digest": { "sha256": "5f2b8c41a9e07d36c4b18f92e6a05d7c3b91e48f20a6d5c7b39e81f4a2c60d95" },
       "producedBy": "https://ois.acme.example/actors/dev-agent@3.0",
-      "context": ["https://ois.acme.example/intents/INT-142@3"],
+      "context": ["https://ois.acme.example/intents/INT-142@1"],
       "contextRecordedBy": "https://ois.acme.example/actors/agent-runtime@4.3"
     },
     {
@@ -643,7 +642,7 @@ The bundle holds the actors, the approved intent, four artifacts, one evidence r
       "location": "git+https://git.acme.example/portal.git@a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
       "digest": { "gitCommit": "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678" },
       "producedBy": "https://ois.acme.example/actors/dev-agent@3.0",
-      "context": ["https://ois.acme.example/intents/INT-142@3", "https://ois.acme.example/artifacts/ART-301"],
+      "context": ["https://ois.acme.example/intents/INT-142@1", "https://ois.acme.example/artifacts/ART-301"],
       "contextRecordedBy": "https://ois.acme.example/actors/agent-runtime@4.3"
     },
     {
@@ -652,7 +651,7 @@ The bundle holds the actors, the approved intent, four artifacts, one evidence r
       "location": "https://testdata.acme.example/sets/addresses-without-canton-v1",
       "digest": { "sha256": "8a41c7e29b05f3d68e17a4c92b6f0d3e5a78c19b42e6f0a3d57c81b9e4f20a6c" },
       "producedBy": "https://ois.acme.example/actors/testdata-generator@5.2",
-      "context": ["https://ois.acme.example/intents/INT-142@3#AC-2"],
+      "context": ["https://ois.acme.example/intents/INT-142@1#AC-2"],
       "contextRecordedBy": "https://ois.acme.example/actors/agent-runtime@4.3"
     },
     {
@@ -662,14 +661,14 @@ The bundle holds the actors, the approved intent, four artifacts, one evidence r
       "path": "tests/address.spec.ts",
       "digest": { "sha256": "c39e5a17f482b06d9e3c71a5b48f20e6d1a9c74b3e58f02a6d91c4b7e3f05a28" },
       "producedBy": "https://ois.acme.example/actors/qe-agent@2.1",
-      "context": ["https://ois.acme.example/intents/INT-142@3", "https://ois.acme.example/artifacts/ART-301",
+      "context": ["https://ois.acme.example/intents/INT-142@1", "https://ois.acme.example/artifacts/ART-301",
                   "https://ois.acme.example/artifacts/ART-303"],
       "contextRecordedBy": "https://ois.acme.example/actors/agent-runtime@4.3"
     },
     {
       "ois": "0.1", "type": "evidence", "id": "https://ois.acme.example/evidence/EV-9021",
       "createdAt": "2026-10-20T14:32:05Z",
-      "criterion": "https://ois.acme.example/intents/INT-142@3#AC-2",
+      "criterion": "https://ois.acme.example/intents/INT-142@1#AC-2",
       "test": "https://ois.acme.example/artifacts/ART-304",
       "subject": "https://ois.acme.example/artifacts/ART-302",
       "inputs": ["https://ois.acme.example/artifacts/ART-303"],
@@ -685,7 +684,7 @@ The bundle holds the actors, the approved intent, four artifacts, one evidence r
       "ois": "0.1", "type": "decision", "id": "https://ois.acme.example/decisions/DEC-77",
       "createdAt": "2026-10-14T10:05:00Z",
       "gate": "intent-approval",
-      "subject": "https://ois.acme.example/intents/INT-142@3",
+      "subject": "https://ois.acme.example/intents/INT-142@1",
       "outcome": "approved",
       "decidedBy": "https://ois.acme.example/actors/po-7f3a",
       "decidedAt": "2026-10-14T10:05:00Z",
@@ -711,8 +710,8 @@ The passport for the release adds four records: a build artifact, the release de
   "predicate": {
     "ois": "0.1",
     "release": { "name": "customer-portal", "version": "2026.10.3" },
-    "intents": ["https://ois.acme.example/intents/INT-142@3"],
-    "scope": ["https://ois.acme.example/intents/INT-142@3#AC-1", "https://ois.acme.example/intents/INT-142@3#AC-2"],
+    "intents": ["https://ois.acme.example/intents/INT-142@1"],
+    "scope": ["https://ois.acme.example/intents/INT-142@1#AC-1", "https://ois.acme.example/intents/INT-142@1#AC-2"],
     "records": [
       {
         "ois": "0.1", "type": "artifact", "id": "https://ois.acme.example/artifacts/ART-305",

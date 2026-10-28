@@ -3,7 +3,7 @@
 Worked example from Appendix A of the specification: the feature "Customers change their
 address in the portal".
 
-- `bundle.json`: actors, the approved intent (version 3), four artifacts, one evidence record and
+- `bundle.json`: actors, the approved intent (version 1), four artifacts, one evidence record and
   the intent approval. Validates against `../schema/ois.schema.json` as a bundle.
 - `passport.json`: the Quality Passport for the release as an in-toto Statement v1. Only the
   build artifact and the release decision are shown in `records`; a real passport also embeds
