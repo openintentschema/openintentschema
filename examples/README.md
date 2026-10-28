@@ -7,8 +7,8 @@ address in the portal".
   the intent approval. Validates against `../schema/ois.schema.json` as a bundle.
 - `passport.json`: the Quality Passport for the release as an in-toto Statement v1. Only the
   build artifact and the release decision are shown in `records`; a real passport also embeds
-  every record from `bundle.json` and the issuing actor. The predicate validates against
-  `#/$defs/passportPredicate`.
+  every record from `bundle.json`, the QE lead who decided the release and the issuing actor.
+  The predicate validates against `#/$defs/passportPredicate`.
 - `finding.json`: a finding from production (section 4.7), cause classified as a spec gap.
 
 All digests are illustrative and were not computed from real content. The passport is not

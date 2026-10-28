@@ -23,6 +23,7 @@ Sections marked *normative* define requirements for conforming implementations. 
 | 0.1-draft.2 | 2026-10-25 | Finding record (first named observation); context recorded by the runtime and attestation rule; evidence revocation; gate registry; targets for non-functional criteria; language tags; passport bundles and scope; build inputs; reference method for intent coverage; carry-over fix in R4; forward-compatibility rule; change history. |
 | 0.1-draft.3 | 2026-10-25 | Actor identity for signature attribution; subject digests on decisions; Level 3 aligned with R12; observation renamed to finding; validator report levels; releases with several builds; R14 clarified; example completed with build artifact and signed bundle. |
 | 0.1-draft.4 | 2026-10-25 | Intent digest excludes status; R10 compares content without status; Level 3 wording for multi-signature bundles; pseudonymous identities for humans; R15 for withdrawn intents; diverse coverage variant; quick start for Level 1. |
+| 0.1-draft.5 | in progress | Appendix A.2 names all four records the passport adds, including the QE lead. |
 
 ## 1. Introduction (informative)
 
@@ -697,7 +698,7 @@ The bundle holds the actors, the approved intent, four artifacts, one evidence r
 
 ### A.2 Quality Passport
 
-The passport for the release adds a build artifact, the release decision and the issuing actor. Its `records` array contains every record from A.1 plus these three; the build artifact and the release decision are shown.
+The passport for the release adds four records: a build artifact, the release decision, the QE lead who made that decision and the issuing actor. Its `records` array contains every record from A.1 plus these four; the build artifact and the release decision are shown.
 
 ```json
 {
