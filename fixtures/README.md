@@ -46,7 +46,7 @@ reported, the path and the message are up to the validator. A fixture conforms w
 holds no violation.
 
 `rule` is `schema` for Appendix B ([proposed in #1](https://github.com/openintentschema/openintentschema/issues/1)), `signature` for DSSE envelopes and Sigstore bundles
-(section 8.3, *proposed, RFC pending*) and `R1` to `R17` for section 5. `level` is `violation`,
+(section 8.3, [proposed in #8](https://github.com/openintentschema/openintentschema/issues/8)) and `R1` to `R17` for section 5. `level` is `violation`,
 `warning` or `info` (section 11.1).
 
 Most fixtures are unsigned, so every one whose records carry a `context` expects the R12 warning
