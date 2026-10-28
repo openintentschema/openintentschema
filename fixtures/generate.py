@@ -839,6 +839,19 @@ def _() -> Doc:
     return with_support(base_bundle(), later)
 
 
+@fixture("invalid/R10/artifact-digest-differs.json",
+         "Two artifact records share an id and differ only in digest, so a reference to that id "
+         "no longer says which content it means. Only intents ignore status and digest "
+         "(proposed clarification of R10).",
+         violation("R10"), R12_UNSIGNED)
+def _() -> Doc:
+    doc = base_bundle()
+    other = copy.deepcopy(get(doc, TEST))
+    other["digest"] = content_digest("a test that always passes")
+    records(doc).insert(records(doc).index(get(doc, TEST)) + 1, other)
+    return doc
+
+
 @fixture("invalid/R10/passport-missing-record.json",
          "The release decision lists evidence that the passport does not carry.",
          violation("R10"), R12_UNSIGNED)
