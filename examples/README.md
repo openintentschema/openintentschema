@@ -11,5 +11,9 @@ address in the portal".
   The predicate validates against `#/$defs/passportPredicate`.
 - `finding.json`: a finding from production (section 4.7), cause classified as a spec gap.
 
-All digests are illustrative and were not computed from real content. The passport is not
-self-contained on purpose (see note above); the conformance fixtures will carry a complete one.
+All digests are illustrative and were not computed from real content, so a validator that checks
+the proposed rule R17 reports them. The passport is not self-contained on purpose (see above);
+`../fixtures/valid/passport.json` is a complete one with computed digests.
+
+The examples must match Appendix A of the specification as parsed JSON; change both together. CI
+validates them against the schema.

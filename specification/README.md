@@ -1,7 +1,8 @@
 # specification
 
-- `ois-spec-v0.1-draft4.md`: Open Intent Schema Specification v0.1, working draft 4.
-  Licensed under CC BY 4.0 (`../LICENSE-docs`).
+- `ois-spec-v0.1-draft4.md`: Open Intent Schema Specification v0.1, working draft 4, with the
+  changes for draft 5 merged so far (see its change history). The file is renamed when draft 5 is
+  complete. Licensed under CC BY 4.0 (`../LICENSE-docs`).
 
 Appendix B of the specification embeds `../schema/ois.schema.json` verbatim, and Appendix A
 embeds the examples in `../examples/`. Change them together.

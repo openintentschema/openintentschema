@@ -8,16 +8,41 @@ intents and their acceptance criteria, the artifacts produced, who or what produ
 and with which context, the evidence from test runs, the decisions at quality gates, and
 the findings when something goes wrong. A signed Quality Passport bundles all of it for a release.
 
-Think of it as an SBOM for requirements.
-
-## Status
-
-Working draft v0.1 (draft 4), open for discussion with design partners. Any part may change
-before 1.0. See `specification/` for the specification, `schema/` for the JSON Schema, `examples/`
-for a complete worked example and `fixtures/` for the conformance test suite.
+Think of it as an SBOM for requirements: an SBOM lists what software contains; OIS states what
+it must do and how that is proven.
 
 **New here?** [Getting started](site/getting-started.md) turns the JUnit XML of an existing
 pipeline into OIS records in about 15 minutes.
+
+## Status
+
+Specification v0.1, working draft 4, open for discussion with design partners; draft 5 is in
+progress (see the change history in the specification). Any part may change before 1.0.
+
+## Repository layout
+
+| Path | Content |
+| --- | --- |
+| [`specification/`](specification/) | The specification (normative and informative sections) |
+| [`schema/`](schema/) | `ois.schema.json`, the normative JSON Schema 2020-12 (Appendix B) |
+| [`examples/`](examples/) | The worked example of Appendix A |
+| [`fixtures/`](fixtures/) | The conformance test suite: valid and invalid documents with the reports a validator must give |
+| [`site/`](site/) | Documentation pages, starting with getting started |
+| [`.github/`](.github/) | CI for examples and fixtures, the RFC issue template |
+
+## Conformance
+
+Producers claim a level: Level 1 Observe (emit records for existing outputs), Level 2
+Intent-aware (read intents, record complete context), Level 3 Attested (signed bundles and
+passports, verifiable identity).
+
+A validator checks the schema and the integrity rules R1–R15 of section 5 and reports each
+problem with its rule and level. The conformance fixtures are the test suite it must pass; they
+also cover the rules R16 and R17 and the clarifications proposed in the open RFCs.
+
+The reference validator and the JUnit XML adapter live in
+[openintentschema/validator](https://github.com/openintentschema/validator) and are published on
+PyPI as [`ois-validator`](https://pypi.org/project/ois-validator/).
 
 ## Reuse before invention
 
@@ -25,18 +50,20 @@ OIS builds on Gherkin and EARS (criteria), in-toto and DSSE (passport and signin
 Sigstore (keyless signing), SLSA (build provenance), CloudEvents (events), W3C Trace Context,
 JSON Schema 2020-12 and RFC 8785 (canonical JSON for digests).
 
-## Conformance
+## Contributing
 
-Producers claim a level: Level 1 Observe (emit records for existing outputs), Level 2
-Intent-aware (read intents, record complete context), Level 3 Attested (signed bundles and
-passports, verifiable identity). A validator checks the schema and integrity rules R1–R15; the fixtures in `fixtures/` are the
-test suite it must pass. The reference validator lives in
-[openintentschema/validator](https://github.com/openintentschema/validator).
+Changes to the data model, rules, schema, conformance levels or passport format start as an
+[RFC issue](https://github.com/openintentschema/openintentschema/issues?q=label%3Arfc); editorial
+fixes go straight to a pull request. See [CONTRIBUTING.md](CONTRIBUTING.md) and
+[GOVERNANCE.md](GOVERNANCE.md). Security issues: [SECURITY.md](SECURITY.md).
 
 ## Licenses
 
-Schema, code and fixtures: Apache-2.0. Specification text: CC BY 4.0.
+Schema, code and fixtures: Apache-2.0 ([LICENSE](LICENSE)). Specification text: CC BY 4.0
+([LICENSE-docs](LICENSE-docs)).
 
 ## Governance
 
-See `GOVERNANCE.md`. The editors intend to transfer the specification to a neutral foundation.
+Editors decide by rough consensus after an open RFC process; see [GOVERNANCE.md](GOVERNANCE.md)
+and [MAINTAINERS.md](MAINTAINERS.md). The editors intend to transfer the specification to a
+neutral foundation.
