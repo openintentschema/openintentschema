@@ -22,6 +22,8 @@ network connection: OIS records stay in your organization until you send them so
 | Running `ois record` | Nothing. It reads the files it records and the local Git checkout (`git rev-parse`, `ls-files`, `diff`, `remote get-url`; never `fetch` or `push`) and writes record files | Nobody | |
 | Running `ois passport` | Nothing. It reads records and writes the passport file locally | Nobody | |
 | Running `ois coverage` | Nothing. It reads records or a passport and prints the result | Nobody | |
+| Running `ois key` and `ois sign` | Nothing. Keys are created and used locally; the private key never leaves the file you keep it in | Nobody | Keep private keys in a secret store |
+| Sharing a signed bundle or passport | Its records, the signatures and the key ids | The recipients you choose | Recipients verify with the public keys you give them |
 | Storing bundles | The bundle file | Wherever your pipeline keeps artifacts | Your retention rules apply |
 | Sharing a bundle or passport | Its records (below) | The recipients you choose, such as an auditor or a customer | Review before sharing (specification section 12) |
 | Visiting this website | The request: IP address, page, browser | GitHub Pages, which hosts the site | The site loads nothing from other domains and sets no cookies; your theme choice stays in your browser |

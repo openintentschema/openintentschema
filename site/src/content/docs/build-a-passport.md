@@ -78,8 +78,12 @@ intentCoverage 0.5 (declared 0.5)
 1 if a declared value differs from the computed one. Before the passport exists,
 `ois coverage .ois/ --build "$BUILD"` shows what is still missing.
 
-`intentCoverageAttested` stays 0 for now: it counts only evidence whose test context was recorded
-and signed by another actor (rule R12), and signatures are not verified yet.
+`intentCoverageAttested` counts only evidence whose test context was recorded by another actor
+who signed the passport (rule R12). In an unsigned passport it is 0.
 
-Passports are not signed yet. DSSE signing, which Level 3 conformance requires and which lets a
-recipient attribute the passport to its issuer, follows in a later version.
+## Sign it
+
+Level 3 conformance requires a signed passport, and a recipient can then attribute it to its
+issuer. Add `--sign issuer.key` (and the key of the runtime that recorded the contexts) to
+`ois passport build`, and check the result with `ois validate passport.dsse.json --trusted-key
+keys/`. See [Sign bundles and passports](/sign/).

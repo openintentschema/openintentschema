@@ -32,7 +32,8 @@ CI=$(ois record actor --kind tool --name "CI build" --version 7)
 Each command prints the reference, for example `https://ois.acme.example/actors/ci-build@7`, so the
 next command can use it. Agents and tools carry a version, and agents their model. When an agent's
 model, instructions or tools change, record a new `--version`. For people, use a pseudonym as the
-name. An identity subject must not be an e-mail address (section 12).
+name. An identity subject must not be an e-mail address (section 12). An actor that signs gets
+its key with `--public-key`, see [Sign bundles and passports](/sign/).
 
 ## Artifacts
 
@@ -59,8 +60,9 @@ TEST=$(ois record artifact tests/test_invoice.py --kind test --produced-by "$TES
   --context https://ois.acme.example/intents/INT-7@1#AC-1)
 ```
 
-The context must be complete (rule R6). Until the record is signed by the runtime that observed it,
-the validator reports it as self-declared (R12).
+The context must be complete (rule R6). Name the runtime that observed it with
+`--context-recorded-by`. Until that runtime signs the bundle or passport, the validator reports
+the context as self-declared (R12); see [Sign bundles and passports](/sign/).
 
 ## Evidence
 

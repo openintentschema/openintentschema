@@ -39,6 +39,7 @@ export default defineConfig({
                     { label: 'Write and approve intents', slug: 'approve-intents' },
                     { label: 'Record artifacts, decisions and findings', slug: 'record' },
                     { label: 'Build a Quality Passport', slug: 'build-a-passport' },
+                    { label: 'Sign bundles and passports', slug: 'sign' },
                     { label: 'Privacy and data flows', slug: 'privacy' },
                   ],
                 },

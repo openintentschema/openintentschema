@@ -17,7 +17,7 @@ They are one command, `ois`, open source under Apache-2.0, published on PyPI as
 | Implementation | code artifact, the context an agent was given | `ois record artifact` | [Record artifacts, decisions and findings](/record/) |
 | Test | evidence per criterion | `ois junit`, `ois record evidence` | [Getting started](/getting-started/) |
 | Merge | merge decision | `ois record decision --gate merge` | [Record artifacts, decisions and findings](/record/) |
-| Release | build, release decision, passport with intent coverage | `ois record`, `ois passport` | [Build a Quality Passport](/build-a-passport/) |
+| Release | build, release decision, signed passport with intent coverage | `ois record`, `ois passport --sign` | [Build a Quality Passport](/build-a-passport/), [Sign](/sign/) |
 | Operation | findings, their classification and resolution | `ois record finding`, `ois record supersede` | [Record artifacts, decisions and findings](/record/) |
 | Review by others | check a passport and recompute its coverage | `ois validate`, `ois coverage` | [Build a Quality Passport](/build-a-passport/#check-it) |
 
@@ -71,8 +71,10 @@ same-producer.json: violation [R5] $.records[12].derivedFrom: test and subject a
 | warning | A rule asks for a report; the input still conforms. | R8, R12, R13 |
 | info | A SHOULD is not followed. | R1, R9, R15 |
 
-R16 and R17 are proposed in open RFCs. Signatures are not verified yet, so R12 reports every
-recorded context as self-declared.
+R16, R17 and the rule IDs `schema` and `signature` are proposed in RFCs. A signed document is
+verified with the public keys passed as `--trusted-key`; a recorded context is attested when its
+recorder signed (R12). Sigstore keyless signatures are not verified yet. See
+[Sign bundles and passports](/sign/).
 
 ## Test your own implementation
 

@@ -108,7 +108,7 @@ here (every record also carries `ois`, `id` and `createdAt`):
   "criterion": "https://ois.acme.example/intents/team-billing-characterization@1#TC-f8c16e8744a9",
   "test": "https://ois.acme.example/artifacts/test-eaf5767278f44715",
   "derivedFrom": "unknown", "result": "pass", "observedAt": "2026-10-28T15:19:57Z",
-  "recordedBy": "https://ois.acme.example/actors/ois-junit@0.6.0",
+  "recordedBy": "https://ois.acme.example/actors/ois-junit@0.7.0",
   "run": "https://ci.acme.example/pipelines/billing/runs/42" }
 ```
 
@@ -157,7 +157,7 @@ GitHub Actions, after the step that runs the tests:
 
 `if: ${{ !cancelled() }}` records results when tests fail too; those are the results that matter
 most. Any other CI works the same way: the job needs `git`, `uv` and the checkout the tests ran
-in. Pin the version (for example `uvx --from ois-tools==0.6.0 ois …`) once you depend on it.
+in. Pin the version (for example `uvx --from ois-tools==0.7.0 ois …`) once you depend on it.
 
 **With the container image** the step needs neither uv nor Python, which suits Java, Kotlin or
 .NET pipelines. It runs after the tests, in the same checkout:
@@ -167,7 +167,7 @@ in. Pin the version (for example `uvx --from ois-tools==0.6.0 ois …`) once you
   if: ${{ !cancelled() }}
   run: >
     docker run --rm --network none -v "$PWD:/work" --user "$(id -u):$(id -g)"
-    ghcr.io/openintentschema/ois-tools:0.6.0
+    ghcr.io/openintentschema/ois-tools:0.7.0
     junit build/test-results/test/*.xml
     --namespace https://ois.acme.example --suite "Team Billing"
     --run "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
@@ -176,7 +176,7 @@ in. Pin the version (for example `uvx --from ois-tools==0.6.0 ois …`) once you
 
 The glob is expanded by the runner's shell, before the container starts, so the paths are relative
 to the checkout, which is mounted at `/work`. In a CI system that runs each job in an image of its
-choice, use `ghcr.io/openintentschema/ois-tools:0.6.0` as the job's image, override its
+choice, use `ghcr.io/openintentschema/ois-tools:0.7.0` as the job's image, override its
 entrypoint (GitLab: `entrypoint: [""]`) and call `ois junit` in the script; the checkout must be the one the tests ran in, with its Git history.
 
 ## Before you share a bundle
@@ -196,7 +196,7 @@ what it reveals (specification section 12):
 - **Record the rest of the delivery:** actors, build artifacts, decisions and findings, with
   [`ois record`](/record/).
 - **Quality Passport:** [collect intents, evidence and decisions for a release](/build-a-passport/)
-  into one attestation (section 8). Signing follows in a later version.
+  into one attestation (section 8), and [sign it](/sign/).
 - **Shape the standard:** open questions and proposed changes are discussed as
   [RFC issues](https://github.com/openintentschema/openintentschema/issues?q=label%3Arfc).
   Findings from real pipelines carry the most weight.
