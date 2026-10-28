@@ -1109,7 +1109,7 @@ This appendix defines one way to compute intent coverage, so that producers who 
 
 **Method URI:** `https://ois.example/methods/basic-intent-coverage/v0.1` (placeholder until the project domain is chosen).
 
-**Inputs:** one intent version *v**, one release subject s (the code or build artifact being released) and the criteria in scope: the passport's scope entries that belong to v, or all criteria of v when scope is absent*.
+**Inputs:** one intent version *v*, one release subject *s* (the code or build artifact being released) and the criteria in scope: the passport's `scope` entries that belong to *v*, or all criteria of *v* when `scope` is absent.
 
 **Counted evidence:** an evidence record counts if all of the following hold:
 

@@ -1,0 +1,17 @@
+---
+// The topic list of starlight-sidebar-topics only where the header tabs are hidden (narrow
+// screens), then Starlight's sidebar for the current topic.
+import Default from '@astrojs/starlight/components/Sidebar.astro';
+import Topics from 'starlight-sidebar-topics/components/Sidebar.astro';
+---
+
+<div class="ois-mobile-topics"><Topics /></div>
+<Default><slot /></Default>
+
+<style>
+  @media (min-width: 50rem) {
+    .ois-mobile-topics {
+      display: none;
+    }
+  }
+</style>

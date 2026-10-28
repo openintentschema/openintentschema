@@ -1,56 +1,75 @@
 ---
-title: Open Intent Schema
+title: What is the Open Intent Schema (OIS)?
 description: An open, vendor-neutral data standard that links what was required to what was built and to the evidence in between.
-template: splash
-hero:
-  tagline: What was asked, what was built, and the proof in between. An open, vendor-neutral data standard for requirements, evidence and releases, even when AI agents write the code and the tests.
-  actions:
-    - text: Get started
-      link: /getting-started/
-      icon: right-arrow
-    - text: Read the specification
-      link: https://github.com/openintentschema/openintentschema/tree/main/specification
-      icon: external
-      variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-Think of OIS as an SBOM for requirements: an SBOM lists what software contains; OIS states what
+The Open Intent Schema (OIS) is an open, vendor-neutral data standard that links what was
+required to what was produced and to the evidence that it meets the requirement.
+
+AI agents now write requirements, code and tests. Teams can no longer show, in a verifiable way,
+that a delivered feature does what was asked: requirements, code, tests and results live in
+separate tools, and a generated test often confirms what was built rather than what was
+required. OIS records the link between them as data that any tool can produce and any party
+can check.
+
+Think of OIS as an SBOM for requirements. An SBOM lists what software contains; OIS states what
 it must do and how that is proven.
 
+[![From the requirement to the release: an intent with acceptance criteria, the artifacts produced for it, the evidence for each criterion, the decisions at quality gates and the Quality Passport that collects them](/images/record-flow.svg)](/images/record-flow.svg)
+
+## What can OIS record?
+
+- **What was required:** intents with acceptance criteria in Gherkin, EARS or plain text,
+  versioned and immutable once approved.
+- **What was produced, and by whom:** code, tests, contracts and datasets by location and
+  digest, each with the human, agent or tool that made it and what it was given.
+- **What proves it:** one evidence record per test run and criterion, stating whether the test
+  was derived from the requirement or from the code.
+- **What was decided:** approvals and gate outcomes, bound to the exact content they approved.
+- **What went wrong:** findings from production or test, closed only by an independent decision.
+
+## Why does OIS matter?
+
+- **Independent evidence becomes checkable.** A validator can confirm that a test came from a
+  different actor than the code and never saw it, instead of taking it on trust.
+- **Releases carry their proof.** A signed Quality Passport lets an auditor, a customer or a
+  regulator verify a release without access to internal tools.
+- **No lock-in.** OIS is a data format with open rules, built on in-toto, DSSE, Sigstore, SLSA,
+  Gherkin, EARS and JSON Schema. It does not prescribe tools, agents or workflows.
+- **Start where you are.** The JUnit XML your pipeline already writes becomes OIS records without
+  changing a test, an honest baseline from which intent coverage grows.
+
+## Start building
+
 <CardGrid>
-  <Card title="Record what was required" icon="document">
-    Intents carry acceptance criteria in Gherkin, EARS or plain text. Each version is immutable
-    once approved and bound to its approval by a digest.
-  </Card>
-  <Card title="Link every result to it" icon="puzzle">
-    Evidence ties one test run to one criterion and states whether the test was derived from the
-    requirement or from the code. Validators check that claim.
-  </Card>
-  <Card title="Prove it per release" icon="approve-check">
-    A Quality Passport collects intents, evidence, decisions and open findings for a release as a
-    signed in-toto attestation that third parties can verify.
-  </Card>
-  <Card title="Start from what you have" icon="rocket">
-    The JUnit XML your pipeline already writes becomes OIS records in about 15 minutes, without
-    changing a test.
-  </Card>
+  <LinkCard
+    title="Getting started"
+    description="Turn existing test results into your first OIS bundle in about 15 minutes."
+    href="/getting-started/"
+  />
+  <LinkCard
+    title="Core concepts"
+    description="The six record types, how they reference each other, and the conformance levels."
+    href="/learn/core-concepts/"
+  />
+  <LinkCard
+    title="Specification"
+    description="The normative data model, integrity rules, Quality Passport and conformance."
+    href="/specification/"
+  />
+  <LinkCard
+    title="Reference validator"
+    description="Check records, bundles and passports against the schema and every rule."
+    href="/develop/validator/"
+  />
 </CardGrid>
 
-## Status
+## Status and community
 
-Specification v0.1 is a working draft, open for discussion with design partners. Any part may
-change before 1.0. Proposed changes are discussed in public
-[RFCs](https://github.com/openintentschema/openintentschema/issues?q=label%3Arfc).
-
-The reference validator and the JUnit XML adapter are available as
-[`ois-validator`](https://pypi.org/project/ois-validator/):
-
-```bash
-uvx ois-validator bundle.json
-```
-
-OIS builds on Gherkin, EARS, in-toto, DSSE, Sigstore, SLSA, CloudEvents, W3C Trace Context,
-JSON Schema 2020-12 and RFC 8785. Schema, code and fixtures are licensed under Apache-2.0, the
-specification text under CC BY 4.0.
+Specification v0.1 is a working draft, developed in the open with design partners from regulated
+industries. Any part may change before 1.0. Changes are proposed and decided in public
+[RFCs](https://github.com/openintentschema/openintentschema/issues?q=label%3Arfc) under the
+project's [governance](/community/governance/), and the editors intend to transfer the
+specification to a neutral foundation.

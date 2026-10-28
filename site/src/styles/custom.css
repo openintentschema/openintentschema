@@ -1,0 +1,115 @@
+/* A quiet, monochrome look: contrast instead of a brand colour, Inter served with the site
+   (no font requests to third parties). */
+@import '@fontsource-variable/inter';
+
+:root {
+  --sl-font: 'Inter Variable', 'Inter', system-ui, sans-serif;
+  --sl-text-h1: 2.25rem;
+  --sl-content-width: 46rem;
+
+  /* dark */
+  --sl-color-accent-low: #26272b;
+  --sl-color-accent: #d4d4d8;
+  --sl-color-accent-high: #fafafa;
+  --sl-color-white: #fafafa;
+  --sl-color-gray-1: #e4e4e7;
+  --sl-color-gray-2: #c8c8cd;
+  --sl-color-gray-3: #a1a1aa;
+  --sl-color-gray-4: #71717a;
+  --sl-color-gray-5: #3f3f46;
+  --sl-color-gray-6: #232327;
+  --sl-color-black: #111113;
+}
+
+:root[data-theme='light'] {
+  --sl-color-accent-low: #ececef;
+  --sl-color-accent: #27272a;
+  --sl-color-accent-high: #09090b;
+  --sl-color-white: #09090b;
+  --sl-color-gray-1: #27272a;
+  --sl-color-gray-2: #3f3f46;
+  --sl-color-gray-3: #52525b;
+  --sl-color-gray-4: #71717a;
+  --sl-color-gray-5: #d4d4d8;
+  --sl-color-gray-6: #f1f1f3;
+  --sl-color-gray-7: #f8f8f9;
+  --sl-color-black: #ffffff;
+}
+
+/* Headings: tighter, heavier, like a specification site. */
+.sl-markdown-content :is(h1, h2, h3, h4) {
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+h1#_top {
+  letter-spacing: -0.025em;
+  font-weight: 650;
+}
+
+/* Links in running text: underlined, in the text colour. */
+.sl-markdown-content a:not(:where(.not-content *)) {
+  color: var(--sl-color-white);
+  text-decoration-color: var(--sl-color-gray-4);
+  text-underline-offset: 0.2em;
+}
+.sl-markdown-content a:not(:where(.not-content *)):hover {
+  text-decoration-color: var(--sl-color-white);
+}
+
+/* Sidebar: bold group labels, the current page as a quiet pill. */
+.sidebar-content .group-label .large {
+  font-size: var(--sl-text-sm);
+  font-weight: 600;
+  color: var(--sl-color-white);
+}
+.sidebar-content a {
+  border-radius: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  color: var(--sl-color-gray-2);
+}
+.sidebar-content a:hover {
+  color: var(--sl-color-white);
+}
+.sidebar-content a[aria-current='page'],
+.sidebar-content a[aria-current='page']:hover {
+  background-color: var(--sl-color-gray-6);
+  color: var(--sl-color-white);
+  font-weight: 600;
+}
+
+/* Tables and code: thin rules instead of filled backgrounds. */
+.sl-markdown-content table {
+  font-size: var(--sl-text-sm);
+}
+.sl-markdown-content :is(th, td) {
+  border-color: var(--sl-color-gray-5);
+}
+
+/* Diagrams on a light card, so they read in both themes. */
+.sl-markdown-content img[src$='.svg'] {
+  border-radius: 0.75rem;
+  border: 1px solid var(--sl-color-gray-5);
+}
+
+/* Header: a small logo and title, as on specification sites; the header grows for the tab row
+   (Header.astro), so nothing may size itself from the header height. */
+.site-title {
+  gap: 0.6rem;
+  font-size: var(--sl-text-base);
+  font-weight: 600;
+  color: var(--sl-color-white);
+}
+.site-title img {
+  height: 1.6rem;
+  width: auto;
+}
+
+/* One flat background for header, sidebar and page, separated by hairlines only. */
+:root,
+:root[data-theme='light'] {
+  --sl-color-bg-nav: var(--sl-color-black);
+  --sl-color-bg-sidebar: var(--sl-color-black);
+}
+header.header {
+  border-bottom: 1px solid var(--sl-color-gray-5);
+}

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" role="img" aria-label="Every piece of evidence leads back to the requirement" font-family="'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif">
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#71717a"/></marker></defs>
+  <rect width="760" height="520" fill="#ffffff"/>
+  <text x="24" y="34" font-size="18" font-weight="600" fill="#09090b">Every piece of evidence leads back to the requirement</text>
+  <text x="24" y="56" font-size="13" fill="#52525b">Example from the specification: changing an address in the customer portal</text>
+  <g fill="none" stroke="#71717a" stroke-width="1.25">
+    <path d="M170 136V168" marker-end="url(#a)"/><path d="M170 224V256" marker-end="url(#a)"/>
+    <path d="M170 312V344" marker-end="url(#a)"/><path d="M170 400V432" marker-end="url(#a)"/>
+    <path d="M56 284H36V108H56" marker-end="url(#a)"/>
+  </g>
+  <g font-size="14" fill="#09090b">
+    <rect x="56" y="80" width="228" height="56" rx="8" fill="#f4f4f5" stroke="#18181b" stroke-width="2"/>
+    <text x="72" y="104" font-weight="600">Intent</text><text x="72" y="122" font-size="12.5" fill="#52525b">requirement with criteria</text>
+    <rect x="56" y="168" width="228" height="56" rx="8" fill="#ffffff" stroke="#a1a1aa"/>
+    <text x="72" y="192" font-weight="600">Artifacts</text><text x="72" y="210" font-size="12.5" fill="#52525b">code, test, test data</text>
+    <rect x="56" y="256" width="228" height="56" rx="8" fill="#ffffff" stroke="#a1a1aa"/>
+    <text x="72" y="280" font-weight="600">Evidence</text><text x="72" y="298" font-size="12.5" fill="#52525b">one run, one result</text>
+    <rect x="56" y="344" width="228" height="56" rx="8" fill="#ffffff" stroke="#a1a1aa"/>
+    <text x="72" y="368" font-weight="600">Decision</text><text x="72" y="386" font-size="12.5" fill="#52525b">outcome at a gate</text>
+    <rect x="56" y="432" width="228" height="56" rx="8" fill="#ffffff" stroke="#a1a1aa"/>
+    <text x="72" y="456" font-weight="600">Quality Passport</text><text x="72" y="474" font-size="12.5" fill="#52525b">signed, per release</text>
+  </g>
+  <g font-size="12.5">
+    <text x="304" y="104" fill="#09090b">INT-142 v1, e.g. AC-2: no canton → flag the premium region</text>
+    <text x="304" y="122" fill="#52525b">approved by the product owner, bound to this text by digest</text>
+    <text x="304" y="192" fill="#09090b">code by the developer agent, test by the QE agent (other model)</text>
+    <text x="304" y="210" fill="#52525b">recorded: the QE agent saw the requirement, never the code</text>
+    <text x="304" y="280" fill="#09090b">AC-2 passed, "derived from the requirement"</text>
+    <text x="304" y="298" fill="#52525b">the validator checks this claim against context and producers</text>
+    <text x="304" y="368" fill="#09090b">release approval for exactly this build, bound by digest</text>
+    <text x="304" y="386" fill="#52525b">who decided, when, and on which evidence</text>
+    <text x="304" y="456" fill="#09090b">everything behind release 2026.10.3 in one in-toto attestation</text>
+    <text x="304" y="474" fill="#52525b">verifiable by third parties without access to internal tools</text>
+  </g>
+</svg>

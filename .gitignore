@@ -6,3 +6,9 @@
 /site/node_modules/
 /site/dist/
 /site/.astro/
+/site/src/content/docs/specification.md
+/site/src/content/docs/specification/
+/site/src/content/docs/community/
+/site/src/content/docs/profiles.md
+/site/src/content/docs/profiles/
+/site/src/content/docs/conformance.md

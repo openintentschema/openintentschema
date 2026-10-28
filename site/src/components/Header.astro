@@ -1,0 +1,62 @@
+---
+// Starlight's header plus a second row with one tab per topic (Documentation, Specification,
+// Community). Below 50rem the tabs move into the sidebar menu (see Sidebar.astro).
+import Default from '@astrojs/starlight/components/Header.astro';
+
+const { topics } = Astro.locals.starlightSidebarTopics;
+---
+
+<div class="ois-header">
+  <div class="ois-header-row"><Default /></div>
+  <nav class="ois-tabs" aria-label="Sections">
+    {
+      topics.map((topic) => (
+        <a href={topic.link} aria-current={topic.isCurrent ? 'page' : undefined}>
+          {topic.label}
+        </a>
+      ))
+    }
+  </nav>
+</div>
+
+<style>
+  .ois-header {
+    display: grid;
+    grid-template-rows: 1fr;
+    height: 100%;
+  }
+  .ois-tabs {
+    display: none;
+  }
+  @media (min-width: 50rem) {
+    :global(:root) {
+      --sl-nav-height: 6.5rem;
+    }
+    .ois-header {
+      grid-template-rows: 1fr 2.6rem;
+    }
+    .ois-header-row {
+      min-height: 0;
+    }
+    .ois-tabs {
+      display: flex;
+      gap: 1.75rem;
+      margin-bottom: calc(-1 * var(--sl-nav-pad-y));
+    }
+    .ois-tabs a {
+      padding: 0.5rem 0 0.65rem;
+      border-bottom: 2px solid transparent;
+      color: var(--sl-color-gray-3);
+      font-size: var(--sl-text-sm);
+      text-decoration: none;
+    }
+    .ois-tabs a:hover {
+      color: var(--sl-color-white);
+    }
+    .ois-tabs a[aria-current='page'] {
+      color: var(--sl-color-white);
+      font-weight: 600;
+      border-bottom-color: var(--sl-color-white);
+    }
+  }
+</style>

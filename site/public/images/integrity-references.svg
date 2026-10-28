@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 468" role="img" aria-label="What the integrity rules check" font-family="'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif">
+  <defs><marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#71717a"/></marker></defs>
+  <rect width="760" height="468" fill="#ffffff"/>
+  <text x="20" y="32" font-size="18" font-weight="600" fill="#09090b">What the integrity rules check</text>
+  <text x="20" y="54" font-size="13" fill="#52525b">References between the records of a bundle; each label names the rule</text>
+  <g font-size="14" fill="#09090b">
+    <rect x="280" y="76" width="180" height="60" rx="8" fill="#ffffff" stroke="#a1a1aa"/>
+    <text x="370" y="101" text-anchor="middle" font-weight="600">Intent version</text><text x="370" y="120" text-anchor="middle" font-size="12.5" fill="#52525b">criterion AC-2</text>
+    <rect x="580" y="76" width="160" height="60" rx="8" fill="#ffffff" stroke="#a1a1aa"/>
+    <text x="660" y="101" text-anchor="middle" font-weight="600">Decision</text><text x="660" y="120" text-anchor="middle" font-size="12.5" fill="#52525b">intent-approval</text>
+    <rect x="280" y="216" width="180" height="60" rx="8" fill="#f4f4f5" stroke="#18181b" stroke-width="2"/>
+    <text x="370" y="241" text-anchor="middle" font-weight="600">Evidence</text><text x="370" y="260" text-anchor="middle" font-size="12.5" fill="#52525b">derivedFrom: intent</text>
+    <rect x="20" y="216" width="180" height="60" rx="8" fill="#ffffff" stroke="#a1a1aa"/>
+    <text x="110" y="241" text-anchor="middle" font-weight="600">Artifact: test</text><text x="110" y="260" text-anchor="middle" font-size="12.5" fill="#52525b">with recorded context</text>
+    <rect x="560" y="216" width="180" height="60" rx="8" fill="#ffffff" stroke="#a1a1aa"/>
+    <text x="650" y="241" text-anchor="middle" font-weight="600">Artifact: code</text><text x="650" y="260" text-anchor="middle" font-size="12.5" fill="#52525b">the subject under test</text>
+    <rect x="20" y="376" width="180" height="60" rx="8" fill="#ffffff" stroke="#a1a1aa"/>
+    <text x="110" y="401" text-anchor="middle" font-weight="600">Actor: QE agent</text><text x="110" y="420" text-anchor="middle" font-size="12.5" fill="#52525b">model B</text>
+    <rect x="560" y="376" width="180" height="60" rx="8" fill="#ffffff" stroke="#a1a1aa"/>
+    <text x="650" y="401" text-anchor="middle" font-weight="600">Actor: developer agent</text><text x="650" y="420" text-anchor="middle" font-size="12.5" fill="#52525b">model A</text>
+  </g>
+  <g fill="none" stroke="#71717a" stroke-width="1.25">
+    <path d="M580 106H460" marker-end="url(#b)"/>
+    <path d="M370 216V136" marker-end="url(#b)"/>
+    <path d="M280 246H200" marker-end="url(#b)"/>
+    <path d="M460 246H560" marker-end="url(#b)"/>
+    <path d="M110 276V376" marker-end="url(#b)"/>
+    <path d="M650 276V376" marker-end="url(#b)"/>
+    <path d="M110 216V106H280" marker-end="url(#b)"/>
+    <path d="M200 406H560" stroke-dasharray="5 4" marker-end="url(#b)" marker-start="url(#b)"/>
+  </g>
+  <g font-size="12.5" fill="#3f3f46">
+    <text x="520" y="98" text-anchor="middle">R1: digest</text>
+    <text x="378" y="182">criterion (R2)</text>
+    <text x="240" y="238" text-anchor="middle">test (R3)</text>
+    <text x="510" y="238" text-anchor="middle">subject (R3)</text>
+    <text x="118" y="330">producedBy</text>
+    <text x="658" y="330">producedBy</text>
+    <text x="118" y="152">context: the criterion,</text>
+    <text x="118" y="168">never the code (R4)</text>
+    <text x="380" y="398" text-anchor="middle">different actors, in any version (R5)</text>
+  </g>
+</svg>
