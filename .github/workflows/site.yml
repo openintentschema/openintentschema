@@ -3,9 +3,31 @@ name: Build and publish the website
 on:
   push:
     branches: [main]
-    paths: ["site/**", "schema/**", ".github/workflows/site.yml"]
+    paths:
+      - "site/**"
+      - "schema/**"
+      - "specification/**"
+      - "fixtures/README.md"
+      - "profiles/**"
+      - "GOVERNANCE.md"
+      - "CONTRIBUTING.md"
+      - "CODE_OF_CONDUCT.md"
+      - "SECURITY.md"
+      - "MAINTAINERS.md"
+      - ".github/workflows/site.yml"
   pull_request:
-    paths: ["site/**", "schema/**", ".github/workflows/site.yml"]
+    paths:
+      - "site/**"
+      - "schema/**"
+      - "specification/**"
+      - "fixtures/README.md"
+      - "profiles/**"
+      - "GOVERNANCE.md"
+      - "CONTRIBUTING.md"
+      - "CODE_OF_CONDUCT.md"
+      - "SECURITY.md"
+      - "MAINTAINERS.md"
+      - ".github/workflows/site.yml"
   workflow_dispatch:
 
 permissions:
