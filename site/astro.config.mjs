@@ -9,6 +9,8 @@ const repo = 'https://github.com/openintentschema/openintentschema';
 
 export default defineConfig({
   site: 'https://openintentschema.io',
+  // Pages that moved keep their old address.
+  redirects: { '/develop/validator/': '/develop/tools/' },
   integrations: [
     starlight({
       title: 'Open Intent Schema',
@@ -46,7 +48,7 @@ export default defineConfig({
                 {
                   label: 'Develop',
                   items: [
-                    { label: 'Reference validator', slug: 'develop/validator' },
+                    { label: 'Reference tools', slug: 'develop/tools' },
                     { label: 'Conformance test suite', slug: 'conformance' },
                   ],
                 },

@@ -14,7 +14,7 @@ for example:
 - a field that forces producers to disclose personal or confidential data.
 
 Section 12 of the specification lists the threats it already addresses. A bug in the reference
-validator or `ois-junit` belongs to
-[openintentschema/validator](https://github.com/openintentschema/validator/security).
+tools (the `ois` command) belongs to
+[openintentschema/tools](https://github.com/openintentschema/tools/security).
 
 Confirmed weaknesses are fixed through the RFC process once a fix can be discussed publicly.

@@ -7,7 +7,7 @@ The first step towards Level 2, "Intent-aware": requirements become intents with
 criteria, approved by a person and bound to their exact text. Tests derived from them can then
 reference a criterion, and evidence says `derivedFrom: intent`.
 
-`ois-intent`, part of the [`ois-validator`](/develop/validator/) package, computes the digests and
+`ois intent`, part of the [`ois-tools`](/develop/tools/) package, computes the digests and
 writes the approval, which are error-prone by hand.
 
 ## 1. Write the intent
@@ -49,7 +49,7 @@ duplicate keys are refused.
 ## 2. Approve it
 
 ```bash
-uvx --from ois-validator ois-intent approve .ois/intents/INT-7.ois.yaml \
+uvx --from ois-tools ois intent approve .ois/intents/INT-7.ois.yaml \
   --by https://ois.acme.example/actors/po-7f3a
 ```
 
@@ -61,24 +61,24 @@ This writes two records:
   equals the intent's digest (rule R1).
 
 `--by` names the approving actor. Rule R1 expects a human. Its record comes from
-[`ois-record`](/record/): `ois-record actor --kind human --name po-7f3a` prints the reference to pass.
+[`ois record`](/record/): `ois record actor --kind human --name po-7f3a` prints the reference to pass.
 Add `--policy` and `--policy-version` to record the policy the approval followed, for example your
 definition of ready.
 
-An approved intent never changes. If its content no longer matches its digest, `ois-intent approve`
+An approved intent never changes. If its content no longer matches its digest, `ois intent approve`
 refuses it.
 
 ## 3. Change it: a new version
 
 ```bash
-uvx --from ois-validator ois-intent next .ois/intents/INT-7-v1.ois.json
+uvx --from ois-tools ois intent next .ois/intents/INT-7-v1.ois.json
 ```
 
 writes `.ois/intents/INT-7-v2.ois.yaml`: version 2, a draft that `supersedes` version 1. Edit it,
 then see which evidence stays valid:
 
 ```bash
-uvx --from ois-validator ois-intent compare .ois/intents/INT-7-v1.ois.json .ois/intents/INT-7-v2.ois.yaml
+uvx --from ois-tools ois intent compare .ois/intents/INT-7-v1.ois.json .ois/intents/INT-7-v2.ois.yaml
 ```
 
 ```
@@ -95,7 +95,7 @@ With approved intents in place, tests can be written against a criterion, by a p
 agent that never sees the code. Their evidence references the criterion, for example
 `https://ois.acme.example/intents/INT-7@1#AC-2`, and states `derivedFrom: intent`. The validator then
 checks that the test saw the criterion and no code (R4) and that its producer differs from the
-code's (R5); see [Core concepts](/learn/core-concepts/). [`ois-record`](/record/) writes the test
+code's (R5); see [Core concepts](/learn/core-concepts/). [`ois record`](/record/) writes the test
 artifact with its context and the evidence.
 
 When the release is ready, [build a Quality Passport](/build-a-passport/) from these records.

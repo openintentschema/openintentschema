@@ -30,6 +30,21 @@ it must do and how that is proven.
 - **What was decided:** approvals and gate outcomes, bound to the exact content they approved.
 - **What went wrong:** findings from production or test, closed only by an independent decision.
 
+## Where in delivery?
+
+| Phase | What OIS records |
+| --- | --- |
+| Requirement | the intent with its acceptance criteria, and who approved it |
+| Design | the approved design or contract |
+| Implementation | the code, who or what wrote it, and what that producer was given |
+| Test | one piece of evidence per test result and criterion |
+| Merge | the merge decision, bound to the exact code |
+| Release | the release decision for the exact build, and a Quality Passport with intent coverage that anyone can check |
+| Operation | findings, their cause and their independent resolution |
+
+The [reference tools](/develop/tools/) record each step with one command, `ois`, in any pipeline
+and for code in any language.
+
 ## Why does OIS matter?
 
 - **Independent evidence becomes checkable.** A validator can confirm that a test came from a
@@ -60,9 +75,9 @@ it must do and how that is proven.
     href="/specification/"
   />
   <LinkCard
-    title="Reference validator"
-    description="Check records, bundles and passports against the schema and every rule."
-    href="/develop/validator/"
+    title="Reference tools"
+    description="One command, ois, to record evidence along the delivery lifecycle and check it."
+    href="/develop/tools/"
   />
 </CardGrid>
 

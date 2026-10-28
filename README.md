@@ -41,11 +41,11 @@ A validator checks the schema and the integrity rules R1–R15 of section 5 and 
 problem with its rule and level. The conformance fixtures are the test suite it must pass; they
 also cover the rules R16 and R17 and the clarifications proposed in the open RFCs.
 
-The reference validator and the commands that write records (JUnit XML adapter, intents,
-records, passports, intent coverage) live in
-[openintentschema/validator](https://github.com/openintentschema/validator) and are published on
-PyPI as [`ois-validator`](https://pypi.org/project/ois-validator/) and as the container image
-`ghcr.io/openintentschema/ois-validator`, for projects in any language.
+The reference tools, one command `ois` with the validator (`ois validate`) and the tools that
+write records (JUnit XML adapter, intents, records, passports, intent coverage), live in
+[openintentschema/tools](https://github.com/openintentschema/tools) and are published on
+PyPI as [`ois-tools`](https://pypi.org/project/ois-tools/) and as the container image
+`ghcr.io/openintentschema/ois-tools`, for projects in any language.
 
 ## Reuse before invention
 

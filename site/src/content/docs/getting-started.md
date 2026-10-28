@@ -59,7 +59,7 @@ See your framework's documentation for output paths and options.
 Run this in the Git checkout the tests ran in:
 
 ```bash
-uvx --from ois-validator ois-junit reports/junit.xml \
+uvx --from ois-tools ois junit reports/junit.xml \
   --namespace https://ois.acme.example \
   --suite "Team Billing" \
   --run https://ci.acme.example/pipelines/billing/runs/42 \
@@ -73,14 +73,14 @@ The same with the container image, for example for a Gradle build, without Pytho
 
 ```bash
 docker run --rm -v "$PWD:/work" --user "$(id -u):$(id -g)" \
-  ghcr.io/openintentschema/ois-validator ois-junit build/test-results/test/*.xml \
+  ghcr.io/openintentschema/ois-tools junit build/test-results/test/*.xml \
   --namespace https://ois.acme.example --suite "Team Billing" --output ois-bundle.json
 ```
 
 The current directory is mounted at `/work`; `--user` makes the bundle yours rather than the
 container's. Add `--network none` to see that it needs no network.
 
-`ois-junit` validates the bundle before writing it. It exits with 0 and writes the file, or
+`ois junit` validates the bundle before writing it. It exits with 0 and writes the file, or
 exits with 1 and writes nothing.
 
 ## 4. Look at the bundle
@@ -108,7 +108,7 @@ here (every record also carries `ois`, `id` and `createdAt`):
   "criterion": "https://ois.acme.example/intents/team-billing-characterization@1#TC-f8c16e8744a9",
   "test": "https://ois.acme.example/artifacts/test-eaf5767278f44715",
   "derivedFrom": "unknown", "result": "pass", "observedAt": "2026-10-28T15:19:57Z",
-  "recordedBy": "https://ois.acme.example/actors/ois-junit@0.5.0",
+  "recordedBy": "https://ois.acme.example/actors/ois-junit@0.6.0",
   "run": "https://ci.acme.example/pipelines/billing/runs/42" }
 ```
 
@@ -125,10 +125,10 @@ A few details:
 
 ## 5. Check it
 
-`ois-junit` has already validated the bundle. Any OIS file can also be checked on its own:
+`ois junit` has already validated the bundle. Any OIS file can also be checked on its own:
 
 ```bash
-uvx ois-validator ois-bundle.json
+uvx --from ois-tools ois validate ois-bundle.json
 # ois-bundle.json: conforms
 ```
 
@@ -144,7 +144,7 @@ GitHub Actions, after the step that runs the tests:
 - name: Record test results as OIS
   if: ${{ !cancelled() }}
   run: >
-    uvx --from ois-validator ois-junit reports/junit.xml
+    uvx --from ois-tools ois junit reports/junit.xml
     --namespace https://ois.acme.example --suite "Team Billing"
     --run "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
     --output ois-bundle.json
@@ -157,7 +157,7 @@ GitHub Actions, after the step that runs the tests:
 
 `if: ${{ !cancelled() }}` records results when tests fail too; those are the results that matter
 most. Any other CI works the same way: the job needs `git`, `uv` and the checkout the tests ran
-in. Pin the version (for example `uvx --from ois-validator==0.5.0 …`) once you depend on it.
+in. Pin the version (for example `uvx --from ois-tools==0.6.0 ois …`) once you depend on it.
 
 **With the container image** the step needs neither uv nor Python, which suits Java, Kotlin or
 .NET pipelines. It runs after the tests, in the same checkout:
@@ -167,8 +167,8 @@ in. Pin the version (for example `uvx --from ois-validator==0.5.0 …`) once you
   if: ${{ !cancelled() }}
   run: >
     docker run --rm --network none -v "$PWD:/work" --user "$(id -u):$(id -g)"
-    ghcr.io/openintentschema/ois-validator:0.5.0
-    ois-junit build/test-results/test/*.xml
+    ghcr.io/openintentschema/ois-tools:0.6.0
+    junit build/test-results/test/*.xml
     --namespace https://ois.acme.example --suite "Team Billing"
     --run "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
     --output ois-bundle.json
@@ -176,8 +176,8 @@ in. Pin the version (for example `uvx --from ois-validator==0.5.0 …`) once you
 
 The glob is expanded by the runner's shell, before the container starts, so the paths are relative
 to the checkout, which is mounted at `/work`. In a CI system that runs each job in an image of its
-choice, use `ghcr.io/openintentschema/ois-validator:0.5.0` as the job's image and call the
-commands directly; the checkout must be the one the tests ran in, with its Git history.
+choice, use `ghcr.io/openintentschema/ois-tools:0.6.0` as the job's image, override its
+entrypoint (GitLab: `entrypoint: [""]`) and call `ois junit` in the script; the checkout must be the one the tests ran in, with its Git history.
 
 ## Before you share a bundle
 
@@ -194,7 +194,7 @@ what it reveals (specification section 12):
   criteria, derive tests from them and record what each test producer was given (`context`). Evidence then says
   `derivedFrom: intent`, and intent coverage starts to rise.
 - **Record the rest of the delivery:** actors, build artifacts, decisions and findings, with
-  [`ois-record`](/record/).
+  [`ois record`](/record/).
 - **Quality Passport:** [collect intents, evidence and decisions for a release](/build-a-passport/)
   into one attestation (section 8). Signing follows in a later version.
 - **Shape the standard:** open questions and proposed changes are discussed as
