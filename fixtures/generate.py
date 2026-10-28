@@ -807,12 +807,13 @@ def _() -> Doc:
 
 
 @fixture("invalid/R10/conflicting-records.json",
-         "Two artifact records share an id but differ in content.",
+         "Two artifact records share an id but differ in content: one dataset is synthetic, the "
+         "other anonymized.",
          violation("R10"), R12_UNSIGNED)
 def _() -> Doc:
     doc = base_bundle()
     other = copy.deepcopy(get(doc, DATASET))
-    other["digest"] = content_digest("addresses-without-canton-v2")
+    other["classification"] = "anonymized"
     records(doc).insert(records(doc).index(get(doc, DATASET)) + 1, other)
     return doc
 
