@@ -95,7 +95,7 @@ here (every record also carries `ois`, `id` and `createdAt`):
   "criterion": "https://ois.acme.example/intents/team-billing-characterization@1#TC-f8c16e8744a9",
   "test": "https://ois.acme.example/artifacts/test-eaf5767278f44715",
   "derivedFrom": "unknown", "result": "pass", "observedAt": "2026-10-28T15:19:57Z",
-  "recordedBy": "https://ois.acme.example/actors/ois-junit@0.1.0",
+  "recordedBy": "https://ois.acme.example/actors/ois-junit@0.4.0",
   "run": "https://ci.acme.example/pipelines/billing/runs/42" }
 ```
 
@@ -144,7 +144,7 @@ GitHub Actions, after the step that runs the tests:
 
 `if: ${{ !cancelled() }}` records results when tests fail too; those are the results that matter
 most. Any other CI works the same way: the job needs `git`, `uv` and the checkout the tests ran
-in. Pin the version (`uvx --from ois-validator==0.1.0 …`) once you depend on it.
+in. Pin the version (for example `uvx --from ois-validator==0.4.0 …`) once you depend on it.
 
 ## Before you share a bundle
 
@@ -160,8 +160,10 @@ what it reveals (specification section 12):
 - **Level 2, intent-aware:** [write and approve intents](/approve-intents/) with acceptance
   criteria, derive tests from them and record what each test producer was given (`context`). Evidence then says
   `derivedFrom: intent`, and intent coverage starts to rise.
-- **Quality Passport:** bundle intents, evidence and decisions for a release into one signed
-  attestation (section 8).
+- **Record the rest of the delivery:** actors, build artifacts, decisions and findings, with
+  [`ois-record`](/record/).
+- **Quality Passport:** [collect intents, evidence and decisions for a release](/build-a-passport/)
+  into one attestation (section 8). Signing follows in a later version.
 - **Shape the standard:** open questions and proposed changes are discussed as
   [RFC issues](https://github.com/openintentschema/openintentschema/issues?q=label%3Arfc).
   Findings from real pipelines carry the most weight.

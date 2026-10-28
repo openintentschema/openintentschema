@@ -20,7 +20,7 @@ with the site (`src/styles/custom.css`), the specification split into one page p
 
 | Pages | Source |
 | --- | --- |
-| `/`, `/getting-started/`, `/privacy/`, `/learn/…`, `/develop/…` | `src/content/docs/`, written for the site |
+| `/`, `/getting-started/`, `/approve-intents/`, `/record/`, `/build-a-passport/`, `/privacy/`, `/learn/…`, `/develop/…` | `src/content/docs/`, written for the site |
 | `/passport/v0.1/`, `/methods/basic-intent-coverage/v0.1/` | `src/content/docs/`, written for the site |
 | `/specification/…` | `../specification/ois-spec-v0.1-draft4.md`, one page per `##` section |
 | `/community/…` | `../GOVERNANCE.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `MAINTAINERS.md` |

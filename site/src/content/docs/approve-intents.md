@@ -60,8 +60,10 @@ This writes two records:
 - `.ois/decisions/INT-7-v1-approval.ois.json`: the intent-approval decision, whose `subjectDigest`
   equals the intent's digest (rule R1).
 
-`--by` names the approving actor. Rule R1 expects a human. Add `--policy` and `--policy-version` to
-record the policy the approval followed, for example your definition of ready.
+`--by` names the approving actor. Rule R1 expects a human. Its record comes from
+[`ois-record`](/record/): `ois-record actor --kind human --name po-7f3a` prints the reference to pass.
+Add `--policy` and `--policy-version` to record the policy the approval followed, for example your
+definition of ready.
 
 An approved intent never changes. If its content no longer matches its digest, `ois-intent approve`
 refuses it.
@@ -93,6 +95,7 @@ With approved intents in place, tests can be written against a criterion, by a p
 agent that never sees the code. Their evidence references the criterion, for example
 `https://ois.acme.example/intents/INT-7@1#AC-2`, and states `derivedFrom: intent`. The validator then
 checks that the test saw the criterion and no code (R4) and that its producer differs from the
-code's (R5); see [Core concepts](/learn/core-concepts/).
+code's (R5); see [Core concepts](/learn/core-concepts/). [`ois-record`](/record/) writes the test
+artifact with its context and the evidence.
 
 When the release is ready, [build a Quality Passport](/build-a-passport/) from these records.

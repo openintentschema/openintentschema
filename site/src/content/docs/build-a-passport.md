@@ -15,21 +15,18 @@ you already have.
   [`ois-intent`](/approve-intents/).
 - **Evidence** and the test and code artifacts it points to, for example from
   [`ois-junit`](/getting-started/) or from tests derived from the intents.
-- **The build artifact** being released, with its digest:
+- **The build artifact** being released, with its digest, and **the actors** every record names:
+  who approved, who built and who issues the passport. [`ois-record`](/record/) writes them:
 
-  ```yaml
-  ois: "0.1"
-  type: artifact
-  id: https://ois.acme.example/artifacts/billing-2026.10.4
-  createdAt: 2026-10-28T12:00:00Z
-  kind: build
-  location: pkg:oci/billing?repository_url=registry.acme.example
-  digest: {sha256: 4f3c2b1a…}
-  producedBy: https://ois.acme.example/actors/ci-build@7
+  ```bash
+  CI=$(ois-record actor --kind tool --name "CI build" --version 7)
+  ISSUER=$(ois-record actor --kind tool --name "Passport issuer" --version 1)
+  BUILD=$(ois-record artifact dist/billing-2026.10.4-py3-none-any.whl --kind build \
+    --location pkg:pypi/billing@2026.10.4 --produced-by "$CI")
   ```
 
-- **The actors** every record names: who approved, who built, who issues the passport.
-- **Open findings** for the listed intents, so the passport does not hide known defects.
+- **Open findings** for the listed intents, so the passport does not hide known defects, and the
+  decisions that resolved earlier ones (`ois-record finding`, `supersede` and `decision`).
 
 A passport must be self-contained: every reference in it resolves to a record inside it (rule R10).
 
@@ -38,8 +35,7 @@ A passport must be self-contained: every reference in it resolves to a record in
 ```bash
 uvx --from ois-validator ois-passport build .ois/ ci-bundles/ \
   --release-name billing --release-version 2026.10.4 \
-  --build https://ois.acme.example/artifacts/billing-2026.10.4 \
-  --issuer https://ois.acme.example/actors/passport-issuer@0.3.0 \
+  --build "$BUILD" --issuer "$ISSUER" \
   --approve-release-by https://ois.acme.example/actors/release-manager-1d2e \
   --output passport.json
 ```
@@ -50,7 +46,8 @@ uvx --from ois-validator ois-passport build .ois/ ci-bundles/ \
 - **Intents:** each intent is listed in its latest approved version, as rule R15 recommends. Name
   them with `--intent` to choose, and narrow the criteria with `--scope`.
 - **Release decision:** `--approve-release-by` records who approved the release, bound to the
-  build's digest (rule R16). Leave it out if your release gate already recorded the decision.
+  build's digest (rule R16). Leave it out if your release gate already recorded the decision, for
+  example with `ois-record decision --gate release`.
 - **Subject:** the statement's subject is the build artifact and its digest, which is what a
   consumer compares with the artifact they received.
 

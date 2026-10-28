@@ -40,10 +40,16 @@ same-producer.json: violation [R5] $.records[12].derivedFrom: test and subject a
 R16 and R17 are proposed in open RFCs. Signatures are not verified yet, so R12 reports every
 recorded context as self-declared.
 
-## Records from JUnit XML
+## Commands that write records
 
-The package also brings `ois-junit`, which turns JUnit XML into a Level 1 bundle and validates it
-before writing; see [Getting started](/getting-started/).
+The package also brings commands that write OIS records and validate them before writing:
+
+| Command | Writes | Guide |
+| --- | --- | --- |
+| `ois-junit` | A Level 1 bundle from JUnit XML | [Getting started](/getting-started/) |
+| `ois-intent` | Sealed and approved intents, new versions | [Write and approve intents](/approve-intents/) |
+| `ois-record` | Actors, artifacts, evidence, decisions, findings, bundles | [Record artifacts, decisions and findings](/record/) |
+| `ois-passport` | A Quality Passport for a release | [Build a Quality Passport](/build-a-passport/) |
 
 ## Test your own implementation
 
