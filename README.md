@@ -27,6 +27,7 @@ progress (see the change history in the specification). Any part may change befo
 | [`schema/`](schema/) | `ois.schema.json`, the normative JSON Schema 2020-12 (Appendix B) |
 | [`examples/`](examples/) | The worked example of Appendix A |
 | [`fixtures/`](fixtures/) | The conformance test suite: valid and invalid documents with the reports a validator must give |
+| [`profiles/`](profiles/) | The registry of profiles (section 10.2), with an example profile for regulated industries |
 | [`site/`](site/) | The website [openintentschema.io](https://openintentschema.io): getting started, reference pages, the published schema |
 | [`.github/`](.github/) | CI for examples, fixtures and the website; issue and pull request templates |
 

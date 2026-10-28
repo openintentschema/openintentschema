@@ -36,3 +36,17 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
       - run: uv run fixtures/generate.py --check
+
+  profiles:
+    name: Profile schemas compose with the core schema (ajv)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Regulated profile accepts an intent with risk and rejects one without
+        run: |
+          ajv() { npx -y -p ajv-cli@5.0.0 -p ajv-formats@3.0.1 ajv validate --spec=draft2020 \
+            -c ajv-formats --strict=false -r schema/ois.schema.json "$@"; }
+          ajv -s profiles/regulated/v0.1/profile.schema.json -d fixtures/valid/bundle.json
+          if ajv -s profiles/regulated/v0.1/profile.schema.json -d fixtures/valid/level-1-bundle.json; then
+            echo "expected the draft intent without risk to break rule P1"; exit 1
+          fi

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openintentschema.io/profiles/regulated/v0.1/profile.schema.json",
+  "title": "OIS profile: regulated industries v0.1",
+  "description": "Rule P1: every intent carries risk. Rules P2 to P4 span records or the signature envelope and are checked by validators, see README.md.",
+  "allOf": [
+    { "$ref": "https://ois.example/schema/v0.1/ois.schema.json" },
+    { "$ref": "#/$defs/record" },
+    {
+      "if": { "properties": { "type": { "const": "bundle" } }, "required": ["type"] },
+      "then": { "properties": { "records": { "items": { "$ref": "#/$defs/record" } } } }
+    }
+  ],
+  "$defs": {
+    "record": {
+      "if": { "properties": { "type": { "const": "intent" } }, "required": ["type"] },
+      "then": { "required": ["risk"] }
+    },
+    "passportPredicate": {
+      "description": "For a passport, validate its predicate against this definition.",
+      "allOf": [
+        { "$ref": "https://ois.example/schema/v0.1/ois.schema.json#/$defs/passportPredicate" },
+        { "properties": { "records": { "items": { "$ref": "#/$defs/record" } } } }
+      ]
+    }
+  }
+}
