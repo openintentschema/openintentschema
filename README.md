@@ -16,6 +16,9 @@ Working draft v0.1 (draft 4), open for discussion with design partners. Any part
 before 1.0. See `specification/` for the specification, `schema/` for the JSON Schema, `examples/`
 for a complete worked example and `fixtures/` for the conformance test suite.
 
+**New here?** [Getting started](site/getting-started.md) turns the JUnit XML of an existing
+pipeline into OIS records in about 15 minutes.
+
 ## Reuse before invention
 
 OIS builds on Gherkin and EARS (criteria), in-toto and DSSE (passport and signing),
