@@ -43,7 +43,7 @@ See your framework's documentation for output paths and options.
 ## 2. Choose a namespace and a suite name
 
 - **`--namespace`** is a URI under a domain your organization controls, for example
-  `https://ois.example-insurance.ch`. Every record id starts with it, so ids from different
+  `https://ois.your-company.example`. Every record id starts with it, so ids from different
   organizations never collide. It is an identifier only: nothing ever requests it, and it does
   not need to exist as a web page. Use the same namespace in every pipeline.
 - **`--suite`** names the team or suite that owns the tests, for example `"Team Billing"`. It
