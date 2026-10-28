@@ -157,8 +157,8 @@ what it reveals (specification section 12):
 
 ## Next steps
 
-- **Level 2, intent-aware:** approve intents with acceptance criteria, derive tests from them
-  and record what each test producer was given (`context`). Evidence then says
+- **Level 2, intent-aware:** [write and approve intents](/approve-intents/) with acceptance
+  criteria, derive tests from them and record what each test producer was given (`context`). Evidence then says
   `derivedFrom: intent`, and intent coverage starts to rise.
 - **Quality Passport:** bundle intents, evidence and decisions for a release into one signed
   attestation (section 8).

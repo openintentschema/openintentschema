@@ -36,6 +36,7 @@ export default defineConfig({
                   items: [
                     { label: 'What is OIS?', link: '/' },
                     { label: 'Getting started', slug: 'getting-started' },
+                    { label: 'Write and approve intents', slug: 'approve-intents' },
                     { label: 'Privacy and data flows', slug: 'privacy' },
                   ],
                 },
