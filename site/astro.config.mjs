@@ -16,13 +16,20 @@ export default defineConfig({
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/openintentschema' }],
       editLink: { baseUrl: `${repo}/edit/main/site/` },
       sidebar: [
-        { label: 'Start', items: [{ label: 'Getting started', slug: 'getting-started' }] },
+        {
+          label: 'Start',
+          items: [
+            { label: 'Getting started', slug: 'getting-started' },
+            { label: 'Privacy and data flows', slug: 'privacy' },
+          ],
+        },
         {
           label: 'Reference',
           items: [
             { label: 'Passport predicate v0.1', link: '/passport/v0.1/' },
             { label: 'Coverage method v0.1', link: '/methods/basic-intent-coverage/v0.1/' },
-            { label: 'JSON Schema v0.1', link: '/schema/v0.1/ois.schema.json' },
+            // Until RFC #6 sets the $id, the schema is linked on GitHub (scripts/publish-schema.mjs)
+            { label: 'JSON Schema v0.1', link: `${repo}/blob/main/schema/ois.schema.json` },
           ],
         },
         {
