@@ -44,7 +44,8 @@ also cover the rules R16 and R17 and the clarifications proposed in the open RFC
 The reference validator and the commands that write records (JUnit XML adapter, intents,
 records, passports, intent coverage) live in
 [openintentschema/validator](https://github.com/openintentschema/validator) and are published on
-PyPI as [`ois-validator`](https://pypi.org/project/ois-validator/).
+PyPI as [`ois-validator`](https://pypi.org/project/ois-validator/) and as the container image
+`ghcr.io/openintentschema/ois-validator`, for projects in any language.
 
 ## Reuse before invention
 

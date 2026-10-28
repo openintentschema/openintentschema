@@ -16,6 +16,17 @@ uvx ois-validator bundle.json          # run without installing
 pip install ois-validator              # or install; Python 3.13 or later
 ```
 
+Or as a container image with every command and git, for projects in any language
+(linux/amd64 and linux/arm64):
+
+```bash
+docker run --rm --network none -v "$PWD:/work" --user "$(id -u):$(id -g)" \
+  ghcr.io/openintentschema/ois-validator ois-validator bundle.json
+```
+
+Each image carries a signed build provenance and an SBOM; check it with
+`gh attestation verify oci://ghcr.io/openintentschema/ois-validator:<version> --owner openintentschema`.
+
 ```bash
 ois-validator bundle.json passport.json
 ois-validator --format json finding.json

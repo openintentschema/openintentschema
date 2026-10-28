@@ -7,8 +7,10 @@ This guide takes a pipeline that already runs tests and makes it emit Open Inten
 records, without changing a single test. It takes about 15 minutes. The result is Level 1
 conformance, "Observe" (specification section 11.2).
 
-**You need:** a Git checkout of the code under test, tests that can write JUnit XML, and
-[uv](https://docs.astral.sh/uv/) (it brings Python 3.13 or later along).
+**You need:** a Git checkout of the code under test, tests that can write JUnit XML, and either
+[uv](https://docs.astral.sh/uv/) (it brings Python 3.13 or later along) or Docker. The language of
+your project does not matter: the commands read the JUnit XML and the Git checkout, not the code,
+so they work the same for Java, Kotlin, TypeScript, Go or .NET, on your machine and in CI.
 
 ## What you get
 
@@ -66,6 +68,17 @@ uvx --from ois-validator ois-junit reports/junit.xml \
 
 `--run` is optional and links every result to the pipeline run. Several reports can be passed at
 once, for example `target/surefire-reports/*.xml`.
+
+The same with the container image, for example for a Gradle build, without Python on the machine:
+
+```bash
+docker run --rm -v "$PWD:/work" --user "$(id -u):$(id -g)" \
+  ghcr.io/openintentschema/ois-validator ois-junit build/test-results/test/*.xml \
+  --namespace https://ois.acme.example --suite "Team Billing" --output ois-bundle.json
+```
+
+The current directory is mounted at `/work`; `--user` makes the bundle yours rather than the
+container's. Add `--network none` to see that it needs no network.
 
 `ois-junit` validates the bundle before writing it. It exits with 0 and writes the file, or
 exits with 1 and writes nothing.
@@ -145,6 +158,26 @@ GitHub Actions, after the step that runs the tests:
 `if: ${{ !cancelled() }}` records results when tests fail too; those are the results that matter
 most. Any other CI works the same way: the job needs `git`, `uv` and the checkout the tests ran
 in. Pin the version (for example `uvx --from ois-validator==0.5.0 …`) once you depend on it.
+
+**With the container image** the step needs neither uv nor Python, which suits Java, Kotlin or
+.NET pipelines. It runs after the tests, in the same checkout:
+
+```yaml
+- name: Record test results as OIS
+  if: ${{ !cancelled() }}
+  run: >
+    docker run --rm --network none -v "$PWD:/work" --user "$(id -u):$(id -g)"
+    ghcr.io/openintentschema/ois-validator:0.5.0
+    ois-junit build/test-results/test/*.xml
+    --namespace https://ois.acme.example --suite "Team Billing"
+    --run "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+    --output ois-bundle.json
+```
+
+The glob is expanded by the runner's shell, before the container starts, so the paths are relative
+to the checkout, which is mounted at `/work`. In a CI system that runs each job in an image of its
+choice, use `ghcr.io/openintentschema/ois-validator:0.5.0` as the job's image and call the
+commands directly; the checkout must be the one the tests ran in, with its Git history.
 
 ## Before you share a bundle
 

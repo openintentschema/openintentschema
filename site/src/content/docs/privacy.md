@@ -15,6 +15,8 @@ records stay in your organization until you send them somewhere.
 | --- | --- | --- | --- |
 | Installing `ois-validator` with `uvx` or `pip` | The download request: IP address and, as pip and uv document for PyPI's download statistics, installer, Python and operating system version and whether it runs in CI | PyPI, run by the Python Software Foundation | Install from an internal package mirror, or a pinned wheel from your own artifact store |
 | Installing `uv` with the `setup-uv` GitHub Action | The download request | GitHub | A runner image with `uv` preinstalled |
+| Running `uvx` where no suitable Python is installed | The download request for a Python build | GitHub, which hosts uv's Python builds | Install Python 3.13 or later yourself, or set `UV_PYTHON_INSTALL_MIRROR` to an internal mirror |
+| Pulling the container image `ghcr.io/openintentschema/ois-validator` | The download request: IP address and the image requested | GitHub Container Registry | Mirror the image into your own registry, pinned by digest |
 | Running `ois-junit` | Nothing. It reads the JUnit XML and the local Git checkout (`git rev-parse`, `ls-files`, `show`, `remote get-url`; never `fetch` or `push`) and writes a file | Nobody | |
 | Running `ois-validator` | Nothing. The JSON Schema ships inside the package and is never fetched | Nobody | |
 | Running `ois-intent` | Nothing. It reads and writes intent and decision files locally | Nobody | |
@@ -44,7 +46,8 @@ leaves your organization; test names must not contain personal data (specificati
 
 `ois-validator`, `ois-junit`, `ois-intent`, `ois-record`, `ois-passport` and `ois-coverage`, and
 the validator's whole test suite, were run in a sandbox that blocks all network access. All of them work unchanged;
-a network request in that sandbox fails. What pip
+a network request in that sandbox fails. The container image runs them with
+`docker run --network none` in the validator's CI. What pip
 and uv send to PyPI is taken from their documentation, not measured here.
 
 ## In the specification

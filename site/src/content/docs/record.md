@@ -50,7 +50,8 @@ IMAGE=$(ois-record artifact --digest sha256:4f3c2b1a… --location pkg:oci/billi
   `git+<origin>@<commit>` (credentials removed) and its path. It must be committed and unchanged.
 - **A file elsewhere**, such as a built package, needs `--location`. A Package URL is recommended.
 - **A commit** (`--commit`) or a known digest (`--digest`, for example an image in a registry)
-  needs no file.
+  needs no file. A commit is named after its origin repository, so the id is the same in every
+  clone and in the container image.
 
 A test that was derived from an intent lists what its producer was given in `--context`:
 
