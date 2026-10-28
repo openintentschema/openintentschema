@@ -486,28 +486,6 @@ def _() -> Doc:
     return resolved_finding(passport(), QE_LEAD)
 
 
-@fixture("valid/supersedes-outside-bundle.json",
-         "Intent version 2 supersedes version 1, which the bundle does not carry. supersedes may "
-         "point outside the document (proposed exception to R10).",
-         R12_UNSIGNED)
-def _() -> Doc:
-    text = json.dumps(base_records()).replace(intent_ref("INT-142", 1), intent_ref("INT-142", 2))
-    recs: list[Doc] = json.loads(text)
-    current = next(r for r in recs if r["type"] == "intent")
-    recs[recs.index(current)] = intent(2)
-    return bundle(recs)
-
-
-@fixture("valid/finding-supersedes-outside-bundle.json",
-         "A finding supersedes a finding that the bundle does not carry (proposed exception to "
-         "R10).",
-         R12_UNSIGNED)
-def _() -> Doc:
-    later = {**finding("FND-19", severity="medium"), "cause": "implementation",
-             "supersedes": ref("findings", "FND-18")}
-    return with_support(base_bundle(), later)
-
-
 @fixture("valid/passport-low-finding.json",
          "An open finding with severity low does not trigger R13.",
          R12_UNSIGNED)
@@ -837,6 +815,27 @@ def _() -> Doc:
     other["digest"] = content_digest("addresses-without-canton-v2")
     records(doc).insert(records(doc).index(get(doc, DATASET)) + 1, other)
     return doc
+
+
+@fixture("invalid/R10/supersedes-outside-bundle.json",
+         "Intent version 2 supersedes version 1, which the bundle does not carry. The history "
+         "must stay verifiable, so supersedes must resolve like every other reference.",
+         violation("R10"), R12_UNSIGNED)
+def _() -> Doc:
+    text = json.dumps(base_records()).replace(intent_ref("INT-142", 1), intent_ref("INT-142", 2))
+    recs: list[Doc] = json.loads(text)
+    current = next(r for r in recs if r["type"] == "intent")
+    recs[recs.index(current)] = intent(2)
+    return bundle(recs)
+
+
+@fixture("invalid/R10/finding-supersedes-outside-bundle.json",
+         "A finding supersedes a finding that the bundle does not carry.",
+         violation("R10"), R12_UNSIGNED)
+def _() -> Doc:
+    later = {**finding("FND-19", severity="medium"), "cause": "implementation",
+             "supersedes": ref("findings", "FND-18")}
+    return with_support(base_bundle(), later)
 
 
 @fixture("invalid/R10/passport-missing-record.json",
