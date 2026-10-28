@@ -55,7 +55,8 @@ JSON Schema 2020-12 and RFC 8785 (canonical JSON for digests).
 Changes to the data model, rules, schema, conformance levels or passport format start as an
 [RFC issue](https://github.com/openintentschema/openintentschema/issues?q=label%3Arfc); editorial
 fixes go straight to a pull request. See [CONTRIBUTING.md](CONTRIBUTING.md) and
-[GOVERNANCE.md](GOVERNANCE.md). Security issues: [SECURITY.md](SECURITY.md).
+[GOVERNANCE.md](GOVERNANCE.md). Everyone taking part follows the
+[Code of Conduct](CODE_OF_CONDUCT.md). Security issues: [SECURITY.md](SECURITY.md).
 
 ## Licenses
 

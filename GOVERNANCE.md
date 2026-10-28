@@ -23,7 +23,8 @@ It is itself subject to change through the process below.
 ## Contributions
 
 All contributions require a Developer Certificate of Origin (DCO) sign-off on each commit
-(`git commit -s`). See `CONTRIBUTING.md`.
+(`git commit -s`). See `CONTRIBUTING.md`. Everyone taking part in issues, pull requests and
+discussions follows `CODE_OF_CONDUCT.md`; the editors handle reports.
 
 ## Neutrality
 

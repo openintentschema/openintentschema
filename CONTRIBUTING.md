@@ -9,6 +9,7 @@ Thank you for helping to shape the Open Intent Schema.
   issue first; use the RFC issue template.
 - Editorial fixes (typos, wording, examples) can go straight to a pull request.
 - Security issues are reported privately, see `SECURITY.md`.
+- Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Developer Certificate of Origin
 
