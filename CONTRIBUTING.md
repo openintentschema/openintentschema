@@ -45,7 +45,8 @@ npx -y -p ajv-cli@5.0.0 -p ajv-formats@3.0.1 ajv validate --spec=draft2020 -c aj
 ```
 
 The passport example is checked against `#/$defs/passportPredicate`; the CI workflow
-`.github/workflows/checks.yml` shows how.
+`.github/workflows/checks.yml` shows how. Changes to the website are previewed with
+`npm run dev` in `site/` (see `site/README.md`).
 
 ## Licenses
 

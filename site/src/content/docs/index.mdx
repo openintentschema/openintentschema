@@ -1,0 +1,56 @@
+---
+title: Open Intent Schema
+description: An open, vendor-neutral data standard that links what was required to what was built and to the evidence in between.
+template: splash
+hero:
+  tagline: What was asked, what was built, and the proof in between. An open, vendor-neutral data standard for requirements, evidence and releases, even when AI agents write the code and the tests.
+  actions:
+    - text: Get started
+      link: /getting-started/
+      icon: right-arrow
+    - text: Read the specification
+      link: https://github.com/openintentschema/openintentschema/tree/main/specification
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+Think of OIS as an SBOM for requirements: an SBOM lists what software contains; OIS states what
+it must do and how that is proven.
+
+<CardGrid>
+  <Card title="Record what was required" icon="document">
+    Intents carry acceptance criteria in Gherkin, EARS or plain text. Each version is immutable
+    once approved and bound to its approval by a digest.
+  </Card>
+  <Card title="Link every result to it" icon="puzzle">
+    Evidence ties one test run to one criterion and states whether the test was derived from the
+    requirement or from the code. Validators check that claim.
+  </Card>
+  <Card title="Prove it per release" icon="approve-check">
+    A Quality Passport collects intents, evidence, decisions and open findings for a release as a
+    signed in-toto attestation that third parties can verify.
+  </Card>
+  <Card title="Start from what you have" icon="rocket">
+    The JUnit XML your pipeline already writes becomes OIS records in about 15 minutes, without
+    changing a test.
+  </Card>
+</CardGrid>
+
+## Status
+
+Specification v0.1 is a working draft, open for discussion with design partners. Any part may
+change before 1.0. Proposed changes are discussed in public
+[RFCs](https://github.com/openintentschema/openintentschema/issues?q=label%3Arfc).
+
+The reference validator and the JUnit XML adapter are available as
+[`ois-validator`](https://pypi.org/project/ois-validator/):
+
+```bash
+uvx ois-validator bundle.json
+```
+
+OIS builds on Gherkin, EARS, in-toto, DSSE, Sigstore, SLSA, CloudEvents, W3C Trace Context,
+JSON Schema 2020-12 and RFC 8785. Schema, code and fixtures are licensed under Apache-2.0, the
+specification text under CC BY 4.0.

@@ -11,7 +11,7 @@ the findings when something goes wrong. A signed Quality Passport bundles all of
 Think of it as an SBOM for requirements: an SBOM lists what software contains; OIS states what
 it must do and how that is proven.
 
-**New here?** [Getting started](site/getting-started.md) turns the JUnit XML of an existing
+**New here?** [Getting started](https://openintentschema.io/getting-started/) turns the JUnit XML of an existing
 pipeline into OIS records in about 15 minutes.
 
 ## Status
@@ -27,8 +27,8 @@ progress (see the change history in the specification). Any part may change befo
 | [`schema/`](schema/) | `ois.schema.json`, the normative JSON Schema 2020-12 (Appendix B) |
 | [`examples/`](examples/) | The worked example of Appendix A |
 | [`fixtures/`](fixtures/) | The conformance test suite: valid and invalid documents with the reports a validator must give |
-| [`site/`](site/) | Documentation pages, starting with getting started |
-| [`.github/`](.github/) | CI for examples and fixtures, the RFC issue template |
+| [`site/`](site/) | The website [openintentschema.io](https://openintentschema.io): getting started, reference pages, the published schema |
+| [`.github/`](.github/) | CI for examples, fixtures and the website; issue and pull request templates |
 
 ## Conformance
 

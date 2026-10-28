@@ -1,4 +1,7 @@
-# Getting started: your first OIS bundle
+---
+title: 'Getting started: your first OIS bundle'
+description: Turn the JUnit XML of an existing pipeline into OIS records in about 15 minutes.
+---
 
 This guide takes a pipeline that already runs tests and makes it emit Open Intent Schema (OIS)
 records, without changing a single test. It takes about 15 minutes. The result is Level 1
