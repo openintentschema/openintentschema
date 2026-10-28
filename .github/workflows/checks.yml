@@ -1,0 +1,38 @@
+name: Validate examples and fixtures
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  examples:
+    name: Examples against the schema (ajv)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Bundle and finding
+        run: >
+          npx -y -p ajv-cli@5.0.0 -p ajv-formats@3.0.1 ajv validate --spec=draft2020
+          -c ajv-formats --strict=false -s schema/ois.schema.json
+          -d examples/bundle.json -d examples/finding.json
+      - name: Passport predicate
+        run: |
+          id=$(jq -r '."$id"' schema/ois.schema.json)
+          jq -n --arg ref "$id#/\$defs/passportPredicate" \
+            '{"$schema": "https://json-schema.org/draft/2020-12/schema",
+              "properties": {"predicate": {"$ref": $ref}}}' > "$RUNNER_TEMP/passport.json"
+          npx -y -p ajv-cli@5.0.0 -p ajv-formats@3.0.1 ajv validate --spec=draft2020 \
+            -c ajv-formats --strict=false -s "$RUNNER_TEMP/passport.json" \
+            -r schema/ois.schema.json -d examples/passport.json
+
+  fixtures:
+    name: Fixtures up to date and tagged correctly
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+      - run: uv run fixtures/generate.py --check
