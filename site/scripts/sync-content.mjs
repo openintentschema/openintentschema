@@ -12,9 +12,9 @@ const specFile = 'specification/ois-spec-v0.1-draft4.md';
 // Repository files that are pages on the site; other relative links point to GitHub.
 const pages = {
   'GOVERNANCE.md': '/community/governance/',
-  'CONTRIBUTING.md': '/community/contributing/',
-  'CODE_OF_CONDUCT.md': '/community/code-of-conduct/',
-  'SECURITY.md': '/community/security/',
+  '.github/CONTRIBUTING.md': '/community/contributing/',
+  '.github/CODE_OF_CONDUCT.md': '/community/code-of-conduct/',
+  '.github/SECURITY.md': '/community/security/',
   'MAINTAINERS.md': '/community/maintainers/',
   'fixtures/README.md': '/conformance/',
   'profiles/README.md': '/profiles/',
@@ -103,9 +103,9 @@ function specification() {
 function community() {
   const docs = [
     ['GOVERNANCE.md', 'community/governance', 1],
-    ['CONTRIBUTING.md', 'community/contributing', 2],
-    ['CODE_OF_CONDUCT.md', 'community/code-of-conduct', 3],
-    ['SECURITY.md', 'community/security', 4],
+    ['.github/CONTRIBUTING.md', 'community/contributing', 2],
+    ['.github/CODE_OF_CONDUCT.md', 'community/code-of-conduct', 3],
+    ['.github/SECURITY.md', 'community/security', 4],
     ['MAINTAINERS.md', 'community/maintainers', 5],
   ];
   for (const [source, slug, order] of docs) {

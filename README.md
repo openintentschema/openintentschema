@@ -29,7 +29,7 @@ progress (see the change history in the specification). Any part may change befo
 | [`fixtures/`](fixtures/) | The conformance test suite: valid and invalid documents with the reports a validator must give |
 | [`profiles/`](profiles/) | The registry of profiles (section 10.2), with an example profile for regulated industries |
 | [`site/`](site/) | The website [openintentschema.io](https://openintentschema.io): getting started, reference pages, the published schema |
-| [`.github/`](.github/) | CI for examples, fixtures and the website; issue and pull request templates |
+| [`.github/`](.github/) | CI for examples, fixtures and the website; issue and pull request templates; contributing guide, Code of Conduct and security policy |
 
 ## Conformance
 
@@ -41,7 +41,8 @@ A validator checks the schema and the integrity rules R1–R15 of section 5 and 
 problem with its rule and level. The conformance fixtures are the test suite it must pass; they
 also cover the rules R16 and R17 and the clarifications proposed in the open RFCs.
 
-The reference validator and the JUnit XML adapter live in
+The reference validator and the commands that write records (JUnit XML adapter, intents,
+records, passports, intent coverage) live in
 [openintentschema/validator](https://github.com/openintentschema/validator) and are published on
 PyPI as [`ois-validator`](https://pypi.org/project/ois-validator/).
 
@@ -55,9 +56,9 @@ JSON Schema 2020-12 and RFC 8785 (canonical JSON for digests).
 
 Changes to the data model, rules, schema, conformance levels or passport format start as an
 [RFC issue](https://github.com/openintentschema/openintentschema/issues?q=label%3Arfc); editorial
-fixes go straight to a pull request. See [CONTRIBUTING.md](CONTRIBUTING.md) and
+fixes go straight to a pull request. See [CONTRIBUTING.md](.github/CONTRIBUTING.md) and
 [GOVERNANCE.md](GOVERNANCE.md). Everyone taking part follows the
-[Code of Conduct](CODE_OF_CONDUCT.md). Security issues: [SECURITY.md](SECURITY.md).
+[Code of Conduct](.github/CODE_OF_CONDUCT.md). Security issues: [SECURITY.md](.github/SECURITY.md).
 
 ## Licenses
 

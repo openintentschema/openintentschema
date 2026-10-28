@@ -3,6 +3,6 @@ contact_links:
   - name: Security issue
     url: https://github.com/openintentschema/openintentschema/security/advisories/new
     about: Report weaknesses in the specification privately, not as a public issue.
-  - name: Problem with the validator or ois-junit
+  - name: Problem with the validator or its commands
     url: https://github.com/openintentschema/validator/issues/new/choose
-    about: Bugs in the reference validator and the JUnit adapter belong to their own repository.
+    about: Bugs in the reference validator and its commands (ois-junit, ois-intent, ois-record, ois-passport, ois-coverage) belong to their own repository.

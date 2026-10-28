@@ -4,11 +4,12 @@ Thank you for helping to shape the Open Intent Schema.
 
 ## Before you start
 
-- Read the specification in `specification/` and the governance rules in `GOVERNANCE.md`.
+- Read the specification in `specification/` and the governance rules in
+  [GOVERNANCE.md](../GOVERNANCE.md).
 - Changes to the data model, rules, schema, conformance levels or passport format need an RFC
   issue first; use the RFC issue template.
 - Editorial fixes (typos, wording, examples) can go straight to a pull request.
-- Security issues are reported privately, see `SECURITY.md`.
+- Security issues are reported privately, see [SECURITY.md](SECURITY.md).
 - Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Developer Certificate of Origin
