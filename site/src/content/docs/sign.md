@@ -87,10 +87,71 @@ repository you control.
 | Agent runtime | bundles or passports with contexts it recorded | makes those contexts attested (R12) |
 | CI | bundles of test results | ties evidence to the pipeline that ran the tests |
 
-## Not yet supported
+## Keyless, with Sigstore
 
-With your own keys, "attested" means signed by a key the verifier trusts. Which person or system
-holds that key is the verifier's knowledge, not part of the signature. Sigstore keyless signing,
-where a short-lived certificate names the workload identity (for example a CI workflow or a
-SPIFFE ID), and transparency logs such as Rekor, which give each signature an independent time,
-follow in a later version.
+In a pipeline no key needs to be kept at all. The CI system proves the workflow's identity to
+Sigstore, which certifies it for ten minutes, and the signature goes into a public transparency
+log (Rekor) with an independent time. A verifier trusts Sigstore's trusted root and checks that
+the identity in the certificate is the actor's.
+
+**On GitHub,** `actions/attest` signs the passport and stores the attestation with the repository:
+
+```yaml
+permissions:
+  contents: read
+  id-token: write        # the workflow's identity for Sigstore
+  attestations: write    # store the attestation with the repository
+steps:
+  - id: passport
+    run: |
+      ois passport build .ois/ --release-name billing --release-version "$VERSION" \
+        --build "$BUILD" --issuer "$ISSUER" \
+        --keyless-signer "https://token.actions.githubusercontent.com=$GITHUB_SERVER_URL/$GITHUB_WORKFLOW_REF" \
+        --output passport.json
+      jq .predicate passport.json > predicate.json
+      echo "digest=$(jq -r '.subject[0].digest.sha256' passport.json)" >> "$GITHUB_OUTPUT"
+  - id: attest
+    uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+    with:
+      subject-name: billing
+      subject-digest: sha256:${{ steps.passport.outputs.digest }}
+      predicate-type: https://ois.example/passport/v0.1
+      predicate-path: predicate.json
+```
+
+`--keyless-signer` tells `ois passport build` who will sign, so the attested coverage inside the
+passport already counts it. The signing actors name the workflow as their identity:
+
+```bash
+ois record actor --kind tool --name "Release pipeline" --version "$VERSION" \
+  --identity-issuer https://token.actions.githubusercontent.com \
+  --identity-subject "https://github.com/acme/billing/.github/workflows/release.yml@refs/tags/v$VERSION"
+```
+
+The action's output `bundle-path` is the Sigstore bundle. Verify it offline with a current trusted
+root (Sigstore rotates keys now and then, so refresh it):
+
+```bash
+pip install 'ois-tools[sigstore]'                     # the container image includes it
+gh attestation trusted-root > trusted_root.jsonl
+ois validate passport.sigstore.json --trusted-root trusted_root.jsonl
+```
+
+**Other providers** work the same way: GitLab CI, Google Cloud, Buildkite or an organization's own
+Sigstore instance are another trusted root and another issuer in the certificate. Outside GitHub,
+`cosign attest-blob --type https://ois.example/passport/v0.1 --predicate predicate.json` signs.
+Keyless signing covers passports; bundles are signed with keys.
+
+## People
+
+The public Sigstore instance puts a person's e-mail address into the certificate, which the
+specification does not allow for human actors (section 12). Two ways keep people pseudonymous:
+
+- **Approve in GitHub, let the pipeline sign.** The person approves as a required reviewer of an
+  environment or in a pull request review, protected by your single sign-on; the workflow then
+  records the decision with `decidedBy` set to the person's pseudonymous actor and signs. The
+  signature shows that the pipeline ran after approval; GitHub's audit log shows who approved.
+- **Their own key.** `ois key generate qe-2c9d` gives a person a key with a pseudonymous key id.
+
+An organization's own Sigstore instance, issuing pseudonymous identities from its identity
+provider, would also do.

@@ -23,6 +23,9 @@ network connection: OIS records stay in your organization until you send them so
 | Running `ois passport` | Nothing. It reads records and writes the passport file locally | Nobody | |
 | Running `ois coverage` | Nothing. It reads records or a passport and prints the result | Nobody | |
 | Running `ois key` and `ois sign` | Nothing. Keys are created and used locally; the private key never leaves the file you keep it in | Nobody | Keep private keys in a secret store |
+| Signing keylessly with `actions/attest` or cosign | The workflow's identity token and the signature | Sigstore (Fulcio and the public transparency log Rekor) or your own instance; on GitHub also the repository's attestations | The log is public by design: it records the identity, the time and the digest, not the passport |
+| Fetching a trusted root with `gh attestation trusted-root` | The request | GitHub | Keep a reviewed copy and refresh it on your schedule |
+| Verifying a Sigstore bundle with `ois validate` | Nothing. The trusted root is a local file | Nobody | |
 | Sharing a signed bundle or passport | Its records, the signatures and the key ids | The recipients you choose | Recipients verify with the public keys you give them |
 | Storing bundles | The bundle file | Wherever your pipeline keeps artifacts | Your retention rules apply |
 | Sharing a bundle or passport | Its records (below) | The recipients you choose, such as an auditor or a customer | Review before sharing (specification section 12) |

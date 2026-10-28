@@ -72,9 +72,9 @@ same-producer.json: violation [R5] $.records[12].derivedFrom: test and subject a
 | info | A SHOULD is not followed. | R1, R9, R15 |
 
 R16, R17 and the rule IDs `schema` and `signature` are proposed in RFCs. A signed document is
-verified with the public keys passed as `--trusted-key`; a recorded context is attested when its
-recorder signed (R12). Sigstore keyless signatures are not verified yet. See
-[Sign bundles and passports](/sign/).
+verified with the public keys passed as `--trusted-key`, a Sigstore bundle against the trusted
+roots passed as `--trusted-root`; a recorded context is attested when its recorder signed (R12).
+See [Sign bundles and passports](/sign/).
 
 ## Test your own implementation
 
