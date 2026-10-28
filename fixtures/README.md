@@ -38,7 +38,7 @@ an in-toto Statement v1 (not wrapped in DSSE). Feed it to a validator as it is.
 reported, the path and the message are up to the validator. A fixture conforms when `expect`
 holds no violation.
 
-`rule` is `schema` for Appendix B and `R1` to `R17` for section 5. `level` is `violation`,
+`rule` is `schema` for Appendix B ([proposed in #1](https://github.com/openintentschema/openintentschema/issues/1)) and `R1` to `R17` for section 5. `level` is `violation`,
 `warning` or `info` (section 11.1).
 
 The fixtures are unsigned. Every fixture whose records carry a `context` therefore expects the R12
@@ -79,15 +79,15 @@ unresolved reference is reported once, under R10 (record missing) or R2 (criteri
 | R5 | violation | Evidence with `derivedFrom: intent` whose test and subject have `producedBy` actors with the same `id`, in any version. |
 | R8 | warning | Evidence `inputs` include a dataset classified `production`. |
 | R9 | info | A decision with outcome `waived` whose `decidedBy` is not human. The MUST (rationale) is in Appendix B. |
-| R10 | violation | A reference that does not resolve, or two records with the same `id` (and `version` for intents and actors) that differ in content without `status` and `digest`. |
+| R10 | violation | A reference that does not resolve, or two records with the same `id` (and `version` for intents and actors) that differ in content without `status` and `digest`. `supersedes` may name a record the document does not carry. *The `supersedes` exception is proposed by RFC; not yet in the specification.* |
 | R11 | violation | A decision with gate `evidence-revocation` whose `subject` is not an evidence record. Rationale and outcome are in Appendix B. |
 | R12 | warning | An artifact with `context` whose `contextRecordedBy` is missing or equals `producedBy` by actor `id`, or whose document is not signed by that actor. |
 | R13 | warning | A passport lists an intent version that a current finding with severity `high` or `critical` references through `intent`, or through a `criterion` of that version, and that finding is not resolved. The current finding is the last of its `supersedes` chain. It is resolved if a decision with gate `finding-resolution`, outcome `approved` and the current finding as `subject` exists, made by an actor whose `id` is not `producedBy`, `recordedBy` or `decidedBy` of any record in its `resolvedBy` (R14). |
 | R14 | violation | Two findings supersede the same finding. |
 | R15 | violation | A passport lists an intent version that is not `approved`, or for which a later version with status `withdrawn` exists. |
 | R15 | info | A later version is approved, by a decision made before `issuedAt`. |
-| R16 | violation | A passport without a decision with gate `release`, outcome `approved` or `passed`, whose `subject` is an artifact of kind `build` with a digest that matches a digest of the statement's `subject`. *Proposed by RFC; not yet in the specification.* |
-| R17 | violation | An intent `digest` or criterion `digest` whose `sha256` differs from the value computed by section 6.4. *Proposed by RFC; not yet in the specification.* |
+| R16 | violation | A passport without a decision with gate `release`, outcome `approved` or `passed`, whose `subject` is an artifact of kind `build` with a digest that matches a digest of the statement's `subject`. *[Proposed in #2](https://github.com/openintentschema/openintentschema/issues/2); not yet in the specification.* |
+| R17 | violation | An intent `digest` or criterion `digest` whose `sha256` differs from the value computed by section 6.4. *[Proposed in #3](https://github.com/openintentschema/openintentschema/issues/3); not yet in the specification.* |
 
 R6 and R7 are not checked (section 5) and have no fixtures. The parts of R9 and R11 that
 Appendix B already enforces are fixtures under `invalid/schema/`.
