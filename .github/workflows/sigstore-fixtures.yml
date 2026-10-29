@@ -27,7 +27,7 @@ jobs:
         with:
           subject-name: ${{ steps.subject.outputs.name }}
           subject-digest: ${{ steps.subject.outputs.digest }}
-          predicate-type: https://ois.example/passport/v0.1
+          predicate-type: https://openintentschema.io/passport/v0.1
           predicate-path: fixtures/sigstore/passport-predicate.json
       - name: The bundle as one JSON document (the action may write JSON lines)
         run: jq -c . "${{ steps.attest.outputs.bundle-path }}" | head -n 1 | jq . > passport.sigstore.json

@@ -35,7 +35,7 @@ rules live in profiles. Editors from the same organization must not form a major
 
 ## Foundation
 
-The editors intend to transfer the specification, its trademark and this repository to a
-neutral foundation under the Linux Foundation once the specification reaches 1.0 or has
+The editors intend to transfer the specification, its trademark, the domain
+`openintentschema.io` and this repository to a neutral foundation under the Linux Foundation once the specification reaches 1.0 or has
 three independent implementations, whichever comes first. The governance described here is
 designed to survive that transfer unchanged.

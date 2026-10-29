@@ -40,7 +40,7 @@ SCHEMA = HERE.parent / "schema" / "ois.schema.json"
 
 NS = "https://ois.acme.example"
 STATEMENT_TYPE = "https://in-toto.io/Statement/v1"
-PREDICATE_TYPE = "https://ois.example/passport/v0.1"
+PREDICATE_TYPE = "https://openintentschema.io/passport/v0.1"
 CRITERION_FIELDS = ("key", "statement", "notation", "kind", "target", "language")
 
 Doc = dict[str, Any]
@@ -317,7 +317,7 @@ def passport_records() -> list[Doc]:
 
 def passport(recs: list[Doc] | None = None) -> Doc:
     coverage = [{"name": "intentCoverage", "value": 0.5,
-                 "method": "https://ois.example/methods/basic-intent-coverage/v0.1"}]
+                 "method": "https://openintentschema.io/methods/basic-intent-coverage/v0.1"}]
     statement = {
         "_type": STATEMENT_TYPE,
         "subject": [{"name": "customer-portal", "digest": content_digest(BUILD)}],
@@ -527,6 +527,22 @@ def _() -> Doc:
          R12_UNSIGNED)
 def _() -> Doc:
     return with_support(passport(), finding("FND-18", severity="low"))
+
+
+@fixture("valid/passport-without-scope.json",
+         "A passport without scope: all three criteria of the intent count, AC-1 and AC-2 with "
+         "criticality high and NFR-1 medium, so the weighted coverage (3 of 8) differs from the "
+         "plain one (1 of 3).",
+         R12_UNSIGNED)
+def _() -> Doc:
+    doc = passport()
+    del doc["predicate"]["scope"]
+    method = "https://openintentschema.io/methods/basic-intent-coverage/v0.1"
+    doc["predicate"]["assessments"] = [
+        {"name": "intentCoverage", "value": 0.3333, "method": method},
+        {"name": "intentCoverageWeighted", "value": 0.375, "method": method},
+    ]
+    return doc
 
 
 # schema -----------------------------------------------------------------------------------
@@ -1016,7 +1032,7 @@ def _() -> Doc:
     return add_version_2(passport())
 
 
-# R16 (proposed) ---------------------------------------------------------------------------
+# R16 ---------------------------------------------------------------------------------------
 
 
 @fixture("invalid/R16/no-release-decision.json",
@@ -1044,7 +1060,7 @@ def _() -> Doc:
     return doc
 
 
-# R17 (proposed) ---------------------------------------------------------------------------
+# R17 ---------------------------------------------------------------------------------------
 
 
 @fixture("invalid/R17/intent-digest-mismatch.json",

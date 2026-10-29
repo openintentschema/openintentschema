@@ -119,8 +119,7 @@ Profiles add rules for an industry: `ois validate` checks [regulated/v0.1](/prof
 (rules `regulated/P1` to `regulated/P4`) when a record lists it, or with
 `--profile regulated/v0.1`.
 
-R16, R17 and the rule IDs `schema` and `signature` are proposed in RFCs. A signed document is
-verified with the public keys passed as `--trusted-key`, a Sigstore bundle against the trusted
+A signed document is verified with the public keys passed as `--trusted-key`, a Sigstore bundle against the trusted
 roots passed as `--trusted-root`; a recorded context is attested when its recorder signed (R12).
 See [Sign bundles and passports](/sign/).
 
