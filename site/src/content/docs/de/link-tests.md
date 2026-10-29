@@ -23,7 +23,9 @@ oder Ziffern sind.
 | Framework | Wie ein Test `AC-1` nennt |
 | --- | --- |
 | pytest | `@pytest.mark.criterion("AC-1")`, mit der `conftest.py` unten |
+| pytest-bdd | `@AC-1` am Szenario, mit derselben `conftest.py` |
 | JUnit 5 und 6 (Maven) | `@DisplayName("AC-1 rounds down")`, mit der Surefire-Einstellung unten |
+| JUnit 5 und 6 (Gradle) | `@DisplayName("AC-1 rounds down")`, das Gradle als Testnamen schreibt |
 | Jest | `test('AC-1 rounds down', …)` |
 | Vitest | `test('rounds down', { tags: ['AC-1'] }, …)` mit dem JSON-Reporter, oder `AC-1` im Titel |
 | Playwright | `test('rounds down', { tag: '@AC-1' }, …)` mit dem JSON-Reporter, `annotation: { type: 'criterion', description: 'AC-1' }`, oder `AC-1` im Titel |
@@ -32,9 +34,14 @@ oder Ziffern sind.
 | MSTest | `[TestCategory("AC-1")]` |
 
 **pytest** schreibt `user_properties` in den Bericht. Diese `conftest.py` macht aus dem Marker
-eine:
+eine, und mit pytest-bdd aus dem Schlüssel-Tag eines Szenarios den Marker:
 
 ```python
+import re
+
+import pytest
+
+
 def pytest_configure(config):
     config.addinivalue_line("markers", "criterion(key): the criterion a test checks")
 
@@ -43,7 +50,16 @@ def pytest_collection_modifyitems(items):
     for item in items:
         for mark in item.iter_markers("criterion"):
             item.user_properties.append(("criterion", mark.args[0]))
+
+
+@pytest.hookimpl(optionalhook=True)
+def pytest_bdd_apply_tag(tag, function):  # pytest-bdd: a scenario tag such as @AC-1
+    if re.fullmatch(r"[A-Z][A-Z0-9]*-[0-9]+", tag):
+        return pytest.mark.criterion(tag)(function)
+    return None
 ```
+
+Mit pytest-bdd ist das Test-Artefakt das Modul, das `scenarios()` aufruft, nicht die Feature-Datei.
 
 **JUnit mit Maven Surefire** schreibt Methodennamen, ausser es soll Anzeigenamen schreiben:
 

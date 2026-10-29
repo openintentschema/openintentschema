@@ -20,7 +20,9 @@ between characters that are not letters or digits.
 | Framework | How a test names `AC-1` |
 | --- | --- |
 | pytest | `@pytest.mark.criterion("AC-1")`, with the `conftest.py` below |
+| pytest-bdd | `@AC-1` on the scenario, with the same `conftest.py` |
 | JUnit 5 and 6 (Maven) | `@DisplayName("AC-1 rounds down")`, with the Surefire setting below |
+| JUnit 5 and 6 (Gradle) | `@DisplayName("AC-1 rounds down")`, which Gradle writes as the test name |
 | Jest | `test('AC-1 rounds down', …)` |
 | Vitest | `test('rounds down', { tags: ['AC-1'] }, …)` with the JSON reporter, or `AC-1` in the title |
 | Playwright | `test('rounds down', { tag: '@AC-1' }, …)` with the JSON reporter, `annotation: { type: 'criterion', description: 'AC-1' }`, or `AC-1` in the title |
@@ -28,9 +30,15 @@ between characters that are not letters or digits.
 | xUnit | `[Fact(DisplayName = "AC-1 rounds down")]` |
 | MSTest | `[TestCategory("AC-1")]` |
 
-**pytest** writes `user_properties` into the report. This `conftest.py` turns the marker into one:
+**pytest** writes `user_properties` into the report. This `conftest.py` turns the marker into one,
+and with pytest-bdd a scenario's key tag into the marker:
 
 ```python
+import re
+
+import pytest
+
+
 def pytest_configure(config):
     config.addinivalue_line("markers", "criterion(key): the criterion a test checks")
 
@@ -39,7 +47,16 @@ def pytest_collection_modifyitems(items):
     for item in items:
         for mark in item.iter_markers("criterion"):
             item.user_properties.append(("criterion", mark.args[0]))
+
+
+@pytest.hookimpl(optionalhook=True)
+def pytest_bdd_apply_tag(tag, function):  # pytest-bdd: a scenario tag such as @AC-1
+    if re.fullmatch(r"[A-Z][A-Z0-9]*-[0-9]+", tag):
+        return pytest.mark.criterion(tag)(function)
+    return None
 ```
+
+With pytest-bdd the test artifact is the module that calls `scenarios()`, not the feature file.
 
 **JUnit with Maven Surefire** writes method names unless told to write display names:
 
