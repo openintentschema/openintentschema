@@ -487,6 +487,22 @@ def _() -> Doc:
     return doc
 
 
+@fixture("valid/draft-without-digests-and-approved-intent.json",
+         "The draft as authored, without the digests that approval adds, and the approved record "
+         "of the same version. Intents are compared without status and digests, those of their "
+         "criteria included, so they count as one record in two states (R10).",
+         R12_UNSIGNED)
+def _() -> Doc:
+    doc = base_bundle()
+    draft = copy.deepcopy(get(doc, intent_ref("INT-142", 1)))
+    draft["status"] = "draft"
+    del draft["digest"]
+    for criterion in draft["criteria"]:
+        del criterion["digest"]
+    records(doc).insert(records(doc).index(get(doc, APPROVAL)), draft)
+    return doc
+
+
 @fixture("valid/evidence-revocation.json",
          "Evidence withdrawn by an evidence-revocation decision with rationale (R11).",
          R12_UNSIGNED)
