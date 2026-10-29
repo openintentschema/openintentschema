@@ -94,8 +94,7 @@ Profile fügen Regeln für eine Branche hinzu: `ois validate` prüft [regulated/
 (Regeln `regulated/P1` bis `regulated/P4`), wenn ein Record es aufführt, oder mit
 `--profile regulated/v0.1`.
 
-R16, R17 und die Regel-IDs `schema` und `signature` sind in RFCs vorgeschlagen. Ein signiertes
-Dokument wird mit den öffentlichen Schlüsseln verifiziert, die als `--trusted-key` übergeben
+Ein signiertes Dokument wird mit den öffentlichen Schlüsseln verifiziert, die als `--trusted-key` übergeben
 werden, ein Sigstore-Bundle gegen die Vertrauenswurzeln, die als `--trusted-root` übergeben
 werden; ein festgehaltener Kontext gilt als bestätigt, wenn der Actor, der ihn festgehalten hat,
 signiert hat (R12). Siehe [Bundles und Passports signieren](/de/sign/).

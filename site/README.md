@@ -20,9 +20,9 @@ with the site (`src/styles/custom.css`), the specification split into one page p
 
 | Pages | Source |
 | --- | --- |
-| `/`, `/getting-started/`, `/approve-intents/`, `/gherkin-cucumber/`, `/record/`, `/build-a-passport/`, `/sign/`, `/privacy/`, `/learn/…`, `/develop/…` | `src/content/docs/`, written for the site |
+| `/`, `/getting-started/`, `/approve-intents/`, `/link-tests/`, `/measure/`, `/gherkin-cucumber/`, `/record/`, `/build-a-passport/`, `/sign/`, `/privacy/`, `/learn/…`, `/develop/…` | `src/content/docs/`, written for the site; German under `src/content/docs/de/` |
 | `/passport/v0.1/`, `/methods/basic-intent-coverage/v0.1/` | `src/content/docs/`, written for the site |
-| `/specification/…` | `../specification/ois-spec-v0.1-draft4.md`, one page per `##` section |
+| `/specification/…` | the current version in `spec-versions.json`, one page per `##` section; frozen versions under `/specification/v<version>/` |
 | `/community/…` | `../GOVERNANCE.md`, `../MAINTAINERS.md`, and `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md` in `../.github/` |
 | `/conformance/`, `/profiles/…` | `../fixtures/README.md`, `../profiles/**/README.md` |
 | `/schema/<version>/ois.schema.json` | `../schema/ois.schema.json`, published by `scripts/publish-schema.mjs` at the path its `$id` names |
@@ -62,9 +62,7 @@ a new version and a new URL.
 
 The schema is published at the path its own `$id` names, so version 0.2 lands at
 `/schema/v0.2/` next to 0.1 instead of replacing it, and the build fails if the published file
-differs from `schema/ois.schema.json`. While the `$id` is still the placeholder
-`https://ois.example/…`, nothing is published: the content will change with draft 5, and a
-versioned URL must not. Until then the site links to the schema on GitHub.
+differs from `schema/ois.schema.json`. A `$id` outside `openintentschema.io` is not published.
 
 Open point for when a second version exists: the build publishes only the current schema, so
 older versions must be kept, for example as frozen copies in `public/schema/<version>/`.

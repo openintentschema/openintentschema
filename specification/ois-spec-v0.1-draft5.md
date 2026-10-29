@@ -6,11 +6,11 @@ Oct 25, 2026 · @Louis Stark
 
 This is working draft 0.1 of the Open Intent Schema (OIS), published for discussion with design partners. It is not stable: any part may change before version 1.0.
 
-- **Version:** 0.1, working draft 4 (see change history).
+- **Version:** 0.1, working draft 5 (see change history).
 - **Name:** "Open Intent Schema" is a working title, pending a trademark check.
 - **Editors:** listed in the byline. Further editors join through the governance process.
 - **License:** this text is licensed under CC BY 4.0. The JSON Schema and reference code are licensed under Apache 2.0. A patent non-assertion covenant for implementers is planned and will be chosen with legal advice, following the practice of specifications hosted at the Linux Foundation.
-- **Feedback:** through the public RFC repository (address to be published).
+- **Feedback:** as RFC issues at <https://github.com/openintentschema/openintentschema/issues>; GOVERNANCE.md describes the process.
 - **Governance:** changes follow an open RFC process. Contributions require a Developer Certificate of Origin sign-off. RFCs are decided by rough consensus of the editors and recorded in the repository, where GOVERNANCE.md, CONTRIBUTING.md and LICENSE are authoritative. The editors intend to transfer the specification to a neutral foundation.
 
 Sections marked *normative* define requirements for conforming implementations. Sections marked *informative* explain and give examples, but define no requirements.
@@ -23,7 +23,7 @@ Sections marked *normative* define requirements for conforming implementations. 
 | 0.1-draft.2 | 2026-10-25 | Finding record (first named observation); context recorded by the runtime and attestation rule; evidence revocation; gate registry; targets for non-functional criteria; language tags; passport bundles and scope; build inputs; reference method for intent coverage; carry-over fix in R4; forward-compatibility rule; change history. |
 | 0.1-draft.3 | 2026-10-25 | Actor identity for signature attribution; subject digests on decisions; Level 3 aligned with R12; observation renamed to finding; validator report levels; releases with several builds; R14 clarified; example completed with build artifact and signed bundle. |
 | 0.1-draft.4 | 2026-10-25 | Intent digest excludes status; R10 compares content without status; Level 3 wording for multi-signature bundles; pseudonymous identities for humans; R15 for withdrawn intents; diverse coverage variant; quick start for Level 1. |
-| 0.1-draft.5 | in progress | Appendix A uses intent version 1, so the example carries no history it does not show (R10); A.2 names all four records the passport adds, including the QE lead. |
+| 0.1-draft.5 | in progress | Appendix A uses intent version 1, so the example carries no history it does not show (R10); A.2 names all four records the passport adds, including the QE lead; rule identifier `schema` for Appendix B (RFC #1); R16, release decision in a passport (RFC #2); R17, intent and criterion digests, with computed digests in Appendix A (RFC #3); the R10 exception limited to intents (RFC #5); identifiers under openintentschema.io (RFC #6); coverage over several intents (RFC #7); signature verification, key ids and the rule identifier `signature` (RFC #8). |
 
 ## 1. Introduction (informative)
 
@@ -295,14 +295,16 @@ An evidence record points to a criterion, a test and the code under test. Becaus
 | R7 | Stale evidence | Consumers MUST apply the stale evidence rule of section 6.3 before counting evidence for an intent version. |
 | R8 | Production data | Validators MUST report a warning when an evidence record lists an input dataset classified as `production`. |
 | R9 | Waivers | A decision with outcome `waived` MUST state a `rationale` and SHOULD be made by a human actor. |
-| R10 | Resolution | Within a bundle or passport, every reference MUST resolve to exactly one record. No two records MAY share an `id` (and `version`, for intents and actors) while differing in content, where content is compared without `status` and `digest`. A draft and its approved record therefore count as one record in two states. |
+| R10 | Resolution | Within a bundle or passport, every reference MUST resolve to exactly one record. No two records MAY share an `id` (and `version`, for intents and actors) while differing in content. For intents, content is compared without `status`, the intent `digest` and the criterion digests; a draft and its approved record therefore count as one record in two states. |
 | R11 | Revocation | Evidence that is the subject of an `evidence-revocation` decision MUST NOT be counted for any intent version. The revocation MUST carry a `rationale`; the evidence record itself stays unchanged. |
 | R12 | Context attestation | A context counts as attested only if `contextRecordedBy` differs from `producedBy` and the artifact record is carried in a bundle or passport signed by the `contextRecordedBy` actor. Otherwise validators MUST report the context as self-declared (warning), and consumers SHOULD give evidence with `derivedFrom: intent` that rests on it less weight. |
 | R13 | Open findings | Validators MUST report a warning when a passport lists an intent that a current finding with severity `high` or `critical` references, directly or through one of its criteria, and that finding is not resolved under R14. |
 | R14 | Finding chain | A finding MUST have at most one superseding record; validators MUST report a fork as a violation. A finding counts as resolved only if a decision with gate `finding-resolution`, outcome `approved` and the finding as `subject` exists, made by an actor that does not appear as `producedBy`, `recordedBy` or `decidedBy` in any record listed in `resolvedBy`. |
 | R15 | Passport intents | Every intent listed in a passport's `intents` MUST be an approved version that is not withdrawn, and SHOULD be the latest approved version at `issuedAt`. |
+| R16 | Release decision | A passport's records, or a bundle listed in `bundles`, MUST contain a decision with gate `release` and outcome `approved` or `passed` whose `subject` is an artifact of kind `build` with a digest that matches a digest of the statement's `subject`. |
+| R17 | Digests | The `sha256` value of an intent's `digest` and of each criterion's `digest`, where present, MUST equal the value computed as section 6.4 describes. |
 
-Validators check R1 to R5 and R8 to R15 from the records at hand. R6 cannot be checked mechanically and rests on the producer's declaration, which is why signing (section 8.3) matters. R7 applies to consumers.
+Validators check R1 to R5 and R8 to R17 from the records at hand; R17 also applies to a single record. R6 cannot be checked mechanically and rests on the producer's declaration, which is why signing (section 8.3) matters. R7 applies to consumers.
 
 ## 6. Identifiers, versioning and digests (normative)
 
@@ -379,12 +381,12 @@ A passport MUST be an in-toto Statement v1. Its `subject` lists the released art
   "subject": [
     { "name": "customer-portal", "digest": { "sha256": "<release digest>" } }
   ],
-  "predicateType": "https://ois.example/passport/v0.1",
+  "predicateType": "https://openintentschema.io/passport/v0.1",
   "predicate": { }
 }
 ```
 
-The predicate type URI above is a placeholder. The final URI is assigned when the project domain is chosen (Appendix C).
+The predicate type URI serves a description of the predicate.
 
 ### 8.2 Predicate
 
@@ -402,9 +404,9 @@ The predicate type URI above is a placeholder. The final URI is assigned when th
 
 Rules:
 
-- A passport MUST be self-contained: every reference to an intent, actor, artifact, evidence or decision record MUST resolve to a record inside `records` or inside a bundle listed in bundles. Consumers MUST verify the digest of each listed bundle before using its records.
-- `records`, or a bundle listed in bundles, MUST contain at least one decision with `gate` `release` whose `subject` is the release, with outcome `approved` or `passed`.
-- For every listed intent, `records` MUST contain the approved intent version and its `intent-approval` decision.
+- A passport MUST be self-contained: every reference to an intent, actor, artifact, evidence or decision record MUST resolve to a record inside `records` or inside a bundle listed in `bundles` (R10). Consumers MUST verify the digest of each listed bundle before using its records.
+- `records`, or a bundle listed in `bundles`, MUST contain a decision with gate `release` and outcome `approved` or `passed` for a build whose digest matches the statement's `subject` (R16).
+- For every listed intent, `records` MUST contain the approved intent version and its `intent-approval` decision. This follows from R10, R15 and R1.
 
 `records` SHOULD also include every current finding that references a listed intent, so that a passport does not hide known defects (R13).
 
@@ -418,6 +420,12 @@ Rules:
 
 A signature is attributed to an actor through that actor's `identity`. Consumers MUST treat a bundle or passport as signed by an actor only when the signer identity in the DSSE envelope or its certificate matches the actor's `identity`.
 
+A key id for a long-lived key (`identity.keyId` and the DSSE `keyid`) SHOULD be the lowercase hexadecimal SHA-256 of the key's DER-encoded SubjectPublicKeyInfo. Which public keys and certificate identities a verifier trusts is its own decision, made outside OIS; a document cannot establish trust in a key. A bundle or passport counts as signed by an actor only if a signature verifies under a key the verifier trusts and that key's id or certificate identity matches the actor's `identity`.
+
+An envelope counts as unsigned when it carries no signature, when its payload type is not `application/vnd.in-toto+json` for a passport or `application/vnd.ois+json` for a bundle, or when a signature under a trusted key does not verify.
+
+A Sigstore bundle carrying a DSSE envelope is verified against the trusted roots the verifier chooses (certificate chain, transparency log entry, signature). Its signer is the certificate identity: the OIDC issuer (extension 1.3.6.1.4.1.57264.1.8) as `identity.issuer` and the subject alternative name as `identity.subject`, compared exactly.
+
 Level 3 producers SHOULD also record each signature in a transparency log such as Sigstore Rekor. The log gives an independent time and order for every signature, so `observedAt` and `decidedAt` no longer rest on the producer's own clock.
 
 ## 9. Events (informative)
@@ -428,20 +436,20 @@ Each event carries one record as `data`, with `datacontenttype` `application/vnd
 
 | Event type | Emitted when |
 | --- | --- |
-| `ois.intent.approved` | An intent version reaches status `approved` |
-| `ois.intent.withdrawn` | An intent version with status `withdrawn` is recorded |
-| `ois.artifact.recorded` | An artifact record is created |
-| `ois.evidence.recorded` | An evidence record is created |
-| `ois.decision.recorded` | A decision record is created |
-| `ois.finding.recorded` | A finding record is created, including one that supersedes another |
-| `ois.passport.issued` | A Quality Passport is issued |
+| `io.openintentschema.intent.approved` | An intent version reaches status `approved` |
+| `io.openintentschema.intent.withdrawn` | An intent version with status `withdrawn` is recorded |
+| `io.openintentschema.artifact.recorded` | An artifact record is created |
+| `io.openintentschema.evidence.recorded` | An evidence record is created |
+| `io.openintentschema.decision.recorded` | A decision record is created |
+| `io.openintentschema.finding.recorded` | A finding record is created, including one that supersedes another |
+| `io.openintentschema.passport.issued` | A Quality Passport is issued |
 
-The `ois.` prefix is a placeholder. CloudEvents recommends a reverse-DNS prefix, which will be set together with the project domain (Appendix C).
+Event types carry the reverse-DNS prefix `io.openintentschema.` of the project domain, as CloudEvents recommends.
 
 ```json
 {
   "specversion": "1.0",
-  "type": "ois.evidence.recorded",
+  "type": "io.openintentschema.evidence.recorded",
   "source": "https://ci.acme.example/pipelines/portal",
   "id": "b6f1c2e0-5a8d-4c1e-9a77-2f3e8d1c0b44",
   "subject": "https://ois.acme.example/evidence/EV-9021",
@@ -488,9 +496,18 @@ An implementation claims conformance for a role and, as a producer, for a level,
 
 - **Producer:** emits records that validate against Appendix B, satisfies the integrity rules of section 5 for the records it creates, and computes digests as section 6.4 requires.
 - **Consumer:** accepts valid records, applies the stale evidence rule (section 6.3), ignores unknown extensions and verifies signatures where present (section 8.3).
-- **Validator:** checks a record, bundle or passport against Appendix B and against every rule of section 5 that can be checked from the records at hand. It reports each violation with its rule identifier (R1 to R15).
+- **Validator:** checks a record, bundle or passport against Appendix B and against every rule of section 5 that can be checked from the records at hand. It reports each violation with its rule identifier (R1 to R17). A violation of Appendix B is reported with the identifier `schema`, a signature that does not hold with `signature`.
 
 Validators report at three levels. A *violation* means a MUST is broken and the input does not conform. A *warning* means a rule asks for a report while the input still conforms (R8, R12 and R13). An *info* report points to a SHOULD that is not followed. The conformance test suite tags every invalid fixture with the expected level and rule.
+
+For signed bundles and passports (section 8.3), validators report:
+
+| Rule | Level | Condition |
+| --- | --- | --- |
+| `signature` | violation | An envelope without signatures, with a payload type other than the one its payload requires, or with a signature under a trusted key that does not verify. |
+| `signature` | warning | A signature under a key the verifier does not trust; it cannot be checked. |
+
+The rules of section 5 apply to the payload as to an unwrapped document.
 
 ### 11.2 Producer levels
 
@@ -502,7 +519,7 @@ Validators report at three levels. A *violation* means a MUST is broken and the 
 
 ### 11.3 Conformance test suite
 
-The public repository provides a conformance test suite of valid and invalid fixtures. Each invalid fixture names the rule it violates.
+The public repository provides a conformance test suite of valid and invalid fixtures. Each invalid fixture names the rule it violates; fixtures for Appendix B are tagged with the rule `schema`, those for signatures with `signature`. The suite lists the public keys and Sigstore trusted roots a validator trusts for its signed fixtures.
 
 - A validator conforms if it accepts every valid fixture and rejects every invalid fixture with the correct rule identifier.
 - A producer demonstrates conformance by passing its output through a conforming validator, for the level it claims.
@@ -572,7 +589,7 @@ The last three rows are orientation only. They are not a legal or certification 
 
 ## Appendix A: Complete example (informative)
 
-The example follows one feature, "Customers change their address in the portal", from approved intent to Quality Passport. All digests are illustrative and were not computed from real content.
+The example follows one feature, "Customers change their address in the portal", from approved intent to Quality Passport. The intent and criterion digests are computed as section 6.4 describes (R17). The digests of artifacts are illustrative, since their content is not part of the example.
 
 ### A.1 Bundle
 
@@ -615,16 +632,16 @@ The bundle holds the actors, the approved intent, four artifacts, one evidence r
       "criteria": [
         { "key": "AC-1", "notation": "gherkin", "kind": "functional", "criticality": "high",
           "statement": "Given a logged-in customer, when they submit a valid Swiss address, then the new address is saved with the chosen effective date",
-          "digest": { "sha256": "71c4e9a2b5d80f36c1e7a49b2d60f5e38c9a14d7b2e06f5a3c81d9e4b7f20a63" } },
+          "digest": { "sha256": "c6aa1922fdd002acc1087b24060aa2a20650536b8693725f5c74761660df1d3a" } },
         { "key": "AC-2", "notation": "ears", "kind": "functional", "criticality": "high",
           "statement": "WHEN an address cannot be assigned to a canton, THE portal SHALL flag the premium region for manual review",
-          "digest": { "sha256": "b4e81d3c7a6f09e25d1c84a7b3f60e29d5a8c17b4e03f6a2d9c58e1b7a4f306d" } },
+          "digest": { "sha256": "ebd6350ec92d58cc7c77e62ebf40ea2d26922f8ec95ad85c626ff6b39f8599f6" } },
         { "key": "NFR-1", "notation": "ears", "kind": "non-functional", "criticality": "medium",
           "statement": "THE portal SHALL confirm an address change within 500 milliseconds at the 95th percentile",
           "target": { "metric": "responseTimeP95", "operator": "lte", "value": 500, "unit": "ms" },
-          "digest": { "sha256": "3d9b7a52e18c4f06b7a2d95e1c38f06a4e7d2b91c5f8a30e6b1d47c9a2e58f17" } }
+          "digest": { "sha256": "eccddffcc90a273e6f6663b1f4bd31de390acd914bfb076f8d4cf54ca443904b" } }
       ],
-      "digest": { "sha256": "2e7d4a91c6b38f05e1a9d72c4b60f83e95a1d7c2b4f06e38a9c15d7b2e40f6a1" }
+      "digest": { "sha256": "1358302ab5174e32bff0df5c244bac5eca011e9d0b6c2cd3d4166db2f0223552" }
     },
     {
       "ois": "0.1", "type": "artifact", "id": "https://ois.acme.example/artifacts/ART-301",
@@ -685,10 +702,10 @@ The bundle holds the actors, the approved intent, four artifacts, one evidence r
       "createdAt": "2026-10-14T10:05:00Z",
       "gate": "intent-approval",
       "subject": "https://ois.acme.example/intents/INT-142@1",
+      "subjectDigest": { "sha256": "1358302ab5174e32bff0df5c244bac5eca011e9d0b6c2cd3d4166db2f0223552" },
       "outcome": "approved",
       "decidedBy": "https://ois.acme.example/actors/po-7f3a",
       "decidedAt": "2026-10-14T10:05:00Z",
-      "subjectDigest": { "sha256": "2e7d4a91c6b38f05e1a9d72c4b60f83e95a1d7c2b4f06e38a9c15d7b2e40f6a1" },
       "policy": { "id": "https://ois.acme.example/policies/definition-of-ready", "version": "4" }
     }
   ]
@@ -706,7 +723,7 @@ The passport for the release adds four records: a build artifact, the release de
     { "name": "customer-portal",
       "digest": { "sha256": "0d4f7a2c9e15b83d6a0c47e91f5b28d3c6e09a4f71b2d58e3a96c0f4d7b12e85" } }
   ],
-  "predicateType": "https://ois.example/passport/v0.1",
+  "predicateType": "https://openintentschema.io/passport/v0.1",
   "predicate": {
     "ois": "0.1",
     "release": { "name": "customer-portal", "version": "2026.10.3" },
@@ -732,11 +749,11 @@ The passport for the release adds four records: a build artifact, the release de
         "decidedAt": "2026-10-21T08:45:00Z",
         "evidence": ["https://ois.acme.example/evidence/EV-9021"],
         "assessments": [{ "name": "intentCoverage", "value": 0.5,
-                          "method": "https://ois.example/methods/basic-intent-coverage/v0.1" }]
+                          "method": "https://openintentschema.io/methods/basic-intent-coverage/v0.1" }]
       }
     ],
     "assessments": [{ "name": "intentCoverage", "value": 0.5,
-                      "method": "https://ois.example/methods/basic-intent-coverage/v0.1" }],
+                      "method": "https://openintentschema.io/methods/basic-intent-coverage/v0.1" }],
     "issuedBy": "https://ois.acme.example/actors/passport-issuer@1.0",
     "issuedAt": "2026-10-21T09:00:00Z"
   }
@@ -747,15 +764,15 @@ The intent coverage of 0.5 follows the reference method of Appendix D: of the tw
 
 ## Appendix B: JSON Schema (normative)
 
-The schema below is normative and will also be published as a separate file at its `$id` (a placeholder until the project domain is chosen). It uses JSON Schema 2020-12.
+The schema below is normative and is also published as a separate file at its `$id`. It uses JSON Schema 2020-12.
 
 - Validators MUST treat the `format` keywords `uri` and `date-time` as assertions, or check them in an equivalent way.
-- The schema checks single records, bundles and passport predicates. Rules that span several records, such as R1 to R15, are defined in section 5 and checked by validators separately. The schema relies on unevaluatedProperties and on format assertions, so a conformance claim requires a JSON Schema 2020-12 validator with the format-assertion vocabulary enabled. Older validators give only an approximate result.
+- The schema checks single records, bundles and passport predicates. Rules that span several records, such as R1 to R16, are defined in section 5 and checked by validators separately. The schema relies on unevaluatedProperties and on format assertions, so a conformance claim requires a JSON Schema 2020-12 validator with the format-assertion vocabulary enabled. Older validators give only an approximate result.
 
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ois.example/schema/v0.1/ois.schema.json",
+  "$id": "https://openintentschema.io/schema/v0.1/ois.schema.json",
   "title": "Open Intent Schema v0.1",
   "oneOf": [
     { "$ref": "#/$defs/record" },
@@ -1095,7 +1112,7 @@ These questions are open for v0.1 and are the main topics for the first design p
 - [ ] **Evidence across versions:** is the digest-based rule in section 6.3 workable in practice?
 - [ ] **Git digests:** `gitCommit` is SHA-1 in most repositories. Should a `sha256` value be required as well?
 - [ ] **Autonomy levels:** do the four levels belong in the core or in a profile?
-- [ ] **Identifiers:** project domain, passport predicate type URI, event type prefix, IANA media type registration and a possible URN namespace.
+- [ ] **Identifiers:** IANA registration of the media type `application/vnd.ois+json` and a possible URN namespace.
 - [ ] **Name:** "Open Intent Schema" is a working title and needs a trademark check.
 - [ ] **Foundation:** which neutral home fits best, for example the Linux Foundation, CNCF or OpenSSF?
 
@@ -1107,13 +1124,13 @@ These questions are open for v0.1 and are the main topics for the first design p
 
 This appendix defines one way to compute intent coverage, so that producers who use it report comparable figures. Other methods remain allowed; each is identified by its own `method` URI.
 
-**Method URI:** `https://ois.example/methods/basic-intent-coverage/v0.1` (placeholder until the project domain is chosen).
+**Method URI:** `https://openintentschema.io/methods/basic-intent-coverage/v0.1`.
 
-**Inputs:** one intent version *v*, one release subject *s* (the code or build artifact being released) and the criteria in scope: the passport's `scope` entries that belong to *v*, or all criteria of *v* when `scope` is absent.
+**Inputs:** the intent versions *V* a passport lists in `intents`, one release subject *s* (the code or build artifact being released) and the criteria in scope: the passport's `scope` entries, or all criteria of every version in *V* when `scope` is absent. A criterion belongs to exactly one version in *V*.
 
 **Counted evidence:** an evidence record counts if all of the following hold:
 
-- it references a criterion of *v*, or carries over to *v* under the stale evidence rule (section 6.3);
+- it references a criterion of a version *v* in *V*, or carries over to *v* under the stale evidence rule (section 6.3);
 - its `result` is `pass`;
 - its `derivedFrom` is `intent`;
 - its `subject` is *s*, or an artifact listed in the inputs of *s*;
@@ -1122,10 +1139,10 @@ This appendix defines one way to compute intent coverage, so that producers who 
 
 **Covered criterion:** a criterion is covered if at least one counted evidence record references it. A criterion with a `target` is covered only if that evidence carries a measure whose `name` equals the target's `metric` and whose `value` satisfies the target's `operator` and `value`.
 
-**Coverage:** the number of covered criteria divided by the number of criteria in scope for *v*, reported as a Measurement named `intentCoverage` with a value between 0 and 1.
+**Coverage:** the number of covered criteria in scope divided by the number of criteria in scope, over all versions in *V* together, reported as a Measurement named `intentCoverage` with a value between 0 and 1. With one intent version this is the coverage of that version. A passport with no criteria in scope reports no coverage.
 
 **Attested variant:** `intentCoverageAttested` applies the same method but excludes evidence whose test artifact has a self-declared context (R12). Passports SHOULD report both values when they differ.
 
-**Weighted variant:** `intentCoverageWeighted` weights each criterion by `criticality` (`high` 3, `medium` 2, `low` 1, unset 1) and divides the weight of covered criteria by the total weight.
+**Weighted variant:** `intentCoverageWeighted` weights each criterion by `criticality` (`high` 3, `medium` 2, `low` 1, unset 1) and divides the weight of covered criteria in scope by the total weight of all criteria in scope.
 
 **Diverse variant:** `intentCoverageDiverse` counts evidence only when the producers of the test and of the subject are agents on different models (`provider` or `name` differ in every listed model), or when at least one of them is human. It addresses the shared blind spots of agents on the same model, which R5 alone does not catch.

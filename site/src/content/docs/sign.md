@@ -118,7 +118,7 @@ steps:
     with:
       subject-name: billing
       subject-digest: sha256:${{ steps.passport.outputs.digest }}
-      predicate-type: https://ois.example/passport/v0.1
+      predicate-type: https://openintentschema.io/passport/v0.1
       predicate-path: predicate.json
 ```
 
@@ -146,7 +146,7 @@ instance, which signs for private repositories. An organization's own instance:
 
 **Other providers** work the same way: GitLab CI, Google Cloud, Buildkite or an organization's own
 Sigstore instance are another trusted root and another issuer in the certificate. Outside GitHub,
-`cosign attest-blob --type https://ois.example/passport/v0.1 --predicate predicate.json` signs.
+`cosign attest-blob --type https://openintentschema.io/passport/v0.1 --predicate predicate.json` signs.
 Keyless signing covers passports; bundles are signed with keys.
 
 ## People

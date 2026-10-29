@@ -16,8 +16,8 @@ pipeline into OIS records in about 15 minutes.
 
 ## Status
 
-Specification v0.1, working draft 4, open for discussion with design partners; draft 5 is in
-progress (see the change history in the specification). Any part may change before 1.0.
+Specification v0.1, working draft 5, open for discussion with design partners (see the change
+history in the specification). Any part may change before 1.0.
 
 ## Repository layout
 

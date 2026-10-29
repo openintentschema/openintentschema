@@ -1,8 +1,14 @@
 [
   {
     "version": "0.1",
-    "label": "v0.1 · working draft 4",
-    "source": "specification/ois-spec-v0.1-draft4.md",
+    "label": "v0.1 · working draft 5",
+    "source": "specification/ois-spec-v0.1-draft5.md",
     "current": true
+  },
+  {
+    "version": "0.1-draft4",
+    "label": "v0.1 · working draft 4",
+    "source": "specification/archive/ois-spec-v0.1-draft4.md",
+    "current": false
   }
 ]
