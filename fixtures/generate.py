@@ -10,9 +10,8 @@
 
 Every fixture starts from one of three consistent bases (a bundle, a passport and a Level 1
 bundle) and changes exactly one thing. Intent and criterion digests are computed with RFC 8785,
-independently of any validator. Signed fixtures are DSSE envelopes signed with fixed Ed25519 test
-keys; Ed25519 signs deterministically, so they are reproducible too. See README.md for the format
-and the rule semantics.
+independently of any validator; signed fixtures use fixed Ed25519 test keys. See README.md for
+the format and the rule semantics.
 
     uv run fixtures/generate.py           # write the fixtures and manifest.json
     uv run fixtures/generate.py --check   # fail if a file is out of date or a fixture does
@@ -54,8 +53,7 @@ IN_TOTO = "application/vnd.in-toto+json"
 OIS_BUNDLE = "application/vnd.ois+json"
 TRUSTED_KEYS = ("agent-runtime", "ci-recorder", "passport-issuer")  # keys/<name>.pub
 
-# Keyless (Sigstore) fixtures cannot be generated: a GitHub Actions workflow signs the passport
-# predicate written below (.github/workflows/sigstore-fixtures.yml) and its bundle is recorded.
+# Keyless fixtures are recorded by .github/workflows/sigstore-fixtures.yml.
 SIGSTORE = HERE / "sigstore"
 RECORDED = SIGSTORE / "passport.sigstore.json"
 TRUSTED_ROOTS = ("keys/sigstore-public-good.trusted_root.json",)

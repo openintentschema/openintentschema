@@ -1,10 +1,6 @@
 name: Record the keyless signed fixtures
 
-# Signs the passport predicate that fixtures/generate.py writes with actions/attest, keylessly,
-# through the public-good Sigstore instance. Run it by hand after the predicate changed, download
-# the artifact and commit its file as fixtures/sigstore/passport.sigstore.json; generate.py then
-# derives the keyless fixtures from it. The workflow's own identity is the signer named in the
-# predicate, so it must run on main.
+# Records fixtures/sigstore/passport.sigstore.json. Run on main when generate.py --check asks.
 
 on:
   workflow_dispatch:
