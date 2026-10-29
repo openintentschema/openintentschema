@@ -46,7 +46,7 @@ docker run --rm --network none -v "$PWD:/work" --user "$(id -u):$(id -g)" \
   ghcr.io/openintentschema/ois-tools validate bundle.json
 ```
 
-In CI, `uses: openintentschema/tools/.github/actions/setup@v0.10.0` installs `ois` on GitHub Actions, and
+In CI, `uses: openintentschema/tools/.github/actions/setup@v0.11.0` installs `ois` on GitHub Actions, and
 `.gitlab/ci/ois.gitlab-ci.yml` in the tools repository is a template for GitLab CI; see
 [Getting started](/getting-started/#6-add-it-to-your-pipeline).
 
@@ -63,6 +63,7 @@ Up to version 0.5.0 the package was called `ois-validator`, with one command per
 ```bash
 ois validate bundle.json passport.json
 ois validate --format json finding.json
+ois validate --format sarif passport.json > ois.sarif   # for GitHub code scanning and IDEs
 ```
 
 Each file holds one JSON document: a single record, a bundle, or a passport as an in-toto
