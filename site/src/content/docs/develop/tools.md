@@ -12,10 +12,10 @@ They are one command, `ois`, open source under Apache-2.0, published on PyPI as
 
 | Phase | What is recorded | Command | Guide |
 | --- | --- | --- | --- |
-| Requirement | intent with acceptance criteria, its approval | `ois intent` | [Write and approve intents](/approve-intents/) |
+| Requirement | intent with acceptance criteria, its approval | `ois intent`, `ois intent from-gherkin` | [Write and approve intents](/approve-intents/), [Gherkin](/gherkin-cucumber/) |
 | Design | design approval | `ois record decision --gate design-approval` | [Record artifacts, decisions and findings](/record/) |
 | Implementation | code artifact, the context an agent was given | `ois record artifact` | [Record artifacts, decisions and findings](/record/) |
-| Test | evidence per criterion | `ois junit`, `ois record evidence` | [Getting started](/getting-started/) |
+| Test | evidence per criterion | `ois cucumber`, `ois junit`, `ois record evidence` | [Cucumber](/gherkin-cucumber/), [Getting started](/getting-started/) |
 | Merge | merge decision | `ois record decision --gate merge` | [Record artifacts, decisions and findings](/record/) |
 | Release | build, release decision, signed passport with intent coverage | `ois record`, `ois passport build --sign` | [Build a Quality Passport](/build-a-passport/), [Sign](/sign/) |
 | Operation | findings, their classification and resolution | `ois record finding`, `ois record supersede` | [Record artifacts, decisions and findings](/record/) |

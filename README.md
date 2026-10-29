@@ -42,7 +42,7 @@ problem with its rule and level. The conformance fixtures are the test suite it 
 also cover the rules R16 and R17 and the clarifications proposed in the open RFCs.
 
 The reference tools, one command `ois` with the validator (`ois validate`) and the tools that
-write records (JUnit XML adapter, intents, records, passports, intent coverage) and sign and
+write records (JUnit XML and Cucumber adapters, intents, records, passports, intent coverage) and sign and
 verify them (DSSE with own keys, Sigstore keyless), live in
 [openintentschema/tools](https://github.com/openintentschema/tools) and are published on
 PyPI as [`ois-tools`](https://pypi.org/project/ois-tools/) and as the container image

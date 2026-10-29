@@ -12,8 +12,9 @@ writes the approval, which are error-prone by hand.
 
 ## 1. Write the intent
 
-Intents can be written in YAML (specification section 7). Keep one file per intent version, for
-example under `.ois/intents/`:
+Intents can be written in YAML (specification section 7); feature files in Gherkin become one with
+`ois intent from-gherkin` ([Use Gherkin and Cucumber](/gherkin-cucumber/)). Keep one file per intent
+version, for example under `.ois/intents/`:
 
 ```yaml
 # .ois/intents/INT-7.ois.yaml
