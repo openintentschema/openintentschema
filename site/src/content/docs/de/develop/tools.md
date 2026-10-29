@@ -67,6 +67,32 @@ auf. Jedes Image trägt eine signierte Build-Provenance und eine SBOM; prüf sie
 Bis Version 0.5.0 hiess das Paket `ois-validator`, mit einem Befehl pro Werkzeug
 (`ois-validator`, `ois-junit`, …).
 
+## Offizielle Pakete
+
+Die Werkzeuge erscheinen nur unter diesen Namen, jeweils gebaut und signiert von einem Workflow der
+Organisation `openintentschema` auf GitHub:
+
+| Paket | Registry | Gebaut in |
+| --- | --- | --- |
+| `ois-tools` für Python | [PyPI](https://pypi.org/project/ois-tools/) | [openintentschema/tools](https://github.com/openintentschema/tools) |
+| `ois-tools` für Node.js | [npm](https://www.npmjs.com/package/ois-tools) | [openintentschema/tools-js](https://github.com/openintentschema/tools-js) |
+| `ghcr.io/openintentschema/ois-tools` | GitHub Container Registry | [openintentschema/tools](https://github.com/openintentschema/tools) |
+
+Ein Paket unter einem anderen Namen oder Scope gehört nicht zum Projekt, auch wenn
+«openintentschema» in seinem Namen steht. So prüfst du, wo ein Download gebaut wurde:
+
+```bash
+uvx pypi-attestations@0.0.30 verify pypi --repository https://github.com/openintentschema/tools \
+  pypi:ois_tools-0.13.0-py3-none-any.whl
+npm audit signatures        # in a project that installed ois-tools
+gh attestation verify oci://ghcr.io/openintentschema/ois-tools:0.13.0 --owner openintentschema
+```
+
+Der erste Befehl prüft die Attestierung von PyPI und schlägt für ein anderswo gebautes Paket fehl;
+der zweite prüft die Herkunft, die npm festgehalten hat; der dritte die Build-Herkunft des Images.
+Melde ein Paket, das sich als Teil des Projekts ausgibt, vertraulich, wie es die
+[Sicherheitsrichtlinie](https://github.com/openintentschema/tools/security/policy) beschreibt.
+
 ## Validieren
 
 ```bash
