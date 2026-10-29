@@ -99,6 +99,7 @@ Person oder von einem Agenten, der den Code nie sieht. Ihre Evidence verweist au
 zum Beispiel `https://ois.acme.example/intents/INT-7@1#AC-2`, und gibt `derivedFrom: intent` an.
 Der Validator prüft dann, dass der Test das Kriterium und keinen Code gesehen hat (R4) und dass sein
 Producer ein anderer ist als der des Codes (R5); siehe [Kernkonzepte](/de/learn/core-concepts/).
-[`ois record`](/de/record/) schreibt das Test-Artefakt mit seinem Kontext sowie die Evidence.
+[Tests mit Kriterien verknüpfen](/de/link-tests/) zeigt, wie ein Test sein Kriterium nennt und wie
+`ois junit --intent` den Lauf aufzeichnet; [`ois record`](/de/record/) schreibt einzelne Records.
 
 Wenn das Release bereit ist, [erstelle daraus einen Quality Passport](/de/build-a-passport/).

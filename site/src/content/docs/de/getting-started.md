@@ -203,8 +203,8 @@ prüfe, was es preisgibt (Spezifikation Abschnitt 12):
 ## Nächste Schritte
 
 - **Level 2, Intent-aware:** [Intents schreiben und freigeben](/de/approve-intents/) mit
-  Akzeptanzkriterien, Tests daraus ableiten und festhalten, was jeder Test-Producer erhalten hat
-  (`context`); mit Gherkin [werden Feature-Dateien zum Intent](/de/gherkin-cucumber/). Die Evidence
+  Akzeptanzkriterien, [in jedem Test sein Kriterium nennen](/de/link-tests/) und den Lauf mit
+  `ois junit --intent` aufzeichnen; mit Gherkin [werden Feature-Dateien zum Intent](/de/gherkin-cucumber/). Die Evidence
   sagt dann `derivedFrom: intent`, und die Intent-Abdeckung beginnt zu steigen.
 - **Den Rest der Lieferung aufzeichnen:** Actors, Build-Artefakte, Entscheidungen und Findings, mit
   [`ois record`](/de/record/).

@@ -96,7 +96,8 @@ With approved intents in place, tests can be written against a criterion, by a p
 agent that never sees the code. Their evidence references the criterion, for example
 `https://ois.acme.example/intents/INT-7@1#AC-2`, and states `derivedFrom: intent`. The validator then
 checks that the test saw the criterion and no code (R4) and that its producer differs from the
-code's (R5); see [Core concepts](/learn/core-concepts/). [`ois record`](/record/) writes the test
-artifact with its context and the evidence.
+code's (R5); see [Core concepts](/learn/core-concepts/). [Link tests to criteria](/link-tests/)
+shows how a test names its criterion and how `ois junit --intent` records the run; [`ois
+record`](/record/) writes single records.
 
 When the release is ready, [build a Quality Passport](/build-a-passport/) from these records.

@@ -200,8 +200,8 @@ what it reveals (specification section 12):
 ## Next steps
 
 - **Level 2, intent-aware:** [write and approve intents](/approve-intents/) with acceptance
-  criteria, derive tests from them and record what each test producer was given (`context`);
-  with Gherkin, [feature files become the intent](/gherkin-cucumber/). Evidence then says
+  criteria, [name a criterion in each test](/link-tests/) and record the run with
+  `ois junit --intent`; with Gherkin, [feature files become the intent](/gherkin-cucumber/). Evidence then says
   `derivedFrom: intent`, and intent coverage starts to rise.
 - **Record the rest of the delivery:** actors, build artifacts, decisions and findings, with
   [`ois record`](/record/).
