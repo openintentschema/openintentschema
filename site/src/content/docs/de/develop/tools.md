@@ -113,7 +113,7 @@ denselben Optionen, Meldungen und Exit-Codes:
 ```bash
 npx ois-tools validate passport.json --trusted-root trusted_root.json
 npx ois-tools coverage passport.json --format markdown
-npm install -g ois-tools    # danach: ois validate passport.json
+npm install -g ois-tools    # then: ois validate passport.json
 ```
 
 Beide Implementierungen bestehen jede Conformance-Fixture der Spezifikation und berechnen dieselbe
