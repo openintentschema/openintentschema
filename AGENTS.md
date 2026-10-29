@@ -49,13 +49,15 @@ cd site && npm ci && npm run build    # website; fails on a broken internal link
   `site/scripts/sync-content.mjs` and not committed; edit their sources.
 - The guides in `site/src/content/docs/` (`getting-started`, `approve-intents`, `link-tests`,
   `measure`, `gherkin-cucumber`, `record`, `build-a-passport`, `sign`, `privacy`,
-  `develop/tools`) describe the `ois` commands; update them when a command changes. Their German
-  versions in `site/src/content/docs/de/` change with them (du, Swiss spelling, see
-  [site/README.md](site/README.md)).
+  `develop/tools`) describe the `ois` commands; update them when a command changes. Commands and
+  outputs shown there come from real runs of the released tools, not from memory. Their German
+  versions in `site/src/content/docs/de/` change with them (du, Swiss spelling, identical code
+  blocks, see [site/README.md](site/README.md)).
 - Frozen specification versions are listed in `site/spec-versions.json`.
 - Versioned URLs on the site (`/schema/v0.1/`, `/passport/v0.1/`,
   `/methods/basic-intent-coverage/v0.1/`) never change meaning; a correction is a new version.
 - English everywhere. RFC 2119 keywords in capitals only where normative.
+- Code comments state only the essentials; rationale goes to the README of the directory.
 - Use the newest released versions of tools, libraries and GitHub Actions; pin Actions to a
   commit SHA with the version as a comment. Dependency updates are made by hand, without bots.
 - Commits: one line, with DCO sign-off: `git commit -s -m "<what changed>"`.

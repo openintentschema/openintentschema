@@ -39,7 +39,10 @@ English is the default; German pages live in `src/content/docs/de/`, with the sa
 without a German version is shown in English with a notice. Translated: the guides, the start
 page, core concepts, privacy and the reference tools; the specification, community and reference
 pages stay English. **Change a German page whenever its English page changes.** German pages use
-"du" and Swiss spelling (ss, never ß), and link to `/de/…`.
+"du" and Swiss spelling (ss, never ß), and link to `/de/…`. Their code blocks, comments included,
+are identical to the English ones. OIS terms such as intent, evidence, Quality Passport or
+`derivedFrom` stay English; approve is *freigeben* (*Freigabe*), resolution *Auflösung*,
+self-declared *selbst deklariert*, attested *bestätigt*.
 
 ## Specification versions
 
