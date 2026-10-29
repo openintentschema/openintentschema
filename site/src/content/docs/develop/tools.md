@@ -47,7 +47,7 @@ docker run --rm --network none -v "$PWD:/work" --user "$(id -u):$(id -g)" \
 ```
 
 In CI, `uses: openintentschema/tools/.github/actions/setup@v0.9.0` installs `ois` on GitHub Actions, and
-`ci/gitlab/ois.gitlab-ci.yml` in the tools repository is a template for GitLab CI; see
+`.gitlab/ci/ois.gitlab-ci.yml` in the tools repository is a template for GitLab CI; see
 [Getting started](/getting-started/#6-add-it-to-your-pipeline).
 
 The arguments after the image name go to `ois`. In a CI job that uses the image as its image,
