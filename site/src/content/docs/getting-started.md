@@ -1,15 +1,15 @@
 ---
 title: 'Getting started: your first OIS bundle'
-description: Turn the JUnit XML of an existing pipeline into OIS records in about 15 minutes.
+description: Turn the test reports of an existing pipeline into OIS records in about 15 minutes.
 ---
 
 This guide takes a pipeline that already runs tests and makes it emit Open Intent Schema (OIS)
 records, without changing a single test. It takes about 15 minutes. The result is Level 1
 conformance, "Observe" (specification section 11.2).
 
-**You need:** a Git checkout of the code under test, tests that can write JUnit XML, and either
+**You need:** a Git checkout of the code under test, tests that write JUnit XML or another report `ois junit` reads, and either
 [uv](https://docs.astral.sh/uv/) (it brings Python 3.13 or later along) or Docker. The language of
-your project does not matter: the commands read the JUnit XML and the Git checkout, not the code,
+your project does not matter: the commands read the test report and the Git checkout, not the code,
 so they work the same for Java, Kotlin, TypeScript, Go or .NET, on your machine and in CI.
 
 ## What you get
@@ -29,21 +29,24 @@ What it does not claim yet: that the tests check what was *required*. Every evid
 `derivedFrom: unknown`, and intent coverage is zero. That is the honest baseline for an existing
 system, and the starting point for Level 2.
 
-## 1. Write JUnit XML
+## 1. Write a test report
 
-Most test frameworks write JUnit XML with a flag or a reporter. A few common ones:
+`ois junit` reads JUnit XML, which most test frameworks write with a flag or a reporter, and the
+native formats of a few others. It recognizes the format by its content. Common ones:
 
 | Framework | How |
 | --- | --- |
 | pytest | `pytest --junitxml=reports/junit.xml` |
 | Maven Surefire | written by default to `target/surefire-reports/TEST-*.xml` |
 | Gradle | written by default to `build/test-results/test/TEST-*.xml` |
-| Jest | the `jest-junit` reporter: `jest --reporters=default --reporters=jest-junit` |
-| Go | `go test -v 2>&1 \| go-junit-report > report.xml` |
-| .NET | `dotnet test --logger "junit;LogFilePath=report.xml"` with `JunitXml.TestLogger` |
-| Playwright | the built-in `junit` reporter |
+| Jest | `jest --json --outputFile=jest.json`, or the `jest-junit` reporter |
+| Vitest | `vitest run --reporter=json --outputFile=vitest.json`, or `--reporter=junit` |
+| Playwright | `PLAYWRIGHT_JSON_OUTPUT_NAME=results.json playwright test --reporter=json`, or the `junit` reporter |
+| Go | `go test -json ./... > go-test.json` |
+| .NET | `dotnet test --logger "trx;LogFileName=results.trx"` |
 
-See your framework's documentation for output paths and options.
+The native formats keep what JUnit XML loses: tags in Playwright and Vitest, test categories in
+TRX, and the time of each test. See your framework's documentation for output paths and options.
 
 ## 2. Choose a namespace and a suite name
 

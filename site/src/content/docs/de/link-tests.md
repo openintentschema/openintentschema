@@ -1,28 +1,33 @@
 ---
 title: Tests mit Kriterien verknüpfen
-description: Nenne in jedem Test einen Kriterien-Schlüssel und mach aus jedem JUnit-XML-Bericht Evidence für ein freigegebenes Intent.
+description: Nenne in jedem Test einen Kriterien-Schlüssel und mach aus seinem Testbericht Evidence für ein freigegebenes Intent.
 ---
 
 Sobald ein Intent freigegeben ist ([Intents schreiben und freigeben](/de/approve-intents/)), kann
-jeder Test angeben, welches Kriterium er prüft. `ois junit --intent` macht dann aus dem
-JUnit-XML-Bericht des Laufs Evidence für diese Kriterien, und der
-[Quality Passport](/de/build-a-passport/) bekommt eine echte Intent-Abdeckung. Jedes
-Test-Framework, das JUnit XML schreibt, funktioniert; für Gherkin-Feature-Dateien siehe
-[Gherkin und Cucumber verwenden](/de/gherkin-cucumber/).
+jeder Test angeben, welches Kriterium er prüft. `ois junit --intent` macht dann aus dem Bericht
+des Laufs Evidence für diese Kriterien, und der [Quality Passport](/de/build-a-passport/) bekommt
+eine echte Intent-Abdeckung. Jedes Framework, das JUnit XML schreibt, funktioniert, ebenso die
+eigenen Berichte von Playwright, Jest, Vitest, Go und .NET
+([Erste Schritte](/de/getting-started/#1-einen-testbericht-schreiben)); für Gherkin-Feature-Dateien
+siehe [Gherkin und Cucumber verwenden](/de/gherkin-cucumber/).
 
 ## 1. In jedem Test das Kriterium nennen
 
-Ein Test nennt sein Kriterium über den Schlüssel, zum Beispiel `AC-1`, an einer von zwei Stellen,
-die im Bericht ankommen: in einer Property `criterion` des Testfalls oder als ganzes Wort in
-seinem Namen.
+Ein Test nennt sein Kriterium über den Schlüssel, zum Beispiel `AC-1`, an einer Stelle, die im
+Bericht ankommt: in einer Property oder Annotation `criterion`, in einem Tag oder einer
+Testkategorie oder in seinem Namen, wo der Schlüssel zwischen Zeichen steht, die keine Buchstaben
+oder Ziffern sind.
 
 | Framework | Wie ein Test `AC-1` nennt |
 | --- | --- |
 | pytest | `@pytest.mark.criterion("AC-1")`, mit der `conftest.py` unten |
 | JUnit 5 und 6 (Maven) | `@DisplayName("AC-1 rounds down")`, mit der Surefire-Einstellung unten |
-| Jest | `test('AC-1 rounds down', …)`, mit `jest-junit` |
-| Vitest | `test('AC-1 rounds down', …)`, mit `--reporter=junit` |
-| Playwright | `annotation: { type: 'criterion', description: 'AC-1' }`, oder `AC-1` im Titel |
+| Jest | `test('AC-1 rounds down', …)` |
+| Vitest | `test('rounds down', { tags: ['AC-1'] }, …)` mit dem JSON-Reporter, oder `AC-1` im Titel |
+| Playwright | `test('rounds down', { tag: '@AC-1' }, …)` mit dem JSON-Reporter, `annotation: { type: 'criterion', description: 'AC-1' }`, oder `AC-1` im Titel |
+| Go | `t.Run("AC-1 rounds down", …)` |
+| xUnit | `[Fact(DisplayName = "AC-1 rounds down")]` |
+| MSTest | `[TestCategory("AC-1")]` |
 
 **pytest** schreibt `user_properties` in den Bericht. Diese `conftest.py` macht aus dem Marker
 eine:
@@ -52,15 +57,19 @@ def pytest_collection_modifyitems(items):
 </plugin>
 ```
 
-**Playwright** schreibt Annotationen als Properties, wenn der Reporter dafür eingestellt ist:
+**Vitest** nimmt nur Tags an, die in seiner Konfiguration deklariert sind, zum Beispiel
+`test: { tags: [{ name: 'AC-1' }] }`.
+
+**Der JUnit-Reporter von Playwright** schreibt Annotationen als Properties, wenn er dafür
+eingestellt ist; Tags kommen nur im JSON-Reporter an:
 
 ```ts
 reporter: [['junit', { outputFile: 'results.xml', embedAnnotationsAsProperties: true }]]
 ```
 
-`@Tag` von JUnit und die Option `tag` von Playwright kommen nicht im JUnit XML an; nimm deshalb
-eine der Formen aus der Tabelle. Für Jest setzt du in den Optionen von `jest-junit`
-`addFileAttribute: 'true'`, damit sich jeder Test seiner Datei zuordnen lässt.
+`@Tag` von JUnit, `[Trait]` von xUnit und die Anzeigenamen von MSTest kommen nicht im Bericht an;
+nimm deshalb eine der Formen aus der Tabelle. Mit `jest-junit` setzt du `addFileAttribute: 'true'`,
+damit sich jeder Test seiner Datei zuordnen lässt; der eigene JSON-Bericht von Jest enthält sie.
 
 ## 2. Den Lauf aufzeichnen
 

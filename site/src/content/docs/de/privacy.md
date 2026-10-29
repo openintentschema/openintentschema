@@ -21,7 +21,7 @@ irgendwohin sendest.
 | Das GitLab-CI-Template einbinden | Die Anfrage nach der Template-Datei, dann der Image-Pull | GitHub (`raw.githubusercontent.com`, `ghcr.io`) | Template und Image in deine eigene GitLab-Instanz und Registry kopieren |
 | `uvx` ausführen, wo kein passendes Python installiert ist | Die Download-Anfrage für einen Python-Build | GitHub, das die Python-Builds von uv hostet | Python 3.13 oder neuer selbst installieren, oder `UV_PYTHON_INSTALL_MIRROR` auf einen internen Mirror setzen |
 | Das Container-Image `ghcr.io/openintentschema/ois-tools` pullen | Die Download-Anfrage: IP-Adresse und das angeforderte Image | GitHub Container Registry | Das Image in deine eigene Registry spiegeln, per Digest gepinnt |
-| `ois junit` ausführen | Nichts. Es liest das JUnit XML und den lokalen Git-Checkout (`git rev-parse`, `ls-files`, `show`, `remote get-url`; nie `fetch` oder `push`) und schreibt eine Datei | Niemand | |
+| `ois junit` ausführen | Nichts. Es liest die Testberichte und den lokalen Git-Checkout (`git rev-parse`, `ls-files`, `show`, `remote get-url`; nie `fetch` oder `push`) und schreibt eine Datei | Niemand | |
 | `ois validate` ausführen | Nichts. Das JSON Schema wird im Paket mitgeliefert und nie abgerufen | Niemand | |
 | `ois intent` ausführen | Nichts. Es liest und schreibt Intent- und Entscheidungsdateien lokal | Niemand | |
 | `ois cucumber` ausführen | Nichts. Es liest die Cucumber-Messages-Datei und die Feature-Dateien im lokalen Git-Checkout und schreibt Records; Fehlermeldungen und Stacktraces werden nicht übernommen | Niemand | |

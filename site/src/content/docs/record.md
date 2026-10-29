@@ -75,8 +75,7 @@ ois record evidence --criterion https://ois.acme.example/intents/INT-7@1#AC-1 \
 ```
 
 `--derived-from` is a claim. The validator checks it against the test's context and producers (R4,
-R5). For test results from JUnit XML, [`ois junit`](/getting-started/) writes the evidence in one
-step.
+R5). For a test run, [`ois junit --intent`](/link-tests/) writes the evidence in one step.
 
 ## Decisions
 

@@ -78,8 +78,8 @@ ois record evidence --criterion https://ois.acme.example/intents/INT-7@1#AC-1 \
 ```
 
 `--derived-from` ist eine Behauptung. Der Validator prüft sie gegen den Kontext und die Produzenten
-des Tests (R4, R5). Für Testergebnisse aus JUnit XML schreibt [`ois junit`](/de/getting-started/) die
-Evidence in einem Schritt.
+des Tests (R4, R5). Für einen Testlauf schreibt [`ois junit --intent`](/de/link-tests/) die Evidence in
+einem Schritt.
 
 ## Entscheidungen
 

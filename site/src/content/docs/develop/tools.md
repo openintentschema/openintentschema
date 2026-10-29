@@ -37,7 +37,7 @@ pip install ois-tools                            # or install; Python 3.13 or la
 ois --help                                       # the commands
 ```
 
-The commands work for projects in any language: they read JSON, YAML, JUnit XML and the Git
+The commands work for projects in any language: they read JSON, YAML, test reports and the Git
 checkout, not the code. Without Python, use the container image, which runs `ois` and holds git
 (linux/amd64 and linux/arm64):
 

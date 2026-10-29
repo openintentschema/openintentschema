@@ -20,7 +20,7 @@ records stay in your organization until you send them somewhere.
 | Including the GitLab CI template | The request for the template file, then the image pull | GitHub (`raw.githubusercontent.com`, `ghcr.io`) | Copy the template and the image into your own GitLab instance and registry |
 | Running `uvx` where no suitable Python is installed | The download request for a Python build | GitHub, which hosts uv's Python builds | Install Python 3.13 or later yourself, or set `UV_PYTHON_INSTALL_MIRROR` to an internal mirror |
 | Pulling the container image `ghcr.io/openintentschema/ois-tools` | The download request: IP address and the image requested | GitHub Container Registry | Mirror the image into your own registry, pinned by digest |
-| Running `ois junit` | Nothing. It reads the JUnit XML and the local Git checkout (`git rev-parse`, `ls-files`, `show`, `remote get-url`; never `fetch` or `push`) and writes a file | Nobody | |
+| Running `ois junit` | Nothing. It reads the test reports and the local Git checkout (`git rev-parse`, `ls-files`, `show`, `remote get-url`; never `fetch` or `push`) and writes a file | Nobody | |
 | Running `ois validate` | Nothing. The JSON Schema ships inside the package and is never fetched | Nobody | |
 | Running `ois intent` | Nothing. It reads and writes intent and decision files locally | Nobody | |
 | Running `ois cucumber` | Nothing. It reads the Cucumber Messages file and the feature files in the local Git checkout and writes records; error messages and stack traces are not copied | Nobody | |

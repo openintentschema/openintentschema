@@ -1,26 +1,31 @@
 ---
 title: Link tests to criteria
-description: Name a criterion key in each test and turn any JUnit XML report into evidence for an approved intent.
+description: Name a criterion key in each test and turn its test report into evidence for an approved intent.
 ---
 
 Once an intent is approved ([Write and approve intents](/approve-intents/)), each test can say
-which criterion it checks. `ois junit --intent` then turns the JUnit XML report of the run into
-evidence for those criteria, and the [Quality Passport](/build-a-passport/) gets a real intent
-coverage. Any test framework that writes JUnit XML works; for Gherkin feature files, see
-[Use Gherkin and Cucumber](/gherkin-cucumber/).
+which criterion it checks. `ois junit --intent` then turns the report of the run into evidence for
+those criteria, and the [Quality Passport](/build-a-passport/) gets a real intent coverage. Any
+framework that writes JUnit XML works, and so do the native reports of Playwright, Jest, Vitest,
+Go and .NET ([Getting started](/getting-started/#1-write-a-test-report)); for Gherkin feature
+files, see [Use Gherkin and Cucumber](/gherkin-cucumber/).
 
 ## 1. Name the criterion in each test
 
-A test names its criterion by key, for example `AC-1`, in one of two places that reach the
-report: a `criterion` property of the test case, or its name as a whole word.
+A test names its criterion by key, for example `AC-1`, in a place that reaches the report: a
+`criterion` property or annotation, a tag or test category, or its name, where the key stands
+between characters that are not letters or digits.
 
 | Framework | How a test names `AC-1` |
 | --- | --- |
 | pytest | `@pytest.mark.criterion("AC-1")`, with the `conftest.py` below |
 | JUnit 5 and 6 (Maven) | `@DisplayName("AC-1 rounds down")`, with the Surefire setting below |
-| Jest | `test('AC-1 rounds down', …)`, with `jest-junit` |
-| Vitest | `test('AC-1 rounds down', …)`, with `--reporter=junit` |
-| Playwright | `annotation: { type: 'criterion', description: 'AC-1' }`, or `AC-1` in the title |
+| Jest | `test('AC-1 rounds down', …)` |
+| Vitest | `test('rounds down', { tags: ['AC-1'] }, …)` with the JSON reporter, or `AC-1` in the title |
+| Playwright | `test('rounds down', { tag: '@AC-1' }, …)` with the JSON reporter, `annotation: { type: 'criterion', description: 'AC-1' }`, or `AC-1` in the title |
+| Go | `t.Run("AC-1 rounds down", …)` |
+| xUnit | `[Fact(DisplayName = "AC-1 rounds down")]` |
+| MSTest | `[TestCategory("AC-1")]` |
 
 **pytest** writes `user_properties` into the report. This `conftest.py` turns the marker into one:
 
@@ -49,15 +54,19 @@ def pytest_collection_modifyitems(items):
 </plugin>
 ```
 
-**Playwright** writes annotations as properties when the reporter is configured for it:
+**Vitest** accepts only tags declared in its configuration, for example
+`test: { tags: [{ name: 'AC-1' }] }`.
+
+**Playwright's JUnit reporter** writes annotations as properties when configured for it; tags
+reach only the JSON reporter:
 
 ```ts
 reporter: [['junit', { outputFile: 'results.xml', embedAnnotationsAsProperties: true }]]
 ```
 
-JUnit's `@Tag` and Playwright's `tag` option do not reach JUnit XML, so use one of the forms in
-the table. For Jest, set `addFileAttribute: 'true'` in the `jest-junit` options so that each
-test can be traced to its file.
+JUnit's `@Tag`, xUnit's `[Trait]` and MSTest's display names do not reach the report, so use one
+of the forms in the table. With `jest-junit`, set `addFileAttribute: 'true'` so that each test
+can be traced to its file; Jest's own JSON report has it.
 
 ## 2. Record the run
 
