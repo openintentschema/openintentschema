@@ -78,6 +78,13 @@ intentCoverage 0.5 (declared 0.5)
 1 if a declared value differs from the computed one. Before the passport exists,
 `ois coverage .ois/ --build "$BUILD"` shows what is still missing.
 
+`--format markdown` writes the same as tables, for a CI job summary or a pull request comment.
+On GitHub:
+
+```yaml
+- run: ois coverage .ois/ --build "$BUILD" --format markdown >> "$GITHUB_STEP_SUMMARY"
+```
+
 `intentCoverageAttested` counts only evidence whose test context was recorded by another actor
 who signed the passport (rule R12). In an unsigned passport it is 0.
 

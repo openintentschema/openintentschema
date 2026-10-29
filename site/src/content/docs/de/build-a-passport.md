@@ -77,6 +77,13 @@ intentCoverage 0.5 (declared 0.5)
 Exit-Code 1, wenn ein deklarierter Wert vom berechneten abweicht. Bevor der Passport existiert, zeigt
 `ois coverage .ois/ --build "$BUILD"`, was noch fehlt.
 
+`--format markdown` schreibt dasselbe als Tabellen, für die Zusammenfassung eines CI-Jobs oder
+einen Kommentar im Pull Request. Auf GitHub:
+
+```yaml
+- run: ois coverage .ois/ --build "$BUILD" --format markdown >> "$GITHUB_STEP_SUMMARY"
+```
+
 `intentCoverageAttested` zählt nur Evidence, deren Testkontext von einem anderen Actor erfasst wurde,
 der den Passport signiert hat (Regel R12). In einem unsignierten Passport ist der Wert 0.
 
