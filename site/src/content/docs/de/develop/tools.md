@@ -46,8 +46,9 @@ docker run --rm --network none -v "$PWD:/work" --user "$(id -u):$(id -g)" \
   ghcr.io/openintentschema/ois-tools validate bundle.json
 ```
 
-Zum Validieren mit Node.js bringt das npm-Paket `ois-tools` dasselbe `ois validate` mit; die
-übrigen Befehle gibt es im Python-Paket ([Mit Node.js](#mit-nodejs)):
+Zum Prüfen mit Node.js bringt das npm-Paket `ois-tools` dasselbe `ois validate` und
+`ois coverage` mit; die Befehle, die Records schreiben, gibt es im Python-Paket
+([Mit Node.js](#mit-nodejs)):
 
 ```bash
 npx ois-tools validate bundle.json               # run without installing
@@ -102,7 +103,8 @@ signiert hat (R12). Siehe [Bundles und Passports signieren](/de/sign/).
 
 ### Mit Node.js
 
-Eine zweite Implementierung des Validators, für Node.js 24 oder neuer, ist auf npm als
+Eine zweite Implementierung des Validators und von `ois coverage`, für Node.js 24 oder neuer, ist
+auf npm als
 [`ois-tools`](https://www.npmjs.com/package/ois-tools) veröffentlicht; der Quellcode liegt in
 [openintentschema/tools-js](https://github.com/openintentschema/tools-js). Sie prüft dasselbe:
 Appendix B, R1 bis R17, das Profil `regulated/v0.1`, DSSE- und keyless Sigstore-Signaturen, mit
@@ -110,11 +112,13 @@ denselben Optionen, Meldungen und Exit-Codes:
 
 ```bash
 npx ois-tools validate passport.json --trusted-root trusted_root.json
+npx ois-tools coverage passport.json --format markdown
 npm install -g ois-tools    # danach: ois validate passport.json
 ```
 
-Beide Implementierungen bestehen jede Conformance-Fixture der Spezifikation. In JavaScript ist
-sie auch eine Bibliothek: `import { validate } from 'ois-tools'`.
+Beide Implementierungen bestehen jede Conformance-Fixture der Spezifikation und berechnen dieselbe
+Abdeckung. In JavaScript sind sie auch eine Bibliothek: `import { validate, passportCoverage }
+from 'ois-tools'`.
 
 ## Deine eigene Implementierung testen
 
