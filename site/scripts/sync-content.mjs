@@ -1,7 +1,5 @@
-// Turn documents that live elsewhere in the repository into site pages, so they have one source:
-// the specification (one page per top-level section), the community documents, the conformance
-// fixtures README and the profile registry. Output goes to src/content/docs/{specification,
-// community,profiles}/ and is not committed; edit the sources instead.
+// Site pages from documents elsewhere in the repository: the specification, the community
+// documents, the fixtures README and the profiles. The output is not committed; edit the sources.
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 
 const root = new URL('../../', import.meta.url);
