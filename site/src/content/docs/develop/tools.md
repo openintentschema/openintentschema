@@ -79,6 +79,10 @@ same-producer.json: violation [R5] $.records[12].derivedFrom: test and subject a
 | warning | A rule asks for a report; the input still conforms. | the signature (key or root not trusted), R8, R12, R13 |
 | info | A SHOULD is not followed. | R1, R9, R15 |
 
+Profiles add rules for an industry: `ois validate` checks [regulated/v0.1](/profiles/regulated/v0.1/)
+(rules `regulated/P1` to `regulated/P4`) when a record lists it, or with
+`--profile regulated/v0.1`.
+
 R16, R17 and the rule IDs `schema` and `signature` are proposed in RFCs. A signed document is
 verified with the public keys passed as `--trusted-key`, a Sigstore bundle against the trusted
 roots passed as `--trusted-root`; a recorded context is attested when its recorder signed (R12).

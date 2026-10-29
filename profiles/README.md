@@ -22,6 +22,12 @@ satisfy it.
 - **A versioned URI.** Like the core identifiers, a published profile version never changes; a
   change gets a new version.
 
+## Checking a profile
+
+The reference tools check `regulated/v0.1`: `ois validate` applies it when a record lists its
+URI, or with `--profile regulated/v0.1`. The conformance fixtures test each rule
+(`fixtures/invalid/regulated/`).
+
 ## Registering a profile
 
 Open a pull request that adds a row to the table above and, if the profile is maintained here, a
