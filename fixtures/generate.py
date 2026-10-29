@@ -529,6 +529,22 @@ def _() -> Doc:
     return with_support(passport(), finding("FND-18", severity="low"))
 
 
+@fixture("valid/passport-without-scope.json",
+         "A passport without scope: all three criteria of the intent count, AC-1 and AC-2 with "
+         "criticality high and NFR-1 medium, so the weighted coverage (3 of 8) differs from the "
+         "plain one (1 of 3).",
+         R12_UNSIGNED)
+def _() -> Doc:
+    doc = passport()
+    del doc["predicate"]["scope"]
+    method = "https://openintentschema.io/methods/basic-intent-coverage/v0.1"
+    doc["predicate"]["assessments"] = [
+        {"name": "intentCoverage", "value": 0.3333, "method": method},
+        {"name": "intentCoverageWeighted", "value": 0.375, "method": method},
+    ]
+    return doc
+
+
 # schema -----------------------------------------------------------------------------------
 
 SCHEMA_FAIL = violation("schema")
