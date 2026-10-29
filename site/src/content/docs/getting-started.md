@@ -140,7 +140,7 @@ three levels: violation, warning or info.
 **GitHub Actions**, after the step that runs the tests:
 
 ```yaml
-- uses: openintentschema/tools@v0.9.0   # installs ois; pin the tag's commit SHA in production
+- uses: openintentschema/tools/.github/actions/setup@v0.9.0   # installs ois; pin the tag's commit SHA
 - name: Record test results as OIS
   if: ${{ !cancelled() }}
   run: >

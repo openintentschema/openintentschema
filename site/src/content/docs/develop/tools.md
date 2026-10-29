@@ -46,7 +46,7 @@ docker run --rm --network none -v "$PWD:/work" --user "$(id -u):$(id -g)" \
   ghcr.io/openintentschema/ois-tools validate bundle.json
 ```
 
-In CI, `uses: openintentschema/tools@v0.9.0` installs `ois` on GitHub Actions, and
+In CI, `uses: openintentschema/tools/.github/actions/setup@v0.9.0` installs `ois` on GitHub Actions, and
 `ci/gitlab/ois.gitlab-ci.yml` in the tools repository is a template for GitLab CI; see
 [Getting started](/getting-started/#6-add-it-to-your-pipeline).
 
