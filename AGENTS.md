@@ -5,10 +5,11 @@ Guidance for coding agents and new contributors. Start with [README.md](README.m
 ## What this repository is
 
 The Open Intent Schema (OIS) standard: specification, JSON Schema, examples, conformance
-fixtures, profiles and the website openintentschema.io. Software lives in the sister repository
+fixtures, profiles and the website openintentschema.io. Software lives in the sister repositories
 [openintentschema/tools](https://github.com/openintentschema/tools) (the `ois` command, PyPI
-package `ois-tools`), usually checked out next to this one; it copies schema, examples and
-fixtures from here.
+package `ois-tools`) and [openintentschema/tools-js](https://github.com/openintentschema/tools-js)
+(the validator for Node.js, npm package `ois-tools`), usually checked out next to this one; both
+copy schema, examples and fixtures from here.
 
 The standard is vendor-neutral: nothing here may depend on, name or favour a product or vendor.
 Vendor data goes into `extensions` under a reverse-DNS namespace, industry rules into profiles.

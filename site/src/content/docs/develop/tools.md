@@ -89,6 +89,23 @@ verified with the public keys passed as `--trusted-key`, a Sigstore bundle again
 roots passed as `--trusted-root`; a recorded context is attested when its recorder signed (R12).
 See [Sign bundles and passports](/sign/).
 
+
+### With Node.js
+
+A second implementation of the validator, for Node.js 24 or later, is published on npm as
+[`ois-tools`](https://www.npmjs.com/package/ois-tools); the source is in
+[openintentschema/tools-js](https://github.com/openintentschema/tools-js). It checks the same:
+Appendix B, R1 to R17, the profile `regulated/v0.1`, DSSE and keyless Sigstore signatures, with
+the same options, reports and exit codes:
+
+```bash
+npx ois-tools validate passport.json --trusted-root trusted_root.json
+npm install -g ois-tools    # then: ois validate passport.json
+```
+
+Both implementations pass every conformance fixture of the specification. In JavaScript it is
+also a library: `import { validate } from 'ois-tools'`.
+
 ## Test your own implementation
 
 A validator conforms if it reports exactly what the

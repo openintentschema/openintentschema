@@ -46,7 +46,9 @@ write records (test report and Cucumber adapters, intents, records, passports, i
 verify them (DSSE with own keys, Sigstore keyless), live in
 [openintentschema/tools](https://github.com/openintentschema/tools) and are published on
 PyPI as [`ois-tools`](https://pypi.org/project/ois-tools/) and as the container image
-`ghcr.io/openintentschema/ois-tools`, for projects in any language.
+`ghcr.io/openintentschema/ois-tools`, for projects in any language. A second implementation of
+the validator, for Node.js, lives in [openintentschema/tools-js](https://github.com/openintentschema/tools-js)
+and is published on npm as [`ois-tools`](https://www.npmjs.com/package/ois-tools).
 
 ## Reuse before invention
 

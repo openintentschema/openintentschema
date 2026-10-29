@@ -91,6 +91,23 @@ werden, ein Sigstore-Bundle gegen die Vertrauenswurzeln, die als `--trusted-root
 werden; ein festgehaltener Kontext gilt als bestätigt, wenn der Actor, der ihn festgehalten hat,
 signiert hat (R12). Siehe [Bundles und Passports signieren](/de/sign/).
 
+
+### Mit Node.js
+
+Eine zweite Implementierung des Validators, für Node.js 24 oder neuer, ist auf npm als
+[`ois-tools`](https://www.npmjs.com/package/ois-tools) veröffentlicht; der Quellcode liegt in
+[openintentschema/tools-js](https://github.com/openintentschema/tools-js). Sie prüft dasselbe:
+Appendix B, R1 bis R17, das Profil `regulated/v0.1`, DSSE- und keyless Sigstore-Signaturen, mit
+denselben Optionen, Meldungen und Exit-Codes:
+
+```bash
+npx ois-tools validate passport.json --trusted-root trusted_root.json
+npm install -g ois-tools    # danach: ois validate passport.json
+```
+
+Beide Implementierungen bestehen jede Conformance-Fixture der Spezifikation. In JavaScript ist
+sie auch eine Bibliothek: `import { validate } from 'ois-tools'`.
+
 ## Deine eigene Implementierung testen
 
 Ein Validator ist konform, wenn er für jede Fixture genau das meldet, was die
