@@ -108,7 +108,7 @@ here (every record also carries `ois`, `id` and `createdAt`):
   "criterion": "https://ois.acme.example/intents/team-billing-characterization@1#TC-f8c16e8744a9",
   "test": "https://ois.acme.example/artifacts/test-eaf5767278f44715",
   "derivedFrom": "unknown", "result": "pass", "observedAt": "2026-10-28T15:19:57Z",
-  "recordedBy": "https://ois.acme.example/actors/ois-junit@0.8.0",
+  "recordedBy": "https://ois.acme.example/actors/ois-junit@0.9.0",
   "run": "https://ci.acme.example/pipelines/billing/runs/42" }
 ```
 
@@ -137,14 +137,14 @@ three levels: violation, warning or info.
 
 ## 6. Add it to your pipeline
 
-GitHub Actions, after the step that runs the tests:
+**GitHub Actions**, after the step that runs the tests:
 
 ```yaml
-- uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+- uses: openintentschema/tools@v0.9.0   # installs ois; pin the tag's commit SHA in production
 - name: Record test results as OIS
   if: ${{ !cancelled() }}
   run: >
-    uvx --from ois-tools ois junit reports/junit.xml
+    ois junit reports/junit.xml
     --namespace https://ois.acme.example --suite "Team Billing"
     --run "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
     --output ois-bundle.json
@@ -156,28 +156,37 @@ GitHub Actions, after the step that runs the tests:
 ```
 
 `if: ${{ !cancelled() }}` records results when tests fail too; those are the results that matter
-most. Any other CI works the same way: the job needs `git`, `uv` and the checkout the tests ran
-in. Pin the version (for example `uvx --from ois-tools==0.8.0 ois …`) once you depend on it.
+most.
 
-**With the container image** the step needs neither uv nor Python, which suits Java, Kotlin or
-.NET pipelines. It runs after the tests, in the same checkout:
+**GitLab CI:** include the template of a release; the job runs in the container image and keeps
+the bundle as an artifact, also when the tests failed:
 
 ```yaml
-- name: Record test results as OIS
-  if: ${{ !cancelled() }}
-  run: >
-    docker run --rm --network none -v "$PWD:/work" --user "$(id -u):$(id -g)"
-    ghcr.io/openintentschema/ois-tools:0.8.0
-    junit build/test-results/test/*.xml
-    --namespace https://ois.acme.example --suite "Team Billing"
-    --run "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-    --output ois-bundle.json
+include:
+  - remote: https://raw.githubusercontent.com/openintentschema/tools/v0.9.0/ci/gitlab/ois.gitlab-ci.yml
+
+ois:
+  extends: .ois-junit
+  needs: [test]
+  variables:
+    OIS_JUNIT_REPORTS: build/test-results/test/*.xml
+    OIS_NAMESPACE: https://ois.acme.example
+    OIS_SUITE: Team Billing
 ```
 
-The glob is expanded by the runner's shell, before the container starts, so the paths are relative
-to the checkout, which is mounted at `/work`. In a CI system that runs each job in an image of its
-choice, use `ghcr.io/openintentschema/ois-tools:0.8.0` as the job's image, override its
-entrypoint (GitLab: `entrypoint: [""]`) and call `ois junit` in the script; the checkout must be the one the tests ran in, with its Git history.
+**Any other CI** runs the container image after the tests, in the same checkout, without Python on
+the runner:
+
+```bash
+docker run --rm --network none -v "$PWD:/work" --user "$(id -u):$(id -g)" \
+  ghcr.io/openintentschema/ois-tools:0.9.0 junit build/test-results/test/*.xml \
+  --namespace https://ois.acme.example --suite "Team Billing" --output ois-bundle.json
+```
+
+The glob is expanded by the runner's shell before the container starts, so the paths are
+relative to the checkout, which is mounted at `/work`. Without Docker, `uvx --from ois-tools==0.9.0
+ois junit …` does the same. The job always needs the checkout the tests ran in, with its Git
+history.
 
 ## Before you share a bundle
 
