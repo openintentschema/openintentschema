@@ -15,7 +15,7 @@ Quellcode liegt in [openintentschema/tools](https://github.com/openintentschema/
 | Anforderung | Intent mit Akzeptanzkriterien, seine Freigabe | `ois intent`, `ois intent from-gherkin` | [Intents schreiben und freigeben](/de/approve-intents/), [Gherkin](/de/gherkin-cucumber/) |
 | Design | Design-Freigabe | `ois record decision --gate design-approval` | [Artefakte, Entscheidungen und Findings erfassen](/de/record/) |
 | Implementierung | Code-Artefakt, der Kontext, den ein Agent bekommen hat | `ois record artifact` | [Artefakte, Entscheidungen und Findings festhalten](/de/record/) |
-| Test | Evidence pro Kriterium | `ois junit --intent`, `ois cucumber`, `ois record evidence` | [Tests verknüpfen](/de/link-tests/), [Cucumber](/de/gherkin-cucumber/), [Erste Schritte](/de/getting-started/) |
+| Test | Evidence pro Kriterium, Messwerte für nicht funktionale | `ois junit --intent`, `ois cucumber`, `ois measure`, `ois record evidence` | [Tests verknüpfen](/de/link-tests/), [Messen](/de/measure/), [Cucumber](/de/gherkin-cucumber/), [Erste Schritte](/de/getting-started/) |
 | Merge | Merge-Entscheidung | `ois record decision --gate merge` | [Artefakte, Entscheidungen und Findings festhalten](/de/record/) |
 | Release | Build, Release-Entscheidung, signierter Passport mit Intent-Abdeckung | `ois record`, `ois passport build --sign` | [Einen Quality Passport erstellen](/de/build-a-passport/), [Signieren](/de/sign/) |
 | Betrieb | Findings, ihre Klassifizierung und Auflösung | `ois record finding`, `ois record supersede` | [Artefakte, Entscheidungen und Findings festhalten](/de/record/) |

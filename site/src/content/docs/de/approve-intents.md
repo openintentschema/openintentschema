@@ -43,7 +43,8 @@ criteria:
 - **`key`** benennt ein Kriterium dauerhaft: Der Schlüssel bleibt über alle Versionen gleich.
 - **`notation`** ist `gherkin`, `ears` oder `text`; **`kind`** ist `functional` oder
   `non-functional`. Ein nicht funktionales Kriterium kann ein messbares `target` tragen, zum
-  Beispiel `{metric: responseTimeP95, operator: lte, value: 500, unit: ms}`.
+  Beispiel `{metric: responseTimeP95, operator: lte, value: 500, unit: ms}`;
+  [`ois measure`](/de/measure/) zeichnet einen Lasttest dagegen auf.
 
 YAML wird so gelesen, dass es sich verlustfrei in JSON umwandeln lässt: Datumsangaben bleiben Text,
 und Tags, Merge-Keys und doppelte Schlüssel werden abgelehnt.

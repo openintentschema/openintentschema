@@ -42,7 +42,8 @@ criteria:
 - **`key`** names a criterion for good: it stays the same across versions.
 - **`notation`** is `gherkin`, `ears` or `text`; **`kind`** is `functional` or `non-functional`. A
   non-functional criterion can carry a measurable `target`, for example
-  `{metric: responseTimeP95, operator: lte, value: 500, unit: ms}`.
+  `{metric: responseTimeP95, operator: lte, value: 500, unit: ms}`; [`ois measure`](/measure/)
+  records a load test against it.
 
 YAML is read so that it converts to JSON without loss: dates stay text, and tags, merge keys and
 duplicate keys are refused.
