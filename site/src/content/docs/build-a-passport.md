@@ -7,7 +7,8 @@ A Quality Passport collects the intents, evidence, decisions and findings behind
 that an auditor, a customer or a regulator can verify it without access to your tools
 ([specification section 8](/specification/quality-passport/)). `ois passport`, part of the
 [`ois-tools`](/develop/tools/) package, assembles one from the records
-you already have.
+you already have. The commands assume `ois` is installed and `OIS_NAMESPACE` is set
+([Getting started](/getting-started/#next-steps)).
 
 ## What goes in
 
@@ -16,13 +17,16 @@ you already have.
 - **Evidence** and the test and code artifacts it points to, for example from
   [`ois junit`](/getting-started/) or from tests derived from the intents.
 - **The build artifact** being released, with its digest, and **the actors** every record names:
-  who approved, who built and who issues the passport. [`ois record`](/record/) writes them:
+  who approved, who built, who decides the release and who issues the passport.
+  [`ois record`](/record/) writes them; record the build right after building it, before the
+  tests run ([Link tests to criteria](/link-tests/#2-record-the-build-before-the-tests-run)):
 
   ```bash
   CI=$(ois record actor --kind tool --name "CI build" --version 7)
-  ISSUER=$(ois record actor --kind tool --name "Passport issuer" --version 1)
   BUILD=$(ois record artifact dist/billing-2026.10.4-py3-none-any.whl --kind build \
     --location pkg:pypi/billing@2026.10.4 --produced-by "$CI")
+  RM=$(ois record actor --kind human --name release-manager-1d2e)
+  ISSUER=$(ois record actor --kind tool --name "Passport issuer" --version 1)
   ```
 
 - **Open findings** for the listed intents, so the passport does not hide known defects, and the
@@ -33,14 +37,12 @@ A passport must be self-contained: every reference in it resolves to a record in
 ## Build it
 
 ```bash
-uvx --from ois-tools ois passport build .ois/ ci-bundles/ \
-  --release-name billing --release-version 2026.10.4 \
-  --build "$BUILD" --issuer "$ISSUER" \
-  --approve-release-by https://ois.acme.example/actors/release-manager-1d2e \
-  --output passport.json
+ois passport build .ois/ --release-name billing --release-version 2026.10.4 \
+  --build "$BUILD" --issuer "$ISSUER" --approve-release-by "$RM" --output passport.json
 ```
 
-- **Inputs** are record or bundle files, or whole directories such as `.ois/`, in JSON or YAML.
+- **Inputs** are record or bundle files, or whole directories such as `.ois/`, in JSON or YAML;
+  add the bundles or `.ois/` folders your test jobs handed on as artifacts.
   The same record in several inputs is kept once. Two different records with the same id are
   refused.
 - **Intents:** each intent is listed in its latest approved version, as rule R15 recommends. Name
@@ -63,15 +65,20 @@ rule and writes nothing. Warnings, such as self-declared contexts (R12) or open 
 Anyone can check a passport with the validator, and recompute the coverage it declares:
 
 ```bash
-uvx --from ois-tools ois validate passport.json
-uvx --from ois-tools ois coverage passport.json
+ois validate passport.json
+ois coverage passport.json
 ```
+
+For the worked example of the specification:
 
 ```
 https://ois.acme.example/intents/INT-142@1#AC-1  not covered
-    https://ois.acme.example/evidence/EV-9022: derivedFrom is unknown
+    no evidence
 https://ois.acme.example/intents/INT-142@1#AC-2  covered  https://ois.acme.example/evidence/EV-9021
 intentCoverage 0.5 (declared 0.5)
+intentCoverageAttested 0.0
+intentCoverageWeighted 0.5
+intentCoverageDiverse 0.5
 ```
 
 `ois coverage` shows per criterion which evidence counts and why the rest does not. It exits with

@@ -8,7 +8,8 @@ criteria, approved by a person and bound to their exact text. Tests derived from
 reference a criterion, and evidence says `derivedFrom: intent`.
 
 `ois intent`, part of the [`ois-tools`](/develop/tools/) package, computes the digests and
-writes the approval, which are error-prone by hand.
+writes the approval, which are error-prone by hand. The commands assume `ois` is installed and
+`OIS_NAMESPACE` is set ([Getting started](/getting-started/#next-steps)).
 
 ## 1. Write the intent
 
@@ -17,7 +18,7 @@ Intents can be written in YAML (specification section 7); feature files in Gherk
 version, for example under `.ois/intents/`:
 
 ```yaml
-# .ois/intents/INT-7.ois.yaml
+# .ois/intents/INT-7-v1.ois.yaml
 id: https://ois.acme.example/intents/INT-7
 createdAt: 2026-10-28T09:00:00Z
 version: 1
@@ -39,7 +40,10 @@ criteria:
 ```
 
 - **`id`** is a URI under your namespace; the same id holds every version of the intent.
-- **`key`** names a criterion for good: it stays the same across versions.
+- **`risk`** (`low`, `medium`, `high` or `critical`) says how much is at stake; the profile
+  `regulated/v0.1` requires it.
+- **`key`** names a criterion for good: it stays the same across versions. An optional
+  **`criticality`** (`low`, `medium` or `high`) weights the criterion in the weighted coverage.
 - **`notation`** is `gherkin`, `ears` or `text`; **`kind`** is `functional` or `non-functional`. A
   non-functional criterion can carry a measurable `target`, for example
   `{metric: responseTimeP95, operator: lte, value: 500, unit: ms}`; [`ois measure`](/measure/)
@@ -51,8 +55,8 @@ duplicate keys are refused.
 ## 2. Approve it
 
 ```bash
-uvx --from ois-tools ois intent approve .ois/intents/INT-7.ois.yaml \
-  --by https://ois.acme.example/actors/po-7f3a
+PO=$(ois record actor --kind human --name po-7f3a)   # the approver; prints its reference
+ois intent approve .ois/intents/INT-7-v1.ois.yaml --by "$PO"
 ```
 
 This writes two records:
@@ -62,9 +66,8 @@ This writes two records:
 - `.ois/decisions/INT-7-v1-approval.ois.json`: the intent-approval decision, whose `subjectDigest`
   equals the intent's digest (rule R1).
 
-`--by` names the approving actor. Rule R1 expects a human. Its record comes from
-[`ois record`](/record/): `ois record actor --kind human --name po-7f3a` prints the reference to pass.
-Add `--policy` and `--policy-version` to record the policy the approval followed, for example your
+`--by` names the approving actor; rule R1 expects a human. [`ois record`](/record/) writes the
+other actors and artifacts the same way. Add `--policy` and `--policy-version` to record the policy the approval followed, for example your
 definition of ready.
 
 An approved intent never changes. If its content no longer matches its digest, `ois intent approve`
@@ -73,14 +76,14 @@ refuses it.
 ## 3. Change it: a new version
 
 ```bash
-uvx --from ois-tools ois intent next .ois/intents/INT-7-v1.ois.json
+ois intent next .ois/intents/INT-7-v1.ois.json
 ```
 
 writes `.ois/intents/INT-7-v2.ois.yaml`: version 2, a draft that `supersedes` version 1. Edit it,
 then see which evidence stays valid:
 
 ```bash
-uvx --from ois-tools ois intent compare .ois/intents/INT-7-v1.ois.json .ois/intents/INT-7-v2.ois.yaml
+ois intent compare .ois/intents/INT-7-v1.ois.json .ois/intents/INT-7-v2.ois.yaml
 ```
 
 ```

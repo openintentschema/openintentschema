@@ -9,16 +9,18 @@ into attested (rule R12), and what Level 3 conformance requires (specification s
 11.2). `ois key`, `ois sign` and `ois passport build --sign`, part of the
 [`ois-tools`](/develop/tools/) package, sign with DSSE and your own keys; in a pipeline,
 [keyless signing](#keyless-with-sigstore) through Sigstore needs no key at all, and `ois trust`
-fetches what verifiers need for it.
+fetches what verifiers need for it. The commands assume `ois` is installed and `OIS_NAMESPACE` is
+set ([Getting started](/getting-started/#next-steps)).
 
 ## 1. Create keys
 
-One key pair per actor that signs, for example the passport issuer and the runtime that runs your
-agents and records what they were given:
+One key pair per actor that signs, for example the passport issuer, the runtime that runs your
+agents and records what they were given, and the CI:
 
 ```bash
 ois key generate issuer             # writes issuer.key (secret) and issuer.pub, prints the key id
 ois key generate agent-runtime
+ois key generate ci
 ```
 
 Keys are Ed25519; ECDSA P-256 keys from elsewhere work too. The private key is written readable by
@@ -30,9 +32,13 @@ key is opened with the passphrase in `OIS_KEY_PASSPHRASE`.
 A signature counts for the actor whose `identity.keyId` is the key's id:
 
 ```bash
-ois record actor --kind tool --name "Agent runtime" --version 4.3 --public-key agent-runtime.pub
-ois record actor --kind tool --name "Passport issuer" --version 1 --public-key issuer.pub
+RUNTIME=$(ois record actor --kind tool --name "Agent runtime" --version 4.3 \
+  --public-key agent-runtime.pub)
+ISSUER=$(ois record actor --kind tool --name "Passport issuer" --version 2 --public-key issuer.pub)
 ```
+
+A key changes an actor's record, so an actor recorded earlier without one, such as the issuer in
+[Build a Quality Passport](/build-a-passport/), gets a new version.
 
 The key id is the SHA-256 of the public key, so anyone holding the public key can derive it
 (`ois key id agent-runtime.pub`).
@@ -43,7 +49,7 @@ Build and sign a passport in one step:
 
 ```bash
 ois passport build .ois/ --release-name billing --release-version 2026.10.4 \
-  --build "$BUILD" --issuer "$ISSUER" \
+  --build "$BUILD" --issuer "$ISSUER" --approve-release-by "$RM" \
   --sign issuer.key --sign agent-runtime.key --output passport.dsse.json
 ```
 
@@ -63,7 +69,8 @@ that breaks a rule, so nothing broken gets a signature.
 
 ## 4. Verify
 
-The recipient decides which keys to trust, and passes their public keys:
+The recipient decides which keys to trust, keeps their public keys, for example in a directory
+`keys/`, and passes them:
 
 ```bash
 ois validate passport.dsse.json --trusted-key keys/       # a .pub file, a directory, or KEYID=FILE
@@ -96,7 +103,16 @@ Sigstore, which certifies it for ten minutes, and the signature goes into a publ
 log (Rekor) with an independent time. A verifier trusts Sigstore's trusted root and checks that
 the identity in the certificate is the actor's.
 
-**On GitHub,** `actions/attest` signs the passport and stores the attestation with the repository:
+**On GitHub,** `actions/attest` signs the passport and stores the attestation with the repository.
+The issuer is the workflow itself; its actor names the workflow as its identity and is recorded
+before the passport is built:
+
+```bash
+ISSUER=$(ois record actor --kind tool --name "Release pipeline" --version "$VERSION" \
+  --identity-issuer https://token.actions.githubusercontent.com \
+  --identity-subject "https://github.com/acme/billing/.github/workflows/release.yml@refs/tags/v$VERSION")
+```
+
 
 ```yaml
 permissions:
@@ -108,7 +124,7 @@ steps:
   - id: passport
     run: |
       ois passport build .ois/ --release-name billing --release-version "$VERSION" \
-        --build "$BUILD" --issuer "$ISSUER" \
+        --build "$BUILD" --issuer "$ISSUER" --approve-release-by "$RM" \
         --keyless-signer "https://token.actions.githubusercontent.com=$GITHUB_SERVER_URL/$GITHUB_WORKFLOW_REF" \
         --output passport.json
       jq .predicate passport.json > predicate.json
@@ -118,21 +134,16 @@ steps:
     with:
       subject-name: billing
       subject-digest: sha256:${{ steps.passport.outputs.digest }}
-      predicate-type: https://ois.example/passport/v0.1
+      predicate-type: https://ois.example/passport/v0.1   # the predicate type of this draft
       predicate-path: predicate.json
+  - run: jq -c . "${{ steps.attest.outputs.bundle-path }}" | head -n 1 | jq . > passport.sigstore.json
 ```
 
 `--keyless-signer` tells `ois passport build` who will sign, so the attested coverage inside the
-passport already counts it. The signing actors name the workflow as their identity:
-
-```bash
-ois record actor --kind tool --name "Release pipeline" --version "$VERSION" \
-  --identity-issuer https://token.actions.githubusercontent.com \
-  --identity-subject "https://github.com/acme/billing/.github/workflows/release.yml@refs/tags/v$VERSION"
-```
-
-The action's output `bundle-path` is the Sigstore bundle. Verify it offline with a current trusted
-root (Sigstore rotates keys now and then, so refresh it):
+passport already counts it; an actor whose contexts should count as attested names the same
+workflow identity. The action writes the Sigstore bundle as JSON lines to `bundle-path`; the last
+step keeps it as one document. Verify it offline with a current trusted root (Sigstore rotates
+keys now and then, so refresh it):
 
 ```bash
 pip install 'ois-tools[sigstore]'                     # the container image includes it

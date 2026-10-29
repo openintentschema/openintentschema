@@ -87,7 +87,8 @@ gehört und nicht dem Container. Füge `--network none` hinzu, um zu sehen, dass
 braucht.
 
 `ois junit` validiert das Bundle, bevor es geschrieben wird. Es endet mit 0 und schreibt die Datei,
-oder es endet mit 1 und schreibt nichts.
+mit 1 und schreibt nichts, wenn das Bundle nicht konform wäre, oder mit 2, wenn ein Bericht oder
+der Git-Checkout nicht gelesen werden kann.
 
 ## 4. Das Bundle ansehen
 
@@ -204,6 +205,19 @@ prüfe, was es preisgibt (Spezifikation Abschnitt 12):
 - **Pipeline-Links** (`--run`) zeigen auf deine CI.
 
 ## Nächste Schritte
+
+Die nächsten Anleitungen rufen `ois` direkt auf und nehmen den Namespace aus `OIS_NAMESPACE`.
+Installiere es einmal und setze den Namespace, auf deinem Rechner und in der CI (dort installiert
+es die Setup-Action):
+
+```bash
+uv tool install ois-tools                      # or: pip install ois-tools
+export OIS_NAMESPACE=https://ois.acme.example  # your namespace from step 2
+```
+
+Das Charakterisierungs-Intent bleibt ein Entwurf: Es beschreibt, was die Suite heute prüft.
+Intents, die du schreibst und freigibst, treten Schritt für Schritt an seine Stelle, und die
+Evidence für sie kann zählen.
 
 - **Level 2, Intent-aware:** [Intents schreiben und freigeben](/de/approve-intents/) mit
   Akzeptanzkriterien, [in jedem Test sein Kriterium nennen](/de/link-tests/) und den Lauf mit

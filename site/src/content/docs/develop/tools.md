@@ -105,8 +105,9 @@ A second implementation of the validator and of `ois coverage`, for Node.js 24 o
 published on npm as
 [`ois-tools`](https://www.npmjs.com/package/ois-tools); the source is in
 [openintentschema/tools-js](https://github.com/openintentschema/tools-js). It checks the same:
-Appendix B, R1 to R17, the profile `regulated/v0.1`, DSSE and keyless Sigstore signatures, with
-the same options, reports and exit codes:
+Appendix B, R1 to R5 and R8 to R17, the profile `regulated/v0.1`, DSSE and keyless Sigstore
+signatures, with the same options, reports and exit codes. It reads JSON; YAML drafts of intents
+are read by the Python package only:
 
 ```bash
 npx ois-tools validate passport.json --trusted-root trusted_root.json

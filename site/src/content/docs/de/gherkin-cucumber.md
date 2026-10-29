@@ -8,6 +8,8 @@ Intents bereits. `ois intent from-gherkin` macht aus den Feature-Dateien ein Int
 `ois cucumber` macht aus dem Lauf dieser Szenarien Evidence. Beide sind Teil des Pakets
 [`ois-tools`](/de/develop/tools/). Ein Szenario, das genau so läuft, wie sein freigegebenes
 Kriterium formuliert ist, gilt ohne weiteren Schritt als vom Intent abgeleitet.
+Die Befehle setzen voraus, dass `ois` installiert und `OIS_NAMESPACE` gesetzt ist
+([Erste Schritte](/de/getting-started/#nächste-schritte)).
 
 ## 1. Jedes Szenario mit seinem Schlüssel taggen
 
@@ -33,6 +35,10 @@ Feature: Invoices round to five Rappen
     Examples:
       | amount |
       | -1     |
+
+  Scenario: Exploratory, large totals
+    Given an invoice total of CHF 999999.99
+    When the invoice is issued
 ```
 
 Schlüssel sehen standardmässig aus wie `AC-1` oder `REQ-12`; `--key-pattern` nimmt einen anderen
@@ -43,7 +49,8 @@ weggelassen.
 
 ```bash
 ois intent from-gherkin features/rounding.feature --id https://ois.acme.example/intents/INT-7
-ois intent approve .ois/intents/INT-7-v1.ois.yaml --by https://ois.acme.example/actors/po-7f3a
+PO=$(ois record actor --kind human --name po-7f3a)   # the product owner, who wrote the scenarios
+ois intent approve .ois/intents/INT-7-v1.ois.yaml --by "$PO"
 ```
 
 Jedes Szenario mit Schlüssel wird zu einem Kriterium in der Notation `gherkin`. Seine Aussage
@@ -64,14 +71,19 @@ Ausgabe, die Cucumber empfiehlt:
 
 ## 4. Den Lauf aufzeichnen
 
+Mit dem Build, der vor dem Lauf erfasst wurde, wie bei jedem Test
+([Tests mit Kriterien verknüpfen](/de/link-tests/#2-den-build-vor-dem-testlauf-erfassen)):
+
 ```bash
 ois cucumber cucumber.ndjson --intent https://ois.acme.example/intents/INT-7@1 \
-  --test-producer https://ois.acme.example/actors/po-7f3a --subject "$CODE"
+  --test-producer "$PO" --subject "$BUILD"
 ```
 
+Nach einer Zeile pro geschriebenem Record meldet es:
+
 ```
-ois cucumber: 5 results: 5 derived from the intent, 0 not
-ois cucumber: no evidence: features/rounding.feature: Exploratory, no key (no key tag)
+ois cucumber: 2 results: 2 derived from the intent, 0 not
+ois cucumber: no evidence: features/rounding.feature: Exploratory, large totals (no key tag)
 ```
 
 - **Evidence** pro ausgeführtem Szenario, bei einer Outline einmal pro Zeile der Examples. Ein
@@ -81,8 +93,9 @@ ois cucumber: no evidence: features/rounding.feature: Exploratory, no key (no ke
   von `--test-producer`: wer auch immer die Szenarien geschrieben hat.
 - **`derivedFrom: intent`** dort, wo ein Szenario genau so formuliert ist wie sein freigegebenes
   Kriterium. Der Test *ist* dann das Kriterium; `ois cucumber` prüft das und hält es als Kontext
-  des Tests fest, mit sich selbst als `contextRecordedBy`. Von deiner Pipeline signiert, gilt dieser
-  Kontext als bestätigt (R12).
+  des Tests fest, mit sich selbst als `contextRecordedBy`. Regel R12 meldet diesen Kontext als selbst
+  deklariert, weil der Actor `ois cucumber` keine `identity` trägt, zu der eine Signatur passen
+  könnte.
 - **Ein Szenario, das abweicht** von seinem Kriterium, weil sich eines von beiden geändert hat, wird
   mit `derivedFrom: unknown` aufgezeichnet und gemeldet. Gib eine neue Intent-Version frei oder
   bring das Szenario wieder in Einklang.

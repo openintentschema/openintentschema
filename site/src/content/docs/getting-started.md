@@ -83,8 +83,9 @@ docker run --rm -v "$PWD:/work" --user "$(id -u):$(id -g)" \
 The current directory is mounted at `/work`; `--user` makes the bundle yours rather than the
 container's. Add `--network none` to see that it needs no network.
 
-`ois junit` validates the bundle before writing it. It exits with 0 and writes the file, or
-exits with 1 and writes nothing.
+`ois junit` validates the bundle before writing it. It exits with 0 and writes the file, with 1
+and writes nothing if the bundle would not conform, or with 2 if a report or the Git checkout
+cannot be read.
 
 ## 4. Look at the bundle
 
@@ -201,6 +202,17 @@ what it reveals (specification section 12):
 - **Pipeline links** (`--run`) point to your CI.
 
 ## Next steps
+
+The next guides call `ois` directly and take the namespace from `OIS_NAMESPACE`. Install it once
+and set the namespace, on your machine and in CI (the setup action installs it there):
+
+```bash
+uv tool install ois-tools                      # or: pip install ois-tools
+export OIS_NAMESPACE=https://ois.acme.example  # your namespace from step 2
+```
+
+The characterization intent stays a draft: it describes what the suite checks today. Intents you
+write and approve take its place step by step, and the evidence for them can count.
 
 - **Level 2, intent-aware:** [write and approve intents](/approve-intents/) with acceptance
   criteria, [name a criterion in each test](/link-tests/) and record the run with
