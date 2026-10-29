@@ -7,7 +7,9 @@ import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 const root = new URL('../../', import.meta.url);
 const docs = new URL('../src/content/docs/', import.meta.url);
 const repo = 'https://github.com/openintentschema/openintentschema';
-const specFile = 'specification/ois-spec-v0.1-draft4.md';
+// The current version at /specification/, frozen versions at /specification/v<version>/.
+const versions = JSON.parse(readFileSync(new URL('../spec-versions.json', import.meta.url), 'utf8'));
+const specFile = versions.find((v) => v.current).source;
 
 // Repository files that are pages on the site; other relative links point to GitHub.
 const pages = {
@@ -23,7 +25,7 @@ const pages = {
 
 const read = (path) => readFileSync(new URL(path, root), 'utf8');
 
-function write(slug, title, body, { source, order, description } = {}) {
+function write(slug, title, body, { source, order, description, file, extra = [] } = {}) {
   const front = [
     '---',
     `title: ${JSON.stringify(title)}`,
@@ -31,12 +33,13 @@ function write(slug, title, body, { source, order, description } = {}) {
     `slug: ${slug}`,
     ...(source ? [`editUrl: ${JSON.stringify(`${repo}/edit/main/${source}`)}`] : []),
     ...(order !== undefined ? ['sidebar:', `  order: ${order}`] : []),
+    ...extra,
     '---',
     '',
   ].join('\n');
-  const file = new URL(`${slug}.md`, docs);
-  mkdirSync(new URL('.', file), { recursive: true });
-  writeFileSync(file, `${front}${body.trim()}\n`);
+  const path = new URL(`${file ?? slug}.md`, docs);
+  mkdirSync(new URL('.', path), { recursive: true });
+  writeFileSync(path, `${front}${body.trim()}\n`);
 }
 
 // Rewrite relative links of a document at `source` to site pages or GitHub.
@@ -64,8 +67,16 @@ const promote = (body) => body.replace(/^###(#*) /gm, '##$1 ');
 const slugify = (text) =>
   text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-function specification() {
-  const lines = read(specFile)
+function specification({ version, label, source, current }) {
+  const base = current ? 'specification' : `specification/v${version}`;
+  const file = (slug) => (current ? slug : slug.replace('specification', `archive/v${version}`));
+  const extra = current
+    ? []
+    : [
+        'banner:',
+        `  content: ${JSON.stringify(`Version ${label}, kept as published. <a href="/specification/">The current version</a>.`)}`,
+      ];
+  const lines = read(source)
     .split('\n')
     // The export dropped the section 5 diagram; the site draws it.
     .map((line) =>
@@ -82,10 +93,10 @@ function specification() {
 
   const [status, ...rest] = sections;
   write(
-    'specification',
-    'Open Intent Schema Specification v0.1',
+    base,
+    `Open Intent Schema Specification v${version}`,
     `${intro.replace('@', '')}\n\n## ${status.heading}\n${promote(status.lines.join('\n'))}`,
-    { source: specFile, order: 0, description: 'The OIS specification v0.1, working draft.' },
+    { source, order: 0, description: `The OIS specification, ${label}.`, file: file(base), extra },
   );
 
   rest.forEach((section, index) => {
@@ -93,9 +104,12 @@ function specification() {
     const title = section.heading.replace(/\s*\((normative|informative)\)\s*$/, '');
     const name = title.replace(/^\d+\.\s*/, '').replace(/^Appendix ([A-Z]):\s*/, 'appendix $1 ');
     const note = marking ? `*This section is ${marking}.*\n\n` : '';
-    write(`specification/${slugify(name)}`, title, note + promote(section.lines.join('\n')), {
-      source: specFile,
+    const slug = `${base}/${slugify(name)}`;
+    write(slug, title, note + promote(section.lines.join('\n')), {
+      source,
       order: index + 1,
+      file: file(slug),
+      extra,
     });
   });
 }
@@ -128,11 +142,11 @@ function reference() {
   });
 }
 
-for (const dir of ['specification', 'community', 'profiles', 'conformance']) {
+for (const dir of ['specification', 'archive', 'community', 'profiles', 'conformance']) {
   rmSync(new URL(dir, docs), { recursive: true, force: true });
   rmSync(new URL(`${dir}.md`, docs), { force: true });
 }
-specification();
+versions.forEach(specification);
 community();
 reference();
 console.log('synced specification, community, conformance and profile pages');

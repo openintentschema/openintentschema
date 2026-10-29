@@ -1,11 +1,39 @@
 ---
-// The topic list of starlight-sidebar-topics only where the header tabs are hidden (narrow
-// screens), then Starlight's sidebar for the current topic.
+// Topics on narrow screens, the version choice in the specification, then Starlight's sidebar.
 import Default from '@astrojs/starlight/components/Sidebar.astro';
 import Topics from 'starlight-sidebar-topics/components/Sidebar.astro';
+import versions from '../../spec-versions.json';
+
+const german = Astro.locals.starlightRoute.lang === 'de';
+const prefix = german ? '/de' : '';
+const path = Astro.url.pathname.replace(/^\/de(?=\/)/, '');
+const shown =
+  versions.find((v) => path.startsWith(`/specification/v${v.version}/`)) ??
+  versions.find((v) => v.current);
+const inSpecification = path.startsWith('/specification/');
 ---
 
 <div class="ois-mobile-topics"><Topics /></div>
+{
+  inSpecification && (
+    <nav class="ois-versions" aria-label={german ? 'Version der Spezifikation' : 'Specification version'}>
+      <span>Version</span>
+      <ul>
+        {versions.map((v) => (
+          <li>
+            <a
+              href={`${prefix}/specification/${v.current ? '' : `v${v.version}/`}`}
+              aria-current={v === shown ? 'page' : undefined}
+            >
+              {v.label}
+              {v.current && (german ? ' (aktuell)' : ' (current)')}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
 <Default><slot /></Default>
 
 <style>
@@ -13,5 +41,27 @@ import Topics from 'starlight-sidebar-topics/components/Sidebar.astro';
     .ois-mobile-topics {
       display: none;
     }
+  }
+  .ois-versions {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--sl-color-hairline);
+    font-size: var(--sl-text-sm);
+  }
+  .ois-versions span {
+    color: var(--sl-color-gray-3);
+  }
+  .ois-versions ul {
+    list-style: none;
+    margin: 0.25rem 0 0;
+    padding: 0;
+  }
+  .ois-versions a {
+    color: var(--sl-color-gray-2);
+    text-decoration: none;
+  }
+  .ois-versions a[aria-current='page'] {
+    color: var(--sl-color-white);
+    font-weight: 600;
   }
 </style>

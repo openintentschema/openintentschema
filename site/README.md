@@ -33,6 +33,27 @@ with the site (`src/styles/custom.css`), the specification split into one page p
 before every build and dev run; they are not committed, so edit their sources. The build fails on
 a broken internal link (`starlight-links-validator`).
 
+## Languages
+
+English is the default; German pages live in `src/content/docs/de/`, with the same paths. A page
+without a German version is shown in English with a notice. Translated: the guides, the start
+page, core concepts, privacy and the reference tools; the specification, community and reference
+pages stay English. **Change a German page whenever its English page changes.** German pages use
+"du" and Swiss spelling (ss, never ß), and link to `/de/…`.
+
+## Specification versions
+
+`spec-versions.json` lists the versions of the specification; the sidebar of the specification
+shows them. The current version is built at `/specification/…`. To freeze a version when the next
+one is published:
+
+1. Copy its Markdown to `../specification/archive/` and set `source` of its entry to that copy,
+   with `"current": false`.
+2. Add the new version with `"current": true`.
+
+`scripts/sync-content.mjs` then builds the frozen version at `/specification/v<version>/…`, with
+a banner that points to the current one.
+
 ## Versioned URLs never change
 
 `/schema/v0.1/…`, `/passport/v0.1/` and `/methods/basic-intent-coverage/v0.1/` are identifiers

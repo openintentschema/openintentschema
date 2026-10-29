@@ -1,0 +1,96 @@
+---
+title: Was ist das Open Intent Schema (OIS)?
+description: Ein offener, herstellerneutraler Datenstandard, der verknüpft, was gefordert war, was gebaut wurde und welche Evidence dazwischen liegt.
+---
+
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+Das Open Intent Schema (OIS) ist ein offener, herstellerneutraler Datenstandard, der verknüpft,
+was gefordert war, was erzeugt wurde und welche Evidence belegt, dass es die Anforderung erfüllt.
+
+KI-Agenten schreiben heute Anforderungen, Code und Tests. Teams können nicht mehr nachprüfbar
+zeigen, dass ein geliefertes Feature tut, was verlangt war: Anforderungen, Code, Tests und
+Ergebnisse liegen in getrennten Werkzeugen, und ein generierter Test bestätigt oft, was gebaut
+wurde, statt was gefordert war. OIS hält die Verbindung zwischen ihnen als Daten fest, die jedes
+Werkzeug erzeugen und jede Partei prüfen kann.
+
+Stell dir OIS als SBOM für Anforderungen vor. Eine SBOM listet auf, was Software enthält; OIS legt
+fest, was sie leisten muss und wie das belegt wird.
+
+[![Von der Anforderung zum Release: ein Intent mit Akzeptanzkriterien, die dafür erzeugten Artefakte, die Evidence für jedes Kriterium, die Entscheidungen an Quality Gates und der Quality Passport, der sie sammelt](/images/record-flow.svg)](/images/record-flow.svg)
+
+## Was kann OIS festhalten?
+
+- **Was gefordert war:** Intents mit Akzeptanzkriterien in Gherkin, EARS oder Klartext,
+  versioniert und nach der Freigabe unveränderlich.
+- **Was erzeugt wurde, und von wem:** Code, Tests, Contracts und Datensätze mit Ort und
+  Digest, jeweils mit dem Menschen, dem Agenten oder dem Werkzeug, der sie erstellt hat, und dem,
+  was er dafür bekommen hat.
+- **Was es belegt:** ein Evidence-Record pro Testlauf und Kriterium, der angibt, ob der Test
+  aus der Anforderung oder aus dem Code abgeleitet wurde.
+- **Was entschieden wurde:** Freigaben und Gate-Ergebnisse, gebunden an genau den Inhalt, den
+  sie freigegeben haben.
+- **Was schiefging:** Findings aus Produktion oder Test, die nur durch eine unabhängige
+  Entscheidung geschlossen werden.
+
+## Wo in der Auslieferung?
+
+| Phase | Was OIS festhält |
+| --- | --- |
+| Anforderung | das Intent mit seinen Akzeptanzkriterien und wer es freigegeben hat |
+| Design | das freigegebene Design oder der freigegebene Contract |
+| Implementierung | der Code, wer oder was ihn geschrieben hat und was dieser Producer bekommen hat |
+| Test | eine Evidence pro Testergebnis und Kriterium |
+| Merge | die Merge-Entscheidung, gebunden an genau diesen Code |
+| Release | die Release-Entscheidung für genau diesen Build und ein Quality Passport mit Intent-Abdeckung, den jeder prüfen kann |
+| Betrieb | Findings, ihre Ursache und ihre unabhängige Auflösung |
+
+Die [Referenz-Werkzeuge](/de/develop/tools/) halten jeden Schritt mit einem Befehl fest, `ois`,
+in jeder Pipeline und für Code in jeder Sprache.
+
+## Warum ist OIS wichtig?
+
+- **Unabhängige Evidence wird prüfbar.** Ein Validator kann bestätigen, dass ein Test von einem
+  anderen Actor stammt als der Code und diesen nie gesehen hat, statt es einfach zu glauben.
+- **Releases tragen ihren Nachweis mit sich.** Mit einem signierten Quality Passport kann ein
+  Auditor, ein Kunde oder eine Aufsichtsbehörde ein Release prüfen, ohne Zugriff auf interne
+  Werkzeuge.
+- **Kein Lock-in.** OIS ist ein Datenformat mit offenen Regeln, aufgebaut auf in-toto, DSSE,
+  Sigstore, SLSA, Gherkin, EARS und JSON Schema. Es schreibt weder Werkzeuge noch Agenten noch
+  Workflows vor.
+- **Fang dort an, wo du stehst.** Das JUnit XML, das deine Pipeline bereits schreibt, wird zu
+  OIS-Records, ohne dass du einen Test änderst: eine ehrliche Ausgangsbasis, von der aus die
+  Intent-Abdeckung wächst.
+
+## Loslegen
+
+<CardGrid>
+  <LinkCard
+    title="Erste Schritte"
+    description="Mach aus bestehenden Testergebnissen in etwa 15 Minuten dein erstes OIS-Bundle."
+    href="/de/getting-started/"
+  />
+  <LinkCard
+    title="Kernkonzepte"
+    description="Die sechs Record-Typen, wie sie aufeinander verweisen, und die Konformitätslevel."
+    href="/de/learn/core-concepts/"
+  />
+  <LinkCard
+    title="Spezifikation"
+    description="Das normative Datenmodell, die Integritätsregeln, der Quality Passport und die Konformität."
+    href="/de/specification/"
+  />
+  <LinkCard
+    title="Referenz-Werkzeuge"
+    description="Ein Befehl, ois, um Evidence entlang des Lieferzyklus festzuhalten und zu prüfen."
+    href="/de/develop/tools/"
+  />
+</CardGrid>
+
+## Status und Community
+
+Die Spezifikation v0.1 ist ein Arbeitsentwurf, offen entwickelt mit Design-Partnern aus
+regulierten Branchen. Jeder Teil kann sich vor 1.0 noch ändern. Änderungen werden in öffentlichen
+[RFCs](https://github.com/openintentschema/openintentschema/issues?q=label%3Arfc) nach der
+[Governance](/de/community/governance/) des Projekts vorgeschlagen und entschieden, und die
+Editoren beabsichtigen, die Spezifikation an eine neutrale Stiftung zu übertragen.

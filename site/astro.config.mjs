@@ -12,6 +12,8 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'Open Intent Schema',
+      defaultLocale: 'root',
+      locales: { root: { label: 'English', lang: 'en' }, de: { label: 'Deutsch', lang: 'de' } },
       description: 'What was asked, what was built, and the proof in between.',
       logo: { light: './src/assets/logo-light.svg', dark: './src/assets/logo-dark.svg' },
       favicon: '/favicon.svg',
@@ -28,45 +30,54 @@ export default defineConfig({
         starlightSidebarTopics(
           [
             {
-              label: 'Documentation',
+              label: { en: 'Documentation', de: 'Dokumentation' },
               link: '/',
               items: [
                 {
                   label: 'Get started',
+                  translations: { de: 'Einstieg' },
                   items: [
-                    { label: 'What is OIS?', link: '/' },
-                    { label: 'Getting started', slug: 'getting-started' },
-                    { label: 'Write and approve intents', slug: 'approve-intents' },
-                    { label: 'Use Gherkin and Cucumber', slug: 'gherkin-cucumber' },
-                    { label: 'Record artifacts, decisions and findings', slug: 'record' },
-                    { label: 'Build a Quality Passport', slug: 'build-a-passport' },
-                    { label: 'Sign bundles and passports', slug: 'sign' },
-                    { label: 'Privacy and data flows', slug: 'privacy' },
+                    { label: 'What is OIS?', slug: 'index', translations: { de: 'Was ist OIS?' } },
+                    { label: 'Getting started', slug: 'getting-started', translations: { de: 'Erste Schritte' } },
+                    { label: 'Write and approve intents', slug: 'approve-intents', translations: { de: 'Intents schreiben und freigeben' } },
+                    { label: 'Use Gherkin and Cucumber', slug: 'gherkin-cucumber', translations: { de: 'Gherkin und Cucumber verwenden' } },
+                    { label: 'Record artifacts, decisions and findings', slug: 'record', translations: { de: 'Artefakte, Entscheidungen und Findings erfassen' } },
+                    { label: 'Build a Quality Passport', slug: 'build-a-passport', translations: { de: 'Einen Quality Passport erstellen' } },
+                    { label: 'Sign bundles and passports', slug: 'sign', translations: { de: 'Bundles und Passports signieren' } },
+                    { label: 'Privacy and data flows', slug: 'privacy', translations: { de: 'Datenschutz und Datenflüsse' } },
                   ],
                 },
-                { label: 'Learn', items: [{ label: 'Core concepts', slug: 'learn/core-concepts' }] },
+                {
+                  label: 'Learn',
+                  translations: { de: 'Verstehen' },
+                  items: [{ label: 'Core concepts', slug: 'learn/core-concepts', translations: { de: 'Kernkonzepte' } }],
+                },
                 {
                   label: 'Develop',
+                  translations: { de: 'Entwickeln' },
                   items: [
-                    { label: 'Reference tools', slug: 'develop/tools' },
-                    { label: 'Conformance test suite', slug: 'conformance' },
+                    { label: 'Reference tools', slug: 'develop/tools', translations: { de: 'Referenz-Werkzeuge' } },
+                    { label: 'Conformance test suite', slug: 'conformance', translations: { de: 'Konformitätstests' } },
                   ],
                 },
               ],
             },
             {
-              label: 'Specification',
+              label: { en: 'Specification', de: 'Spezifikation' },
+              id: 'specification',
               link: '/specification/',
               items: [
                 {
                   label: 'Specification v0.1',
+                  translations: { de: 'Spezifikation v0.1' },
                   items: [
-                    { label: 'Overview', slug: 'specification' },
+                    { label: 'Overview', slug: 'specification', translations: { de: 'Übersicht' } },
                     { autogenerate: { directory: 'specification' } },
                   ],
                 },
                 {
                   label: 'Reference',
+                  translations: { de: 'Referenz' },
                   items: [
                     { label: 'Passport predicate v0.1', slug: 'passport/v0.1' },
                     { label: 'Coverage method v0.1', slug: 'methods/basic-intent-coverage/v0.1' },
@@ -95,6 +106,7 @@ export default defineConfig({
                 },
                 {
                   label: 'Take part',
+                  translations: { de: 'Mitmachen' },
                   items: [
                     { label: 'Open RFCs', link: `${repo}/issues?q=is%3Aopen+label%3Arfc` },
                     { label: 'GitHub organization', link: 'https://github.com/openintentschema' },
@@ -103,9 +115,14 @@ export default defineConfig({
               ],
             },
           ],
-          { exclude: ['/404'] },
+          {
+            exclude: ['/404'],
+            // frozen versions of the specification (scripts/sync-content.mjs)
+            topics: { specification: ['{,/de}/specification/v*', '{,/de}/specification/v*/**'] },
+          },
         ),
-        starlightLinksValidator(),
+        // German pages link to pages that exist only in English; Starlight shows those as fallbacks.
+        starlightLinksValidator({ errorOnFallbackPages: false }),
         starlightLlmsTxt({
           projectName: 'Open Intent Schema (OIS)',
           description:

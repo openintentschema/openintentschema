@@ -49,7 +49,9 @@ cd site && npm ci && npm run build    # website; fails on a broken internal link
 - The guides in `site/src/content/docs/` (`getting-started`, `approve-intents`,
   `gherkin-cucumber`, `record`, `build-a-passport`, `sign`, `privacy`, `develop/tools`) describe
   the `ois` commands; update
-  them when a command changes.
+  them when a command changes. Their German versions in `site/src/content/docs/de/` change
+  with them (du, Swiss spelling, see [site/README.md](site/README.md)).
+- Frozen specification versions are listed in `site/spec-versions.json`.
 - Versioned URLs on the site (`/schema/v0.1/`, `/passport/v0.1/`,
   `/methods/basic-intent-coverage/v0.1/`) never change meaning; a correction is a new version.
 - English everywhere. RFC 2119 keywords in capitals only where normative.
