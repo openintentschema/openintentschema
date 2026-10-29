@@ -112,7 +112,7 @@ here (every record also carries `ois`, `id` and `createdAt`):
   "criterion": "https://ois.acme.example/intents/team-billing-characterization@1#TC-f8c16e8744a9",
   "test": "https://ois.acme.example/artifacts/test-eaf5767278f44715",
   "derivedFrom": "unknown", "result": "pass", "observedAt": "2026-10-28T15:19:57Z",
-  "recordedBy": "https://ois.acme.example/actors/ois-junit@0.13.0",
+  "recordedBy": "https://ois.acme.example/actors/ois-junit@0.14.0",
   "run": "https://ci.acme.example/pipelines/billing/runs/42" }
 ```
 
@@ -144,7 +144,7 @@ three levels: violation, warning or info.
 **GitHub Actions**, after the step that runs the tests:
 
 ```yaml
-- uses: openintentschema/tools/.github/actions/setup@v0.13.0   # installs ois; pin the tag's commit SHA
+- uses: openintentschema/tools/.github/actions/setup@v0.14.0   # installs ois; pin the tag's commit SHA
 - name: Record test results as OIS
   if: ${{ !cancelled() }}
   run: >
@@ -167,7 +167,7 @@ the bundle as an artifact, also when the tests failed:
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/openintentschema/tools/v0.13.0/.gitlab/ci/ois.gitlab-ci.yml
+  - remote: https://raw.githubusercontent.com/openintentschema/tools/v0.14.0/.gitlab/ci/ois.gitlab-ci.yml
 
 ois:
   extends: .ois-junit
@@ -183,12 +183,12 @@ the runner:
 
 ```bash
 docker run --rm --network none -v "$PWD:/work" --user "$(id -u):$(id -g)" \
-  ghcr.io/openintentschema/ois-tools:0.13.0 junit build/test-results/test/*.xml \
+  ghcr.io/openintentschema/ois-tools:0.14.0 junit build/test-results/test/*.xml \
   --namespace https://ois.acme.example --suite "Team Billing" --output ois-bundle.json
 ```
 
 The glob is expanded by the runner's shell before the container starts, so the paths are
-relative to the checkout, which is mounted at `/work`. Without Docker, `uvx --from ois-tools==0.13.0
+relative to the checkout, which is mounted at `/work`. Without Docker, `uvx --from ois-tools==0.14.0
 ois junit …` does the same. The job always needs the checkout the tests ran in, with its Git
 history.
 

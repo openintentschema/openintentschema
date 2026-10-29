@@ -57,6 +57,8 @@ def pytest_bdd_apply_tag(tag, function):  # pytest-bdd: a scenario tag such as @
 ```
 
 With pytest-bdd the test artifact is the module that calls `scenarios()`, not the feature file.
+To record the feature file and check that each scenario is worded as its criterion, use
+[`ois cucumber`](/gherkin-cucumber/) with `--cucumberjson`.
 
 **JUnit with Maven Surefire** writes method names unless told to write display names:
 

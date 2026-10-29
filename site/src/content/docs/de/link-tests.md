@@ -60,6 +60,8 @@ def pytest_bdd_apply_tag(tag, function):  # pytest-bdd: a scenario tag such as @
 ```
 
 Mit pytest-bdd ist das Test-Artefakt das Modul, das `scenarios()` aufruft, nicht die Feature-Datei.
+Um die Feature-Datei festzuhalten und zu prüfen, ob jedes Szenario wie sein Kriterium formuliert
+ist, nimm [`ois cucumber`](/de/gherkin-cucumber/) mit `--cucumberjson`.
 
 **JUnit mit Maven Surefire** schreibt Methodennamen, ausser es soll Anzeigenamen schreiben:
 

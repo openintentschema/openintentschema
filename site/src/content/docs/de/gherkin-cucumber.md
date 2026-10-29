@@ -58,16 +58,26 @@ besteht aus den Schritten des Szenarios mit dem Background davor, bei einer Outl
 ihren Examples. Der Titel ist der Name des Features. Gib es frei wie jedes andere Intent
 ([Intents schreiben und freigeben](/de/approve-intents/)).
 
-## 3. Cucumber mit dem Message-Formatter ausführen
+## 3. Die Szenarien mit einem Bericht ausführen
 
-Die Werkzeuge lesen [Cucumber Messages](https://github.com/cucumber/messages), die strukturierte
-Ausgabe, die Cucumber empfiehlt:
+`ois cucumber` liest [Cucumber Messages](https://github.com/cucumber/messages), die strukturierte
+Ausgabe, die Cucumber empfiehlt, Cucumber JSON und das JSON von behave:
 
-| Runner | Option |
-| --- | --- |
-| cucumber-js | `--format message:cucumber.ndjson` |
-| cucumber-jvm | `--plugin message:cucumber.ndjson` |
-| Reqnroll (.NET) | der Formatter für Cucumber Messages |
+| Runner | Option | Bericht |
+| --- | --- | --- |
+| cucumber-js | `--format message:cucumber.ndjson` | Cucumber Messages |
+| cucumber-jvm | `cucumber.plugin=message:cucumber.ndjson`, oder `json:cucumber.json` | Cucumber Messages oder Cucumber JSON |
+| Reqnroll (.NET) | der Formatter für Cucumber Messages | Cucumber Messages |
+| Godog | `Format: "cucumber:cucumber.json"` in `godog.Options` | Cucumber JSON |
+| pytest-bdd | `--cucumberjson=cucumber.json` | Cucumber JSON |
+| behave | `--format json --outfile behave.json` | behave JSON |
+
+Die JSON-Berichte enthalten keinen Szenariotext, der sich vergleichen liesse, nur, wo jedes
+Szenario steht. `ois cucumber` liest das Szenario aus der Feature-Datei im Checkout; zeichne den
+Lauf deshalb auf dem Commit auf, auf dem er lief. Als Zeitpunkt der Evidence nimmt es den Moment,
+in dem der Bericht geschrieben wurde. cucumber-jvm nennt Feature-Dateien auf dem Klassenpfad, etwa
+`classpath:features/rounding.feature`; `ois cucumber` nimmt die eine Datei in Git, deren Pfad so
+endet.
 
 ## 4. Den Lauf aufzeichnen
 
@@ -76,7 +86,7 @@ Mit dem Build, der vor dem Lauf erfasst wurde, wie bei jedem Test
 
 ```bash
 ois cucumber cucumber.ndjson --intent https://ois.acme.example/intents/INT-7@1 \
-  --test-producer "$PO" --subject "$BUILD"
+  --test-producer "$PO" --subject "$BUILD"         # or cucumber.json, behave.json
 ```
 
 Nach einer Zeile pro geschriebenem Record meldet es:

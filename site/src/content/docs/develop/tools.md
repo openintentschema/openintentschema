@@ -55,7 +55,7 @@ npx ois-tools validate bundle.json               # run without installing
 npm install -g ois-tools                         # or install; Node.js 24 or later
 ```
 
-In CI, `uses: openintentschema/tools/.github/actions/setup@v0.13.0` installs `ois` on GitHub Actions, and
+In CI, `uses: openintentschema/tools/.github/actions/setup@v0.14.0` installs `ois` on GitHub Actions, and
 `.gitlab/ci/ois.gitlab-ci.yml` in the tools repository is a template for GitLab CI; see
 [Getting started](/getting-started/#6-add-it-to-your-pipeline).
 
@@ -83,9 +83,9 @@ A package under another name or scope is not part of the project, even if it car
 
 ```bash
 uvx pypi-attestations@0.0.30 verify pypi --repository https://github.com/openintentschema/tools \
-  pypi:ois_tools-0.13.0-py3-none-any.whl
+  pypi:ois_tools-0.14.0-py3-none-any.whl
 npm audit signatures        # in a project that installed ois-tools
-gh attestation verify oci://ghcr.io/openintentschema/ois-tools:0.13.0 --owner openintentschema
+gh attestation verify oci://ghcr.io/openintentschema/ois-tools:0.14.0 --owner openintentschema
 ```
 
 The first command checks the PyPI attestation and fails for a package built elsewhere; the second

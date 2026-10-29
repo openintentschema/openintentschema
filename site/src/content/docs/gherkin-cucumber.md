@@ -55,16 +55,25 @@ Each keyed scenario becomes a criterion in `gherkin` notation. Its statement is 
 steps with the background before them, and for an outline its examples. The title is the
 feature's name. Approve it as any other intent ([Write and approve intents](/approve-intents/)).
 
-## 3. Run Cucumber with the message formatter
+## 3. Run the scenarios with a report
 
-The tools read [Cucumber Messages](https://github.com/cucumber/messages), the structured output
-that Cucumber recommends:
+`ois cucumber` reads [Cucumber Messages](https://github.com/cucumber/messages), the structured
+output that Cucumber recommends, Cucumber JSON and the JSON of behave:
 
-| Runner | Option |
-| --- | --- |
-| cucumber-js | `--format message:cucumber.ndjson` |
-| cucumber-jvm | `--plugin message:cucumber.ndjson` |
-| Reqnroll (.NET) | the Cucumber Messages formatter |
+| Runner | Option | Report |
+| --- | --- | --- |
+| cucumber-js | `--format message:cucumber.ndjson` | Cucumber Messages |
+| cucumber-jvm | `cucumber.plugin=message:cucumber.ndjson`, or `json:cucumber.json` | Cucumber Messages or Cucumber JSON |
+| Reqnroll (.NET) | the Cucumber Messages formatter | Cucumber Messages |
+| Godog | `Format: "cucumber:cucumber.json"` in `godog.Options` | Cucumber JSON |
+| pytest-bdd | `--cucumberjson=cucumber.json` | Cucumber JSON |
+| behave | `--format json --outfile behave.json` | behave JSON |
+
+The JSON reports carry no scenario text that could be compared, only where each scenario is.
+`ois cucumber` reads the scenario from the feature file in the checkout, so record the run from
+the commit it ran on, and takes the moment the report was written as the time of the evidence.
+cucumber-jvm names feature files on the class path, such as `classpath:features/rounding.feature`;
+`ois cucumber` takes the one file in Git whose path ends that way.
 
 ## 4. Record the run
 
@@ -73,7 +82,7 @@ With the build recorded before the run, as for any test
 
 ```bash
 ois cucumber cucumber.ndjson --intent https://ois.acme.example/intents/INT-7@1 \
-  --test-producer "$PO" --subject "$BUILD"
+  --test-producer "$PO" --subject "$BUILD"         # or cucumber.json, behave.json
 ```
 
 After one line per record it writes, it reports:
