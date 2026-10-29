@@ -104,7 +104,7 @@ permissions:
   id-token: write        # the workflow's identity for Sigstore
   attestations: write    # store the attestation with the repository
 steps:
-  - uses: openintentschema/tools/.github/actions/setup@v0.9.0
+  - uses: openintentschema/tools/.github/actions/setup@v0.10.0
   - id: passport
     run: |
       ois passport build .ois/ --release-name billing --release-version "$VERSION" \
