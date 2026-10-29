@@ -46,6 +46,14 @@ docker run --rm --network none -v "$PWD:/work" --user "$(id -u):$(id -g)" \
   ghcr.io/openintentschema/ois-tools validate bundle.json
 ```
 
+Zum Validieren mit Node.js bringt das npm-Paket `ois-tools` dasselbe `ois validate` mit; die
+übrigen Befehle gibt es im Python-Paket ([Mit Node.js](#mit-nodejs)):
+
+```bash
+npx ois-tools validate bundle.json               # run without installing
+npm install -g ois-tools                         # or install; Node.js 24 or later
+```
+
 In CI installiert `uses: openintentschema/tools/.github/actions/setup@v0.12.0` `ois` auf GitHub Actions, und
 `.gitlab/ci/ois.gitlab-ci.yml` im Tools-Repository ist ein Template für GitLab CI; siehe
 [Erste Schritte](/de/getting-started/#6-in-die-pipeline-einbauen).
