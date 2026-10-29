@@ -10,6 +10,8 @@ daraus abgeleitet werden, können dann auf ein Kriterium verweisen, und die Evid
 
 `ois intent`, Teil des Pakets [`ois-tools`](/de/develop/tools/), berechnet die Digests und schreibt
 die Freigabe, was von Hand fehleranfällig ist.
+Die Befehle setzen voraus, dass `ois` installiert und `OIS_NAMESPACE` gesetzt ist
+([Erste Schritte](/de/getting-started/#nächste-schritte)).
 
 ## 1. Das Intent schreiben
 
@@ -18,7 +20,7 @@ mit `ois intent from-gherkin` zu einem Intent ([Gherkin und Cucumber verwenden](
 Lege eine Datei pro Intent-Version an, zum Beispiel unter `.ois/intents/`:
 
 ```yaml
-# .ois/intents/INT-7.ois.yaml
+# .ois/intents/INT-7-v1.ois.yaml
 id: https://ois.acme.example/intents/INT-7
 createdAt: 2026-10-28T09:00:00Z
 version: 1
@@ -40,7 +42,11 @@ criteria:
 ```
 
 - **`id`** ist eine URI unter deinem Namespace; dieselbe ID umfasst jede Version des Intents.
-- **`key`** benennt ein Kriterium dauerhaft: Der Schlüssel bleibt über alle Versionen gleich.
+- **`risk`** (`low`, `medium`, `high` oder `critical`) sagt, wie viel auf dem Spiel steht; das
+  Profil `regulated/v0.1` verlangt es.
+- **`key`** benennt ein Kriterium dauerhaft: Der Schlüssel bleibt über alle Versionen gleich. Ein
+  optionales **`criticality`** (`low`, `medium` oder `high`) gewichtet das Kriterium in der
+  gewichteten Abdeckung.
 - **`notation`** ist `gherkin`, `ears` oder `text`; **`kind`** ist `functional` oder
   `non-functional`. Ein nicht funktionales Kriterium kann ein messbares `target` tragen, zum
   Beispiel `{metric: responseTimeP95, operator: lte, value: 500, unit: ms}`;
@@ -52,8 +58,8 @@ und Tags, Merge-Keys und doppelte Schlüssel werden abgelehnt.
 ## 2. Das Intent freigeben
 
 ```bash
-uvx --from ois-tools ois intent approve .ois/intents/INT-7.ois.yaml \
-  --by https://ois.acme.example/actors/po-7f3a
+PO=$(ois record actor --kind human --name po-7f3a)   # the approver; prints its reference
+ois intent approve .ois/intents/INT-7-v1.ois.yaml --by "$PO"
 ```
 
 Das schreibt zwei Records:
@@ -63,9 +69,8 @@ Das schreibt zwei Records:
 - `.ois/decisions/INT-7-v1-approval.ois.json`: die Entscheidung vom Typ intent-approval, deren
   `subjectDigest` dem Digest des Intents entspricht (Regel R1).
 
-`--by` nennt den freigebenden Actor. Regel R1 erwartet einen Menschen. Seinen Record erzeugt
-[`ois record`](/de/record/): `ois record actor --kind human --name po-7f3a` gibt die Referenz aus,
-die du übergibst. Mit `--policy` und `--policy-version` hältst du die Richtlinie fest, der die
+`--by` nennt den freigebenden Actor; Regel R1 erwartet einen Menschen. [`ois record`](/de/record/)
+schreibt die übrigen Actors und Artefakte auf dieselbe Weise. Mit `--policy` und `--policy-version` hältst du die Richtlinie fest, der die
 Freigabe gefolgt ist, zum Beispiel deine Definition of Ready.
 
 Ein freigegebenes Intent ändert sich nie. Passt sein Inhalt nicht mehr zu seinem Digest, lehnt
@@ -74,14 +79,14 @@ Ein freigegebenes Intent ändert sich nie. Passt sein Inhalt nicht mehr zu seine
 ## 3. Das Intent ändern: eine neue Version
 
 ```bash
-uvx --from ois-tools ois intent next .ois/intents/INT-7-v1.ois.json
+ois intent next .ois/intents/INT-7-v1.ois.json
 ```
 
 schreibt `.ois/intents/INT-7-v2.ois.yaml`: Version 2, ein Entwurf, der Version 1 ersetzt
 (`supersedes`). Bearbeite ihn und sieh dann nach, welche Evidence gültig bleibt:
 
 ```bash
-uvx --from ois-tools ois intent compare .ois/intents/INT-7-v1.ois.json .ois/intents/INT-7-v2.ois.yaml
+ois intent compare .ois/intents/INT-7-v1.ois.json .ois/intents/INT-7-v2.ois.yaml
 ```
 
 ```

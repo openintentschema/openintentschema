@@ -25,8 +25,12 @@ Jeder Record nennt, wer ihn produziert, erfasst oder entschieden hat (Spezifikat
 
 ```bash
 PO=$(ois record actor --kind human --name po-7f3a)
+QE=$(ois record actor --kind human --name qe-2c9d)
+SUPPORT=$(ois record actor --kind human --name support-4b1e)
 DEV=$(ois record actor --kind agent --name "Dev Agent" --version 2.1 \
   --model acme-ai:coder:2026-09 --autonomy-level 1)
+TEST_AGENT=$(ois record actor --kind agent --name "Test Agent" --version 1.3 \
+  --model other-ai:tester:2026-08 --autonomy-level 1)
 CI=$(ois record actor --kind tool --name "CI build" --version 7)
 ```
 
@@ -72,12 +76,12 @@ signiert, meldet der Validator den Kontext als selbst deklariert (R12); siehe
 Ein Ergebnis eines Tests für ein Kriterium:
 
 ```bash
-ois record evidence --criterion https://ois.acme.example/intents/INT-7@1#AC-1 \
-  --test "$TEST" --subject "$CODE" --derived-from intent --result pass --recorded-by "$CI" \
-  --measure responseTimeP95=420ms
+EVIDENCE=$(ois record evidence --criterion https://ois.acme.example/intents/INT-7@1#AC-1 \
+  --test "$TEST" --subject "$CODE" --derived-from intent --result pass --recorded-by "$CI")
 ```
 
-`--derived-from` ist eine Behauptung. Der Validator prüft sie gegen den Kontext und die Produzenten
+`--measure NAME=VALUE` fügt einen Messwert hinzu, für ein Kriterium mit Ziel ([Nicht funktionale
+Kriterien messen](/de/measure/)). `--derived-from` ist eine Behauptung. Der Validator prüft sie gegen den Kontext und die Produzenten
 des Tests (R4, R5). Für einen Testlauf schreibt [`ois junit --intent`](/de/link-tests/) die Evidence in
 einem Schritt.
 
@@ -86,7 +90,7 @@ einem Schritt.
 ```bash
 ois record decision --gate merge --subject "$CODE" --outcome passed --by "$CI"
 ois record decision --gate release --subject "$BUILD" --outcome approved --by "$QE"
-ois record decision --gate evidence-revocation --subject "$FLAKY" --by "$QE" \
+ois record decision --gate evidence-revocation --subject "$EVIDENCE" --by "$QE" \
   --rationale "flaky test, see BILL-31"
 ```
 
@@ -102,18 +106,17 @@ ois record decision --gate evidence-revocation --subject "$FLAKY" --by "$QE" \
 Ein Fehler oder Vorfall, aus der Produktion, einem Test, einem Review oder von einem Kunden:
 
 ```bash
-ois record finding --summary "Rounding is off for credit notes" --severity high \
+FINDING=$(ois record finding --summary "Rounding is off for credit notes" --severity high \
   --source production --reported-by "$SUPPORT" --intent https://ois.acme.example/intents/INT-7@1 \
-  --ticket https://jira.acme.example/browse/BILL-12
+  --ticket https://jira.acme.example/browse/BILL-12)
 ```
 
 Findings ändern sich nie. Um eines zu klassifizieren oder aufzulösen, erfasst du seinen Nachfolger:
 
 ```bash
-ois record supersede .ois/findings/F-519bc77f0ab6.ois.json --cause implementation \
-  --resolved-by "$FIX_EVIDENCE"
-ois record decision --gate finding-resolution \
-  --subject https://ois.acme.example/findings/F-519bc77f0ab6-r2 --outcome approved --by "$QE"
+RESOLVED=$(ois record supersede ".ois/findings/${FINDING##*/}.ois.json" --cause implementation \
+  --resolved-by "$FIX_EVIDENCE")    # evidence that the fix works
+ois record decision --gate finding-resolution --subject "$RESOLVED" --outcome approved --by "$QE"
 ```
 
 Die Auflösung zählt, sobald ein Actor sie bestätigt, der keinen Teil davon produziert, erfasst oder
@@ -126,8 +129,9 @@ einem offenen Finding mit `high` oder `critical` eine Warnung (R13).
 Führst du einen Befehl für dieselbe Sache erneut aus, gibt er dieselbe Referenz aus und behält die
 Datei. Ein anderer Record unter einer bestehenden ID wird abgelehnt. Nichts wird überschrieben, wie es
 die Spezifikation verlangt (Abschnitt 6.3). Exit-Code 0 bedeutet, dass der Record geschrieben wurde
-oder schon vorhanden ist, und 1, dass er eine Regel verletzen würde und nichts geschrieben wurde.
-Exit-Code 2 bedeutet, dass eine Datei nicht gelesen werden konnte oder ein Argument fehlerhaft ist.
+oder schon vorhanden ist. 1 bedeutet, dass er eine Regel verletzen würde oder nicht wie verlangt
+geschrieben werden kann, zum Beispiel ohne Namespace, und nichts geschrieben wurde. 2 bedeutet, dass
+eine Datei nicht gelesen werden konnte oder sich ein Wert nicht auswerten lässt.
 
 ## Weitergeben
 

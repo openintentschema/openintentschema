@@ -3,8 +3,8 @@ title: Core concepts
 description: The OIS record types, how they reference each other, and the conformance levels.
 ---
 
-OIS describes software delivery with six record types, one embedded type and one transport
-container. All records are JSON and share the fields `ois`, `type`, `id` and `createdAt`. The
+OIS describes software delivery with six record types, the criterion embedded in an intent, and
+the bundle as transport container. All records are JSON and share the fields `ois`, `type`, `id` and `createdAt`. The
 normative definitions are in [section 4 of the specification](/specification/core-data-model/).
 
 ## Records

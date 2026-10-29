@@ -3,8 +3,8 @@ title: Kernkonzepte
 description: Die OIS-Record-Typen, wie sie aufeinander verweisen, und die Konformitätslevel.
 ---
 
-OIS beschreibt Softwareauslieferung mit sechs Record-Typen, einem eingebetteten Typ und einem
-Transportcontainer. Alle Records sind JSON und teilen die Felder `ois`, `type`, `id` und
+OIS beschreibt Softwareauslieferung mit sechs Record-Typen, dem in einem Intent eingebetteten
+Kriterium und dem Bundle als Transportcontainer. Alle Records sind JSON und teilen die Felder `ois`, `type`, `id` und
 `createdAt`. Die normativen Definitionen stehen in
 [Abschnitt 4 der Spezifikation](/de/specification/core-data-model/).
 

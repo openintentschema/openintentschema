@@ -24,8 +24,12 @@ Every record names who produced, recorded or decided it (specification section 4
 
 ```bash
 PO=$(ois record actor --kind human --name po-7f3a)
+QE=$(ois record actor --kind human --name qe-2c9d)
+SUPPORT=$(ois record actor --kind human --name support-4b1e)
 DEV=$(ois record actor --kind agent --name "Dev Agent" --version 2.1 \
   --model acme-ai:coder:2026-09 --autonomy-level 1)
+TEST_AGENT=$(ois record actor --kind agent --name "Test Agent" --version 1.3 \
+  --model other-ai:tester:2026-08 --autonomy-level 1)
 CI=$(ois record actor --kind tool --name "CI build" --version 7)
 ```
 
@@ -69,12 +73,12 @@ the context as self-declared (R12); see [Sign bundles and passports](/sign/).
 One result of one test for one criterion:
 
 ```bash
-ois record evidence --criterion https://ois.acme.example/intents/INT-7@1#AC-1 \
-  --test "$TEST" --subject "$CODE" --derived-from intent --result pass --recorded-by "$CI" \
-  --measure responseTimeP95=420ms
+EVIDENCE=$(ois record evidence --criterion https://ois.acme.example/intents/INT-7@1#AC-1 \
+  --test "$TEST" --subject "$CODE" --derived-from intent --result pass --recorded-by "$CI")
 ```
 
-`--derived-from` is a claim. The validator checks it against the test's context and producers (R4,
+`--measure NAME=VALUE` adds a measure, for a criterion with a target ([Measure non-functional
+criteria](/measure/)). `--derived-from` is a claim. The validator checks it against the test's context and producers (R4,
 R5). For a test run, [`ois junit --intent`](/link-tests/) writes the evidence in one step.
 
 ## Decisions
@@ -82,7 +86,7 @@ R5). For a test run, [`ois junit --intent`](/link-tests/) writes the evidence in
 ```bash
 ois record decision --gate merge --subject "$CODE" --outcome passed --by "$CI"
 ois record decision --gate release --subject "$BUILD" --outcome approved --by "$QE"
-ois record decision --gate evidence-revocation --subject "$FLAKY" --by "$QE" \
+ois record decision --gate evidence-revocation --subject "$EVIDENCE" --by "$QE" \
   --rationale "flaky test, see BILL-31"
 ```
 
@@ -98,18 +102,17 @@ ois record decision --gate evidence-revocation --subject "$FLAKY" --by "$QE" \
 A defect or incident, from production, a test, a review or a customer:
 
 ```bash
-ois record finding --summary "Rounding is off for credit notes" --severity high \
+FINDING=$(ois record finding --summary "Rounding is off for credit notes" --severity high \
   --source production --reported-by "$SUPPORT" --intent https://ois.acme.example/intents/INT-7@1 \
-  --ticket https://jira.acme.example/browse/BILL-12
+  --ticket https://jira.acme.example/browse/BILL-12)
 ```
 
 Findings never change. To classify or resolve one, record its successor:
 
 ```bash
-ois record supersede .ois/findings/F-519bc77f0ab6.ois.json --cause implementation \
-  --resolved-by "$FIX_EVIDENCE"
-ois record decision --gate finding-resolution \
-  --subject https://ois.acme.example/findings/F-519bc77f0ab6-r2 --outcome approved --by "$QE"
+RESOLVED=$(ois record supersede ".ois/findings/${FINDING##*/}.ois.json" --cause implementation \
+  --resolved-by "$FIX_EVIDENCE")    # evidence that the fix works
+ois record decision --gate finding-resolution --subject "$RESOLVED" --outcome approved --by "$QE"
 ```
 
 The resolution counts once an actor confirms it who did not produce, record or decide any part of
@@ -121,9 +124,9 @@ finding. Until then, a passport that lists the intent carries a warning for an o
 
 Running a command again for the same thing prints the same reference and keeps the file. A
 different record under an existing id is refused. Nothing is overwritten, as the specification
-requires (section 6.3). Exit code 0 means the record is written or already there, and 1 means it
-would break a rule and nothing was written. Exit code 2 means a file could not be read or an
-argument is malformed.
+requires (section 6.3). Exit code 0 means the record is written or already there. 1 means it
+would break a rule or cannot be written as asked, for example without a namespace, and nothing
+was written. 2 means a file could not be read or a value cannot be parsed.
 
 ## Pass them on
 

@@ -87,7 +87,8 @@ gehört und nicht dem Container. Füge `--network none` hinzu, um zu sehen, dass
 braucht.
 
 `ois junit` validiert das Bundle, bevor es geschrieben wird. Es endet mit 0 und schreibt die Datei,
-oder es endet mit 1 und schreibt nichts.
+mit 1 und schreibt nichts, wenn das Bundle nicht konform wäre, oder mit 2, wenn ein Bericht oder
+der Git-Checkout nicht gelesen werden kann.
 
 ## 4. Das Bundle ansehen
 
@@ -114,7 +115,7 @@ Für drei pytest-Tests in `tests/test_invoice.py` enthält das Bundle diese Reco
   "criterion": "https://ois.acme.example/intents/team-billing-characterization@1#TC-f8c16e8744a9",
   "test": "https://ois.acme.example/artifacts/test-eaf5767278f44715",
   "derivedFrom": "unknown", "result": "pass", "observedAt": "2026-10-28T15:19:57Z",
-  "recordedBy": "https://ois.acme.example/actors/ois-junit@0.12.0",
+  "recordedBy": "https://ois.acme.example/actors/ois-junit@0.14.0",
   "run": "https://ci.acme.example/pipelines/billing/runs/42" }
 ```
 
@@ -146,7 +147,7 @@ drei Stufen: violation, warning oder info.
 **GitHub Actions**, nach dem Schritt, der die Tests ausführt:
 
 ```yaml
-- uses: openintentschema/tools/.github/actions/setup@v0.12.0   # installs ois; pin the tag's commit SHA
+- uses: openintentschema/tools/.github/actions/setup@v0.14.0   # installs ois; pin the tag's commit SHA
 - name: Record test results as OIS
   if: ${{ !cancelled() }}
   run: >
@@ -169,7 +170,7 @@ Bundle als Artefakt, auch wenn die Tests fehlgeschlagen sind:
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/openintentschema/tools/v0.12.0/.gitlab/ci/ois.gitlab-ci.yml
+  - remote: https://raw.githubusercontent.com/openintentschema/tools/v0.14.0/.gitlab/ci/ois.gitlab-ci.yml
 
 ois:
   extends: .ois-junit
@@ -185,12 +186,12 @@ dem Runner:
 
 ```bash
 docker run --rm --network none -v "$PWD:/work" --user "$(id -u):$(id -g)" \
-  ghcr.io/openintentschema/ois-tools:0.12.0 junit build/test-results/test/*.xml \
+  ghcr.io/openintentschema/ois-tools:0.14.0 junit build/test-results/test/*.xml \
   --namespace https://ois.acme.example --suite "Team Billing" --output ois-bundle.json
 ```
 
 Die Shell des Runners expandiert den Glob, bevor der Container startet; die Pfade sind daher relativ
-zum Checkout, der unter `/work` eingehängt ist. Ohne Docker macht `uvx --from ois-tools==0.12.0
+zum Checkout, der unter `/work` eingehängt ist. Ohne Docker macht `uvx --from ois-tools==0.14.0
 ois junit …` dasselbe. Der Job braucht immer den Checkout, in dem die Tests gelaufen sind, mit
 seiner Git-Historie.
 
@@ -204,6 +205,19 @@ prüfe, was es preisgibt (Spezifikation Abschnitt 12):
 - **Pipeline-Links** (`--run`) zeigen auf deine CI.
 
 ## Nächste Schritte
+
+Die nächsten Anleitungen rufen `ois` direkt auf und nehmen den Namespace aus `OIS_NAMESPACE`.
+Installiere es einmal und setze den Namespace, auf deinem Rechner und in der CI (dort installiert
+es die Setup-Action):
+
+```bash
+uv tool install ois-tools                      # or: pip install ois-tools
+export OIS_NAMESPACE=https://ois.acme.example  # your namespace from step 2
+```
+
+Das Charakterisierungs-Intent bleibt ein Entwurf: Es beschreibt, was die Suite heute prüft.
+Intents, die du schreibst und freigibst, treten Schritt für Schritt an seine Stelle, und die
+Evidence für sie kann zählen.
 
 - **Level 2, Intent-aware:** [Intents schreiben und freigeben](/de/approve-intents/) mit
   Akzeptanzkriterien, [in jedem Test sein Kriterium nennen](/de/link-tests/) und den Lauf mit

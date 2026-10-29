@@ -39,10 +39,16 @@ export default defineConfig({
                   items: [
                     { label: 'What is OIS?', slug: 'index', translations: { de: 'Was ist OIS?' } },
                     { label: 'Getting started', slug: 'getting-started', translations: { de: 'Erste Schritte' } },
+                  ],
+                },
+                {
+                  label: 'Guides',
+                  translations: { de: 'Anleitungen' },
+                  items: [
                     { label: 'Write and approve intents', slug: 'approve-intents', translations: { de: 'Intents schreiben und freigeben' } },
                     { label: 'Link tests to criteria', slug: 'link-tests', translations: { de: 'Tests mit Kriterien verknüpfen' } },
-                    { label: 'Measure non-functional criteria', slug: 'measure', translations: { de: 'Nicht funktionale Kriterien messen' } },
                     { label: 'Use Gherkin and Cucumber', slug: 'gherkin-cucumber', translations: { de: 'Gherkin und Cucumber verwenden' } },
+                    { label: 'Measure non-functional criteria', slug: 'measure', translations: { de: 'Nicht funktionale Kriterien messen' } },
                     { label: 'Record artifacts, decisions and findings', slug: 'record', translations: { de: 'Artefakte, Entscheidungen und Findings erfassen' } },
                     { label: 'Build a Quality Passport', slug: 'build-a-passport', translations: { de: 'Einen Quality Passport erstellen' } },
                     { label: 'Sign bundles and passports', slug: 'sign', translations: { de: 'Bundles und Passports signieren' } },

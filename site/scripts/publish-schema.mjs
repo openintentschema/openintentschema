@@ -1,7 +1,5 @@
-// Publish the JSON Schema at the URL its own $id names, so that every version lives at its own
-// path (/schema/v0.1/, later /schema/v0.2/, ...) and a new version never overwrites an old one.
-// While the $id is still a placeholder outside openintentschema.io (RFC #6), nothing is
-// published: a versioned URL must not serve content that will change.
+// Publish the JSON Schema at the path its $id names (/schema/v0.1/, /schema/v0.2/, ...); a $id
+// outside openintentschema.io is not published.
 import { copyFileSync, mkdirSync, readFileSync } from 'node:fs';
 
 const source = new URL('../../schema/ois.schema.json', import.meta.url);

@@ -55,7 +55,7 @@ npx ois-tools validate bundle.json               # run without installing
 npm install -g ois-tools                         # or install; Node.js 24 or later
 ```
 
-In CI, `uses: openintentschema/tools/.github/actions/setup@v0.12.0` installs `ois` on GitHub Actions, and
+In CI, `uses: openintentschema/tools/.github/actions/setup@v0.14.0` installs `ois` on GitHub Actions, and
 `.gitlab/ci/ois.gitlab-ci.yml` in the tools repository is a template for GitLab CI; see
 [Getting started](/getting-started/#6-add-it-to-your-pipeline).
 
@@ -66,6 +66,32 @@ carries a signed build provenance and an SBOM; check it with
 
 Up to version 0.5.0 the package was called `ois-validator`, with one command per tool
 (`ois-validator`, `ois-junit`, …).
+
+## Official packages
+
+The tools are published only under these names, each built and signed by a workflow of the
+`openintentschema` organization on GitHub:
+
+| Package | Registry | Built in |
+| --- | --- | --- |
+| `ois-tools` for Python | [PyPI](https://pypi.org/project/ois-tools/) | [openintentschema/tools](https://github.com/openintentschema/tools) |
+| `ois-tools` for Node.js | [npm](https://www.npmjs.com/package/ois-tools) | [openintentschema/tools-js](https://github.com/openintentschema/tools-js) |
+| `ghcr.io/openintentschema/ois-tools` | GitHub Container Registry | [openintentschema/tools](https://github.com/openintentschema/tools) |
+
+A package under another name or scope is not part of the project, even if it carries
+"openintentschema" in its name. Check where a download was built:
+
+```bash
+uvx pypi-attestations@0.0.30 verify pypi --repository https://github.com/openintentschema/tools \
+  pypi:ois_tools-0.14.0-py3-none-any.whl
+npm audit signatures        # in a project that installed ois-tools
+gh attestation verify oci://ghcr.io/openintentschema/ois-tools:0.14.0 --owner openintentschema
+```
+
+The first command checks the PyPI attestation and fails for a package built elsewhere; the second
+verifies the provenance npm recorded; the third the build provenance of the image. Report a package
+that impersonates the project privately, as the
+[security policy](https://github.com/openintentschema/tools/security/policy) describes.
 
 ## Validate
 
@@ -104,8 +130,9 @@ A second implementation of the validator and of `ois coverage`, for Node.js 24 o
 published on npm as
 [`ois-tools`](https://www.npmjs.com/package/ois-tools); the source is in
 [openintentschema/tools-js](https://github.com/openintentschema/tools-js). It checks the same:
-Appendix B, R1 to R17, the profile `regulated/v0.1`, DSSE and keyless Sigstore signatures, with
-the same options, reports and exit codes:
+Appendix B, R1 to R5 and R8 to R17, the profile `regulated/v0.1`, DSSE and keyless Sigstore
+signatures, with the same options, reports and exit codes. It reads JSON; YAML drafts of intents
+are read by the Python package only:
 
 ```bash
 npx ois-tools validate passport.json --trusted-root trusted_root.json

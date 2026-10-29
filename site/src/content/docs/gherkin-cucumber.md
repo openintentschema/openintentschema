@@ -7,7 +7,8 @@ Teams that write acceptance criteria as Gherkin feature files already have most 
 `ois intent from-gherkin` turns the feature files into one, and `ois cucumber` turns the run of
 those scenarios into evidence. Both are part of the [`ois-tools`](/develop/tools/) package. A
 scenario that runs exactly as its approved criterion is worded counts as derived from the intent,
-without any further step.
+without any further step. The commands assume `ois` is installed and `OIS_NAMESPACE` is set
+([Getting started](/getting-started/#next-steps)).
 
 ## 1. Tag each scenario with its key
 
@@ -33,6 +34,10 @@ Feature: Invoices round to five Rappen
     Examples:
       | amount |
       | -1     |
+
+  Scenario: Exploratory, large totals
+    Given an invoice total of CHF 999999.99
+    When the invoice is issued
 ```
 
 Keys look like `AC-1` or `REQ-12` by default; `--key-pattern` takes another regular expression.
@@ -42,34 +47,49 @@ Scenarios without a key tag, for example exploratory ones, are left out.
 
 ```bash
 ois intent from-gherkin features/rounding.feature --id https://ois.acme.example/intents/INT-7
-ois intent approve .ois/intents/INT-7-v1.ois.yaml --by https://ois.acme.example/actors/po-7f3a
+PO=$(ois record actor --kind human --name po-7f3a)   # the product owner, who wrote the scenarios
+ois intent approve .ois/intents/INT-7-v1.ois.yaml --by "$PO"
 ```
 
 Each keyed scenario becomes a criterion in `gherkin` notation. Its statement is the scenario's
 steps with the background before them, and for an outline its examples. The title is the
 feature's name. Approve it as any other intent ([Write and approve intents](/approve-intents/)).
 
-## 3. Run Cucumber with the message formatter
+## 3. Run the scenarios with a report
 
-The tools read [Cucumber Messages](https://github.com/cucumber/messages), the structured output
-that Cucumber recommends:
+`ois cucumber` reads [Cucumber Messages](https://github.com/cucumber/messages), the structured
+output that Cucumber recommends, Cucumber JSON and the JSON of behave:
 
-| Runner | Option |
-| --- | --- |
-| cucumber-js | `--format message:cucumber.ndjson` |
-| cucumber-jvm | `--plugin message:cucumber.ndjson` |
-| Reqnroll (.NET) | the Cucumber Messages formatter |
+| Runner | Option | Report |
+| --- | --- | --- |
+| cucumber-js | `--format message:cucumber.ndjson` | Cucumber Messages |
+| cucumber-jvm | `cucumber.plugin=message:cucumber.ndjson`, or `json:cucumber.json` | Cucumber Messages or Cucumber JSON |
+| Reqnroll (.NET) | the Cucumber Messages formatter | Cucumber Messages |
+| Godog | `Format: "cucumber:cucumber.json"` in `godog.Options` | Cucumber JSON |
+| pytest-bdd | `--cucumberjson=cucumber.json` | Cucumber JSON |
+| behave | `--format json --outfile behave.json` | behave JSON |
+
+The JSON reports carry no scenario text that could be compared, only where each scenario is.
+`ois cucumber` reads the scenario from the feature file in the checkout, so record the run from
+the commit it ran on, and takes the moment the report was written as the time of the evidence.
+cucumber-jvm names feature files on the class path, such as `classpath:features/rounding.feature`;
+`ois cucumber` takes the one file in Git whose path ends that way.
 
 ## 4. Record the run
 
+With the build recorded before the run, as for any test
+([Link tests to criteria](/link-tests/#2-record-the-build-before-the-tests-run)):
+
 ```bash
 ois cucumber cucumber.ndjson --intent https://ois.acme.example/intents/INT-7@1 \
-  --test-producer https://ois.acme.example/actors/po-7f3a --subject "$CODE"
+  --test-producer "$PO" --subject "$BUILD"         # or cucumber.json, behave.json
 ```
 
+After one line per record it writes, it reports:
+
 ```
-ois cucumber: 5 results: 5 derived from the intent, 0 not
-ois cucumber: no evidence: features/rounding.feature: Exploratory, no key (no key tag)
+ois cucumber: 2 results: 2 derived from the intent, 0 not
+ois cucumber: no evidence: features/rounding.feature: Exploratory, large totals (no key tag)
 ```
 
 - **Evidence** per executed scenario, an outline once per example row. A failed step gives
@@ -78,7 +98,10 @@ ois cucumber: no evidence: features/rounding.feature: Exploratory, no key (no ke
   `--test-producer`: whoever wrote the scenarios.
 - **`derivedFrom: intent`** where a scenario is worded exactly as its approved criterion. The test
   then *is* the criterion; `ois cucumber` checks this and records it as the test's context, with
-  itself as `contextRecordedBy`. Signed by your pipeline, that context counts as attested (R12).
+  itself as `contextRecordedBy`. That actor carries no `identity`, so rule R12 reports the
+  context as self-declared. Name the pipeline that runs `ois cucumber` and signs the bundle with
+  `--context-recorded-by "$PIPELINE"` instead; its signature then makes the context attested
+  ([Sign bundles and passports](/sign/)).
 - **A scenario that differs** from its criterion, because one of them changed, is recorded with
   `derivedFrom: unknown` and reported. Approve a new intent version, or bring the scenario back
   in line.

@@ -6,6 +6,8 @@ description: Record k6 and JMeter results as measured evidence against the targe
 A non-functional criterion, such as a response time or an error rate, carries a measurable
 `target` ([Write and approve intents](/approve-intents/)). It counts as covered only when evidence
 carries a measure that meets the target. `ois measure` takes that measure from a load test run.
+The commands assume `ois` is installed and `OIS_NAMESPACE` is set
+([Getting started](/getting-started/#next-steps)).
 
 ## 1. Give the criterion a target
 
@@ -19,23 +21,26 @@ criteria:
 ```
 
 `metric` is your own name for the value; the measure in the evidence carries the same name.
+Approve the intent as any other ([Write and approve intents](/approve-intents/)), and record the
+build before the load test runs, as for any test ([Link tests to criteria](/link-tests/#2-record-the-build-before-the-tests-run)).
 
 ## 2. Run the load test with a result file
 
 | Tool | How |
 | --- | --- |
-| k6 | `k6 run --summary-export=summary.json checkout.js`, or a `handleSummary` that writes the summary as JSON |
-| JMeter | `jmeter -n -t checkout.jmx -l results.jtl`, with the default CSV format |
+| k6 | `k6 run --summary-export=summary.json load/checkout.js`, or a `handleSummary` that writes the summary as JSON |
+| JMeter | `jmeter -n -t load/checkout.jmx -l results.jtl`, with the default CSV format |
 
 ## 3. Record the run
 
 ```bash
-ois measure summary.json --namespace https://ois.acme.example \
-  --intent https://ois.acme.example/intents/INT-9@1 \
+ois measure summary.json --intent https://ois.acme.example/intents/INT-9@1 \
   --criterion "AC-3=http_req_duration:p(95)" \
-  --test load/checkout.js --test-producer https://ois.acme.example/actors/qe-2c9d \
+  --test load/checkout.js --test-producer "$QE" \
   --subject "$BUILD" --written-from-intent
 ```
+
+After one line per record it writes, it reports:
 
 ```
 ois measure: AC-3: responseTimeP95 5.98 ms, target lte 500 ms: pass
@@ -49,10 +54,11 @@ ois measure: AC-3: responseTimeP95 5.98 ms, target lte 500 ms: pass
 | JMeter | `elapsed`, `Latency`, `Connect`, `IdleTime`, `bytes`, `sentBytes`; `samples` and `errors`; `{label:Checkout}` for one sampler | `avg`, `min`, `med`, `max`, `p(N)`; `count` and `rate` for `samples` (per second) and `errors` (share of failed samples) |
 
 - **Evidence** per criterion, with the value as a measure named after the target's `metric`, in
-  `ms` for times. Its result is `pass` when the value meets the target, otherwise `fail`. Units
-  that differ from the target's are refused.
+  `ms` for times. Its result is `pass` when the value meets the target, otherwise `fail`. A unit
+  the results state that differs from the target's is refused; a value without a unit, such as a
+  count, is compared as it is, with a note, so map each criterion to a metric of the right kind.
 - **A test artifact** for the script or plan given with `--test`, pinned by its `sha256` and
-  commit. As with [`ois junit --intent`](/link-tests/#3-derived-from-the-intent),
+  commit. As with [`ois junit --intent`](/link-tests/#4-derived-from-the-intent),
   `--written-from-intent` declares that it was written from the criteria it measures, and a test
   artifact already recorded for the same file is reused.
 - **The time** of the evidence is the end of the last JMeter sample, or for k6, which records no
