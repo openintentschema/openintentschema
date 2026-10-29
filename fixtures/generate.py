@@ -1173,6 +1173,55 @@ fixture("invalid/signature/no-signature.json",
     lambda: envelope(with_key_ids(base_bundle())))
 
 
+# profile: regulated industries -------------------------------------------------------------
+
+REGULATED = "https://openintentschema.io/profiles/regulated/v0.1"
+P = "regulated/P"
+
+
+def regulated(doc: Doc) -> Doc:
+    """The intent lists the regulated profile, so the whole document is checked against it."""
+    get(doc, intent_ref("INT-142", 1))["profiles"] = [REGULATED]
+    return seal(doc)
+
+
+fixture("valid/regulated-passport.json",
+        "A signed passport whose intent lists the regulated profile and meets P1 to P4.")(
+    lambda: envelope(with_key_ids(regulated(passport())), "passport-issuer", "agent-runtime"))
+
+
+@fixture("invalid/regulated/P1/intent-without-risk.json",
+         "The intent lists the regulated profile but carries no risk.",
+         violation(f"{P}1"), R12_UNSIGNED)
+def _() -> Doc:
+    doc = base_bundle()
+    del get(doc, intent_ref("INT-142", 1))["risk"]
+    return regulated(doc)
+
+
+@fixture("invalid/regulated/P2/agent-approves-release.json",
+         "A signed passport under the regulated profile whose release an agent approved.",
+         violation(f"{P}2"))
+def _() -> Doc:
+    statement = passport()
+    get(statement, RELEASE)["decidedBy"] = DEV_AGENT
+    return envelope(with_key_ids(regulated(statement)), "passport-issuer", "agent-runtime")
+
+
+fixture("invalid/regulated/P3/unsigned-passport.json",
+        "A passport under the regulated profile that is not signed.",
+        violation(f"{P}3"), R12_UNSIGNED)(lambda: regulated(passport()))
+
+
+@fixture("invalid/regulated/P4/production-dataset.json",
+         "Under the regulated profile, evidence lists an input dataset classified as production.",
+         violation(f"{P}4"), ("R8", "warning"), R12_UNSIGNED)
+def _() -> Doc:
+    doc = base_bundle()
+    get(doc, DATASET)["classification"] = "production"
+    return regulated(doc)
+
+
 # keyless fixtures --------------------------------------------------------------------------
 
 

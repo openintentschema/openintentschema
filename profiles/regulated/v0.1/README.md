@@ -19,7 +19,9 @@ specification gives these four constraints as its example of a profile for regul
 | P4 | An evidence record MUST NOT list an input dataset classified as `production`. In the core, R8 reports this as a warning. | validator, across records |
 
 A validator that supports this profile reports a broken rule as a violation with the rule ID
-`regulated/P1` to `regulated/P4`.
+`regulated/P1` to `regulated/P4`. The conformance fixtures under `fixtures/invalid/regulated/`
+test each rule, and `fixtures/README.md` fixes how they are read: P3 asks for an envelope with a
+signature, and whether it verifies is the `signature` rule's concern.
 
 ## Why these rules
 

@@ -11,6 +11,7 @@ valid/                   inputs that conform: no violation (warnings may be expe
 invalid/schema/          inputs that break Appendix B
 invalid/signature/       DSSE envelopes and Sigstore bundles whose signature does not hold
 invalid/<rule>/          inputs that trigger one rule of section 5, R1 to R17
+invalid/regulated/<P…>/  inputs that break one rule of the regulated profile (profiles/regulated/v0.1)
 keys/                    public test keys and the Sigstore trusted root the verifier trusts
 sigstore/                input for keyless signing and the recorded Sigstore bundle
 generate.py              builds all of the above
@@ -144,6 +145,21 @@ a newer one.
 An envelope with a `signature` violation counts as unsigned: no actor signed it. A signature by
 an untrusted key attributes nothing either. R12 then reports the recorded contexts as
 self-declared, as for an unsigned document.
+
+## Profiles
+
+A document is checked against a profile when one of its records lists the profile's URI in
+`profiles`; the profile's rules then apply to the whole document, as for the core rules. A
+validator that does not know a profile ignores it. The fixtures cover the example profile
+[regulated/v0.1](../profiles/regulated/v0.1/), whose rule IDs are `regulated/P1` to `regulated/P4`
+(level violation):
+
+| Rule | What the fixtures expect |
+| --- | --- |
+| regulated/P1 | An intent without `risk`. |
+| regulated/P2 | A decision with gate `intent-approval` or `release` whose `decidedBy` resolves to an actor that is not `human`. An unresolved actor is R10's concern. |
+| regulated/P3 | A passport that is not a DSSE envelope or Sigstore bundle with at least one signature. Whether the signature holds is the `signature` rule's concern. |
+| regulated/P4 | An evidence record whose `inputs` include an artifact of kind `dataset` classified as `production`. R8 reports its warning too. |
 
 ## Digests
 
