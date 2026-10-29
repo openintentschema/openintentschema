@@ -93,9 +93,11 @@ ois cucumber: no evidence: features/rounding.feature: Exploratory, large totals 
   von `--test-producer`: wer auch immer die Szenarien geschrieben hat.
 - **`derivedFrom: intent`** dort, wo ein Szenario genau so formuliert ist wie sein freigegebenes
   Kriterium. Der Test *ist* dann das Kriterium; `ois cucumber` prüft das und hält es als Kontext
-  des Tests fest, mit sich selbst als `contextRecordedBy`. Regel R12 meldet diesen Kontext als selbst
-  deklariert, weil der Actor `ois cucumber` keine `identity` trägt, zu der eine Signatur passen
-  könnte.
+  des Tests fest, mit sich selbst als `contextRecordedBy`. Dieser Actor trägt keine `identity`,
+  deshalb meldet Regel R12 den Kontext als selbst deklariert. Nenne stattdessen mit
+  `--context-recorded-by "$PIPELINE"` die Pipeline, die `ois cucumber` ausführt und das Bundle
+  signiert; ihre Signatur macht den Kontext dann bestätigt
+  ([Bundles und Passports signieren](/de/sign/)).
 - **Ein Szenario, das abweicht** von seinem Kriterium, weil sich eines von beiden geändert hat, wird
   mit `derivedFrom: unknown` aufgezeichnet und gemeldet. Gib eine neue Intent-Version frei oder
   bring das Szenario wieder in Einklang.

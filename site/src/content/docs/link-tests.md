@@ -86,7 +86,7 @@ QE=$(ois record actor --kind human --name qe-2c9d)
 After the tests:
 
 ```bash
-ois junit build/test-results/test/*.xml --namespace "$OIS_NAMESPACE" \
+ois junit build/test-results/test/*.xml \
   --intent https://ois.acme.example/intents/INT-7@1 \
   --test-producer "$QE" --subject "$BUILD" --written-from-intent
 ```

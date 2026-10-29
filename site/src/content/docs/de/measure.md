@@ -58,7 +58,7 @@ wiederholen:
 - **Evidence** pro Kriterium, mit dem Wert als Messwert, benannt nach `metric` des Ziels, in `ms`
   für Zeiten. Ihr Ergebnis ist `pass`, wenn der Wert das Ziel erfüllt, sonst `fail`. Eine Einheit
   in den Ergebnissen, die von der des Ziels abweicht, wird abgelehnt; ein Wert ohne Einheit, etwa
-  eine Anzahl, wird so verglichen, wie er ist. Ordne deshalb jedem Kriterium eine Metrik der
+  eine Anzahl, wird so verglichen, wie er ist, mit einem Hinweis. Ordne deshalb jedem Kriterium eine Metrik der
   passenden Art zu.
 - **Ein Test-Artefakt** für das Skript oder den Testplan aus `--test`, festgelegt durch seinen
   `sha256` und den Commit. Wie bei [`ois junit --intent`](/de/link-tests/#4-aus-dem-intent-abgeleitet)

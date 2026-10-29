@@ -90,7 +90,7 @@ QE=$(ois record actor --kind human --name qe-2c9d)
 Nach den Tests:
 
 ```bash
-ois junit build/test-results/test/*.xml --namespace "$OIS_NAMESPACE" \
+ois junit build/test-results/test/*.xml \
   --intent https://ois.acme.example/intents/INT-7@1 \
   --test-producer "$QE" --subject "$BUILD" --written-from-intent
 ```
@@ -128,7 +128,7 @@ Test geschrieben wurde, und stützt sich deshalb auf das, was festgehalten ist:
 
 - **`--written-from-intent`** sagt, dass die Tests aus den genannten Kriterien geschrieben wurden,
   ohne den Code. Es hält diese Kriterien als Kontext der Testdatei fest, erklärt von dir. Der
-  Validator meldet den Kontext als selbst erklärt (R12); er zählt in `intentCoverage`, nicht in
+  Validator meldet den Kontext als selbst deklariert (R12); er zählt in `intentCoverage`, nicht in
   `intentCoverageAttested`.
 - **Ein bereits festgehaltenes Test-Artefakt**, zum Beispiel von der Laufzeitumgebung eines
   Test-Agenten mit [`ois record artifact --context … --context-recorded-by …`](/de/record/), wird

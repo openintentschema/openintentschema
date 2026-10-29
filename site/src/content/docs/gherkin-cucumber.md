@@ -89,8 +89,10 @@ ois cucumber: no evidence: features/rounding.feature: Exploratory, large totals 
   `--test-producer`: whoever wrote the scenarios.
 - **`derivedFrom: intent`** where a scenario is worded exactly as its approved criterion. The test
   then *is* the criterion; `ois cucumber` checks this and records it as the test's context, with
-  itself as `contextRecordedBy`. Rule R12 reports that context as self-declared, because the
-  `ois cucumber` actor carries no `identity` a signature could match.
+  itself as `contextRecordedBy`. That actor carries no `identity`, so rule R12 reports the
+  context as self-declared. Name the pipeline that runs `ois cucumber` and signs the bundle with
+  `--context-recorded-by "$PIPELINE"` instead; its signature then makes the context attested
+  ([Sign bundles and passports](/sign/)).
 - **A scenario that differs** from its criterion, because one of them changed, is recorded with
   `derivedFrom: unknown` and reported. Approve a new intent version, or bring the scenario back
   in line.

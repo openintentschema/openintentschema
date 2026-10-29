@@ -55,7 +55,7 @@ npx ois-tools validate bundle.json               # run without installing
 npm install -g ois-tools                         # or install; Node.js 24 or later
 ```
 
-In CI, `uses: openintentschema/tools/.github/actions/setup@v0.12.0` installs `ois` on GitHub Actions, and
+In CI, `uses: openintentschema/tools/.github/actions/setup@v0.13.0` installs `ois` on GitHub Actions, and
 `.gitlab/ci/ois.gitlab-ci.yml` in the tools repository is a template for GitLab CI; see
 [Getting started](/getting-started/#6-add-it-to-your-pipeline).
 

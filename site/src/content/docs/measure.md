@@ -56,7 +56,7 @@ ois measure: AC-3: responseTimeP95 5.98 ms, target lte 500 ms: pass
 - **Evidence** per criterion, with the value as a measure named after the target's `metric`, in
   `ms` for times. Its result is `pass` when the value meets the target, otherwise `fail`. A unit
   the results state that differs from the target's is refused; a value without a unit, such as a
-  count, is compared as it is, so map each criterion to a metric of the right kind.
+  count, is compared as it is, with a note, so map each criterion to a metric of the right kind.
 - **A test artifact** for the script or plan given with `--test`, pinned by its `sha256` and
   commit. As with [`ois junit --intent`](/link-tests/#4-derived-from-the-intent),
   `--written-from-intent` declares that it was written from the criteria it measures, and a test
