@@ -6,9 +6,13 @@ import starlightLlmsTxt from 'starlight-llms-txt';
 import starlightSidebarTopics from 'starlight-sidebar-topics';
 
 const repo = 'https://github.com/openintentschema/openintentschema';
+const site = 'https://openintentschema.io';
+// src/assets/social-card.svg, rendered to public/images/ (README.md)
+const socialCard = `${site}/images/social-card.png`;
+const socialCardAlt = 'Open Intent Schema: what was asked, what was built, and the proof in between.';
 
 export default defineConfig({
-  site: 'https://openintentschema.io',
+  site,
   integrations: [
     starlight({
       title: 'Open Intent Schema',
@@ -17,6 +21,14 @@ export default defineConfig({
       description: 'What was asked, what was built, and the proof in between.',
       logo: { light: './src/assets/logo-light.svg', dark: './src/assets/logo-dark.svg' },
       favicon: '/favicon.svg',
+      head: [
+        { tag: 'meta', attrs: { property: 'og:image', content: socialCard } },
+        { tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
+        { tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
+        { tag: 'meta', attrs: { property: 'og:image:alt', content: socialCardAlt } },
+        { tag: 'meta', attrs: { name: 'twitter:image', content: socialCard } },
+        { tag: 'meta', attrs: { name: 'twitter:image:alt', content: socialCardAlt } },
+      ],
       customCss: ['./src/styles/custom.css'],
       // src/content/docs/404.md replaces the built-in page
       disable404Route: true,
