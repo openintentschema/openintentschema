@@ -101,8 +101,8 @@ export default defineConfig({
                   items: [
                     { label: 'Passport predicate v0.1', slug: 'passport/v0.1' },
                     { label: 'Coverage method v0.1', slug: 'methods/basic-intent-coverage/v0.1' },
-                    // Until RFC #6 sets the $id, the schema is linked on GitHub (scripts/publish-schema.mjs)
-                    { label: 'JSON Schema v0.1', link: `${repo}/blob/main/schema/ois.schema.json` },
+                    // published at its $id by scripts/publish-schema.mjs
+                    { label: 'JSON Schema v0.1', link: '/schema/v0.1/ois.schema.json' },
                     { label: 'Conformance test suite', slug: 'conformance' },
                     { label: 'Profiles', slug: 'profiles' },
                     { label: 'Regulated industries v0.1', slug: 'profiles/regulated/v0.1' },
