@@ -70,7 +70,7 @@ Bis Version 0.5.0 hiess das Paket `ois-validator`, mit einem Befehl pro Werkzeug
 ## Offizielle Pakete
 
 Die Werkzeuge erscheinen nur unter diesen Namen, jeweils gebaut und signiert von einem Workflow der
-Organisation `openintentschema` auf GitHub:
+Organisation `openintentschema` auf GitHub (das npm-Paket ab Version 0.2.0):
 
 | Paket | Registry | Gebaut in |
 | --- | --- | --- |

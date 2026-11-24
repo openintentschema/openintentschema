@@ -2,7 +2,9 @@
 
 Source of the website [openintentschema.io](https://openintentschema.io), built with
 [Astro Starlight](https://starlight.astro.build/) and published to GitHub Pages by
-`.github/workflows/site.yml` on every push to `main` that touches `site/` or `schema/`.
+`.github/workflows/site.yml` on every push to `main` that touches `site/`, `schema/` or a source
+of a generated page (`specification/`, `profiles/`, `fixtures/README.md`, the community
+documents), or when run by hand.
 
 ```bash
 cd site

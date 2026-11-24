@@ -91,7 +91,8 @@ ois record decision --gate evidence-revocation --subject "$EVIDENCE" --by "$QE" 
 ```
 
 - The decision binds the **digest of its subject**, taken from the subject's record in `.ois/` or
-  in `--records`. A release decision cannot be written without it (R16).
+  in `--records`. A release decision cannot be written without it (section 4.6); R16 then compares the build's
+  digest with the passport's subject.
 - For the **well-known gates** of specification section 4.6, the subject and the outcome are
   checked. A merge decision takes code, and a release takes a build. An evidence revocation is always
   `rejected` and states its rationale (R11).

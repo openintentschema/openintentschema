@@ -23,7 +23,7 @@ records stay in your organization until you send them somewhere.
 | Running `ois junit` | Nothing. It reads the test reports and the local Git checkout (`git rev-parse`, `ls-files`, `show`, `remote get-url`; never `fetch` or `push`) and writes a file | Nobody | |
 | Running `ois validate` | Nothing. The JSON Schema ships inside the package and is never fetched | Nobody | |
 | Running `ois intent` | Nothing. It reads and writes intent and decision files locally | Nobody | |
-| Running `ois cucumber` | Nothing. It reads the Cucumber Messages file and the feature files in the local Git checkout and writes records; error messages and stack traces are not copied | Nobody | |
+| Running `ois cucumber` | Nothing. It reads the Cucumber report (Cucumber Messages, Cucumber JSON or behave JSON) and the feature files in the local Git checkout and writes records; error messages and stack traces are not copied | Nobody | |
 | Running `ois measure` | Nothing. It reads the k6 or JMeter results and the test file in the local Git checkout and writes records; URLs, response messages and thread names are not copied | Nobody | |
 | Running `ois record` | Nothing. It reads the files it records and the local Git checkout (`git rev-parse`, `ls-files`, `diff`, `remote get-url`; never `fetch` or `push`) and writes record files | Nobody | |
 | Running `ois passport` | Nothing. It reads records and writes the passport file locally | Nobody | |

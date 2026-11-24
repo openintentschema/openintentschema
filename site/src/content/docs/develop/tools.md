@@ -70,7 +70,7 @@ Up to version 0.5.0 the package was called `ois-validator`, with one command per
 ## Official packages
 
 The tools are published only under these names, each built and signed by a workflow of the
-`openintentschema` organization on GitHub:
+`openintentschema` organization on GitHub (the npm package from version 0.2.0):
 
 | Package | Registry | Built in |
 | --- | --- | --- |

@@ -24,7 +24,7 @@ irgendwohin sendest.
 | `ois junit` ausführen | Nichts. Es liest die Testberichte und den lokalen Git-Checkout (`git rev-parse`, `ls-files`, `show`, `remote get-url`; nie `fetch` oder `push`) und schreibt eine Datei | Niemand | |
 | `ois validate` ausführen | Nichts. Das JSON Schema wird im Paket mitgeliefert und nie abgerufen | Niemand | |
 | `ois intent` ausführen | Nichts. Es liest und schreibt Intent- und Entscheidungsdateien lokal | Niemand | |
-| `ois cucumber` ausführen | Nichts. Es liest die Cucumber-Messages-Datei und die Feature-Dateien im lokalen Git-Checkout und schreibt Records; Fehlermeldungen und Stacktraces werden nicht übernommen | Niemand | |
+| `ois cucumber` ausführen | Nichts. Es liest den Cucumber-Bericht (Cucumber Messages, Cucumber JSON oder behave JSON) und die Feature-Dateien im lokalen Git-Checkout und schreibt Records; Fehlermeldungen und Stacktraces werden nicht übernommen | Niemand | |
 | `ois measure` ausführen | Nichts. Es liest die Ergebnisse von k6 oder JMeter und die Testdatei im lokalen Git-Checkout und schreibt Records; URLs, Antwortmeldungen und Thread-Namen werden nicht übernommen | Niemand | |
 | `ois record` ausführen | Nichts. Es liest die Dateien, die es festhält, und den lokalen Git-Checkout (`git rev-parse`, `ls-files`, `diff`, `remote get-url`; nie `fetch` oder `push`) und schreibt Record-Dateien | Niemand | |
 | `ois passport` ausführen | Nichts. Es liest Records und schreibt die Passport-Datei lokal | Niemand | |

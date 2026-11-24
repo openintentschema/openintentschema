@@ -95,7 +95,8 @@ ois record decision --gate evidence-revocation --subject "$EVIDENCE" --by "$QE" 
 ```
 
 - Die Entscheidung bindet den **Digest ihres Subjekts**, entnommen aus dem Record des Subjekts in
-  `.ois/` oder in `--records`. Ohne ihn lässt sich keine Release-Entscheidung schreiben (R16).
+  `.ois/` oder in `--records`. Ohne ihn lässt sich keine Release-Entscheidung schreiben (Abschnitt 4.6); R16
+  vergleicht dann den Digest des Builds mit dem Subjekt des Passports.
 - Bei den **vordefinierten Gates** aus Spezifikation Abschnitt 4.6 werden Subjekt und Ergebnis
   geprüft. Eine Merge-Entscheidung nimmt Code, ein Release einen Build. Ein Evidence-Widerruf ist
   immer `rejected` und nennt seine Begründung (R11).
