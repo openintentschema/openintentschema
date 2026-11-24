@@ -35,5 +35,5 @@ folder `<name>/v<version>/` with its document and schema. A profile maintained e
 with its URI and owner only. A profile name says what it is for, never which product or vendor it
 favours (`GOVERNANCE.md`, Neutrality).
 
-Profile URIs under `https://openintentschema.io/` follow RFC #6; until it is decided, the profile
-schema refers to the core schema by its current placeholder `$id`.
+Profile URIs live under `https://openintentschema.io/`, as the core identifiers do; a profile
+schema refers to the core schema by its `$id`.

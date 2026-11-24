@@ -16,9 +16,9 @@ specification embeds it verbatim; keep both identical as parsed JSON.
   carry a `digest`.
 - The schema checks structure only. Digests, the integrity rules of section 5 and references
   across records are checked by validators.
-- `https://ois.example/…` (the `$id` and the passport `predicateType`) are placeholders, to be
-  replaced by `openintentschema.io` identifiers ([RFC #6](https://github.com/openintentschema/openintentschema/issues/6)).
-  `https://ois.acme.example/…` in examples and fixtures is a fictional producer namespace and stays.
+- The `$id`, the passport `predicateType` and the coverage method URI live under
+  `https://openintentschema.io/`, where the website serves them. `https://ois.acme.example/…` in
+  examples and fixtures is a fictional producer namespace.
 
 ## Changing it
 

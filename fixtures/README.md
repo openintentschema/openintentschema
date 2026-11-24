@@ -46,8 +46,8 @@ the Sigstore trusted roots listed in `trustedRoots` as what it trusts.
 reported, the path and the message are up to the validator. A fixture conforms when `expect`
 holds no violation.
 
-`rule` is `schema` for Appendix B ([proposed in #1](https://github.com/openintentschema/openintentschema/issues/1)), `signature` for DSSE envelopes and Sigstore bundles
-(section 8.3, [proposed in #8](https://github.com/openintentschema/openintentschema/issues/8)) and `R1` to `R17` for section 5. `level` is `violation`,
+`rule` is `schema` for Appendix B, `signature` for DSSE envelopes and Sigstore bundles (section
+8.3) and `R1` to `R17` for section 5 (section 11.1). `level` is `violation`,
 `warning` or `info` (section 11.1).
 
 Most fixtures are unsigned, so every one whose records carry a `context` expects the R12 warning
@@ -87,15 +87,15 @@ unresolved reference is reported once, under R10 (record missing) or R2 (criteri
 | R5 | violation | Evidence with `derivedFrom: intent` whose test and subject have `producedBy` actors with the same `id`, in any version. |
 | R8 | warning | Evidence `inputs` include a dataset classified `production`. |
 | R9 | info | A decision with outcome `waived` whose `decidedBy` is not human. The MUST (rationale) is in Appendix B. |
-| R10 | violation | A reference that does not resolve, or two records with the same `id` (and `version` for intents and actors) that differ in content. Intents are compared without `status` and digests (the intent's and its criteria's), so a draft as authored and its approved record count as one; every other record type is compared in full, `digest` included. *Limiting the exception to intents is [proposed in #5](https://github.com/openintentschema/openintentschema/issues/5); not yet in the specification.* `supersedes` is a reference like any other, so the history a document claims is always carried and checkable. |
+| R10 | violation | A reference that does not resolve, or two records with the same `id` (and `version` for intents and actors) that differ in content. Intents are compared without `status` and digests (the intent's and its criteria's), so a draft as authored and its approved record count as one; every other record type is compared in full, `digest` included. `supersedes` is a reference like any other, so the history a document claims is always carried and checkable. |
 | R11 | violation | A decision with gate `evidence-revocation` whose `subject` is not an evidence record. Rationale and outcome are in Appendix B. |
 | R12 | warning | An artifact with `context` whose `contextRecordedBy` is missing or equals `producedBy` by actor `id`, or whose document is not signed by that actor (see Signatures). |
 | R13 | warning | A passport lists an intent version that a current finding with severity `high` or `critical` references through `intent`, or through a `criterion` of that version, and that finding is not resolved. The current finding is the last of its `supersedes` chain. It is resolved if a decision with gate `finding-resolution`, outcome `approved` and the current finding as `subject` exists, made by an actor whose `id` is not `producedBy`, `recordedBy` or `decidedBy` of any record in its `resolvedBy` (R14). |
 | R14 | violation | Two findings supersede the same finding. |
 | R15 | violation | A passport lists an intent version that is not `approved`, or for which a later version with status `withdrawn` exists. |
 | R15 | info | A later version is approved, by a decision made before `issuedAt`. |
-| R16 | violation | A passport without a decision with gate `release`, outcome `approved` or `passed`, whose `subject` is an artifact of kind `build` with a digest that matches a digest of the statement's `subject`. *[Proposed in #2](https://github.com/openintentschema/openintentschema/issues/2); not yet in the specification.* |
-| R17 | violation | An intent `digest` or criterion `digest` whose `sha256` differs from the value computed by section 6.4. *[Proposed in #3](https://github.com/openintentschema/openintentschema/issues/3); not yet in the specification.* |
+| R16 | violation | A passport without a decision with gate `release`, outcome `approved` or `passed`, whose `subject` is an artifact of kind `build` with a digest that matches a digest of the statement's `subject`. |
+| R17 | violation | An intent `digest` or criterion `digest` whose `sha256` differs from the value computed by section 6.4. |
 
 R6 and R7 are not checked (section 5) and have no fixtures. The parts of R9 and R11 that
 Appendix B already enforces are fixtures under `invalid/schema/`.
