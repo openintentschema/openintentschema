@@ -1,6 +1,6 @@
 # Open Intent Schema Specification v0.1
 
-Oct 25, 2026 · @Louis Stark
+Nov 24, 2026 · @Louis Stark
 
 ## Status of this document
 
@@ -23,7 +23,7 @@ Sections marked *normative* define requirements for conforming implementations. 
 | 0.1-draft.2 | 2026-10-25 | Finding record (first named observation); context recorded by the runtime and attestation rule; evidence revocation; gate registry; targets for non-functional criteria; language tags; passport bundles and scope; build inputs; reference method for intent coverage; carry-over fix in R4; forward-compatibility rule; change history. |
 | 0.1-draft.3 | 2026-10-25 | Actor identity for signature attribution; subject digests on decisions; Level 3 aligned with R12; observation renamed to finding; validator report levels; releases with several builds; R14 clarified; example completed with build artifact and signed bundle. |
 | 0.1-draft.4 | 2026-10-25 | Intent digest excludes status; R10 compares content without status; Level 3 wording for multi-signature bundles; pseudonymous identities for humans; R15 for withdrawn intents; diverse coverage variant; quick start for Level 1. |
-| 0.1-draft.5 | in progress | Appendix A uses intent version 1, so the example carries no history it does not show (R10); A.2 names all four records the passport adds, including the QE lead; rule identifier `schema` for Appendix B (RFC #1); R16, release decision in a passport (RFC #2); R17, intent and criterion digests, with computed digests in Appendix A (RFC #3); the R10 exception limited to intents (RFC #5); identifiers under openintentschema.io (RFC #6); coverage over several intents (RFC #7); signature verification, key ids and the rule identifier `signature` (RFC #8); Appendix C notes the outcome of the first design partner round. |
+| 0.1-draft.5 | 2026-11-24 | Appendix A uses intent version 1, so the example carries no history it does not show (R10); A.2 names all four records the passport adds, including the QE lead; rule identifier `schema` for Appendix B (RFC #1); R16, release decision in a passport (RFC #2); R17, intent and criterion digests, with computed digests in Appendix A (RFC #3); the R10 exception limited to intents (RFC #5); identifiers under openintentschema.io (RFC #6); coverage over several intents (RFC #7); signature verification, key ids and the rule identifier `signature` (RFC #8); Appendix C notes the outcome of the first design partner round. |
 
 ## 1. Introduction (informative)
 

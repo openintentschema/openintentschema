@@ -37,9 +37,8 @@ Producers claim a level: Level 1 Observe (emit records for existing outputs), Le
 Intent-aware (read intents, record complete context), Level 3 Attested (signed bundles and
 passports, verifiable identity).
 
-A validator checks the schema and the integrity rules R1–R15 of section 5 and reports each
-problem with its rule and level. The conformance fixtures are the test suite it must pass; they
-also cover the rules R16 and R17 and the clarifications proposed in the open RFCs.
+A validator checks the schema and the integrity rules R1–R17 of section 5 and reports each
+problem with its rule and level. The conformance fixtures are the test suite it must pass.
 
 The reference tools, one command `ois` with the validator (`ois validate`) and the tools that
 write records (test report and Cucumber adapters, intents, records, passports, intent coverage) and sign and
