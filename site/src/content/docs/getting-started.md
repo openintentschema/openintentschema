@@ -220,8 +220,10 @@ write and approve take its place step by step, and the evidence for them can cou
   `derivedFrom: intent`, and intent coverage starts to rise.
 - **Record the rest of the delivery:** actors, build artifacts, decisions and findings, with
   [`ois record`](/record/).
-- **Quality Passport:** [collect intents, evidence and decisions for a release](/build-a-passport/)
-  into one attestation (section 8), and [sign it](/sign/).
+- **Quality Passport:** the document that goes with a release. It
+  [collects the intents, evidence and decisions behind it](/build-a-passport/) in one file
+  (section 8), so that someone without access to your tools can check what was required and what
+  proves it. [Sign it](/sign/) to show who issued it.
 - **Shape the standard:** open questions and proposed changes are discussed as
   [RFC issues](https://github.com/openintentschema/openintentschema/issues?q=label%3Arfc).
   Findings from real pipelines carry the most weight.

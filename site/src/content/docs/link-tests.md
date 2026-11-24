@@ -149,3 +149,31 @@ so it relies on what has been recorded:
 
 If the tests and the subject were produced by the same actor, or a recorded context includes
 code, the evidence says `unknown` and the reason is reported.
+
+## 5. Several intents in one test suite
+
+A key such as `AC-1` is unique only within its intent, where it stays the same across versions.
+What identifies a criterion everywhere is its reference: intent, version and key, for example
+`https://ois.acme.example/intents/INT-7@1#AC-1`. A test names the key; the intent comes from
+`--intent`. When a suite covers several intents whose keys repeat, let each test name its intent
+as well, and record one run per intent with a `--key-pattern` that includes it. The group in
+parentheses is the key:
+
+```bash
+ois junit build/test-results/test/*.xml \
+  --intent https://ois.acme.example/intents/INT-7@1 --key-pattern 'INT-7 (AC-[0-9]+)' \
+  --test-producer "$QE" --subject "$BUILD" --written-from-intent
+```
+
+For a report with the tests `INT-7 AC-1 rounds down` and `INT-8 AC-1 rejects a negative amount`,
+it reports:
+
+```
+ois junit: 1 results: 1 derived from the intent, 0 not
+ois junit: 1 test without a criterion key
+```
+
+Without the pattern, the test for `INT-8` would count as evidence for `AC-1` of `INT-7`. Keep the
+tests of each intent in files of their own: a test file is one artifact with one context, and
+with `--written-from-intent` it holds the criteria of the intent recorded first. Evidence for a
+second intent from the same file says `derivedFrom: unknown`.

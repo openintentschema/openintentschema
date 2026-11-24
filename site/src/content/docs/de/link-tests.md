@@ -157,3 +157,31 @@ Test geschrieben wurde, und stützt sich deshalb auf das, was festgehalten ist:
 
 Wenn Tests und Subject vom selben Actor stammen oder ein festgehaltener Kontext Code enthält, sagt
 die Evidence `unknown`, und der Grund wird gemeldet.
+
+## 5. Mehrere Intents in einer Testsuite
+
+Ein Schlüssel wie `AC-1` ist nur innerhalb seines Intents eindeutig; dort bleibt er über alle
+Versionen gleich. Überall eindeutig ist die Referenz eines Kriteriums: Intent, Version und
+Schlüssel, zum Beispiel `https://ois.acme.example/intents/INT-7@1#AC-1`. Ein Test nennt den
+Schlüssel; das Intent kommt aus `--intent`. Deckt eine Suite mehrere Intents ab, deren Schlüssel
+sich wiederholen, lass jeden Test auch sein Intent nennen und zeichne pro Intent einen Lauf auf,
+mit einem `--key-pattern`, das es enthält. Die Gruppe in Klammern ist der Schlüssel:
+
+```bash
+ois junit build/test-results/test/*.xml \
+  --intent https://ois.acme.example/intents/INT-7@1 --key-pattern 'INT-7 (AC-[0-9]+)' \
+  --test-producer "$QE" --subject "$BUILD" --written-from-intent
+```
+
+Für einen Bericht mit den Tests `INT-7 AC-1 rounds down` und `INT-8 AC-1 rejects a negative amount`
+meldet der Befehl:
+
+```
+ois junit: 1 results: 1 derived from the intent, 0 not
+ois junit: 1 test without a criterion key
+```
+
+Ohne das Muster würde der Test für `INT-8` als Evidence für `AC-1` von `INT-7` zählen. Halte die
+Tests jedes Intents in eigenen Dateien: Eine Testdatei ist ein Artefakt mit einem Kontext, und mit
+`--written-from-intent` enthält er die Kriterien des Intents, das zuerst aufgezeichnet wurde.
+Evidence für ein zweites Intent aus derselben Datei sagt `derivedFrom: unknown`.

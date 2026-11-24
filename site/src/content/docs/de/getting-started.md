@@ -225,8 +225,10 @@ Evidence für sie kann zählen.
   sagt dann `derivedFrom: intent`, und die Intent-Abdeckung beginnt zu steigen.
 - **Den Rest der Lieferung aufzeichnen:** Actors, Build-Artefakte, Entscheidungen und Findings, mit
   [`ois record`](/de/record/).
-- **Quality Passport:** [Intents, Evidence und Entscheidungen für ein Release](/de/build-a-passport/)
-  in einer Attestation zusammenführen (Abschnitt 8) und [sie signieren](/de/sign/).
+- **Quality Passport:** das Dokument, das ein Release begleitet. Es
+  [sammelt die Intents, Evidence und Entscheidungen dahinter](/de/build-a-passport/) in einer Datei
+  (Abschnitt 8), sodass jemand ohne Zugang zu deinen Werkzeugen prüfen kann, was gefordert war und
+  was es belegt. [Signiere ihn](/de/sign/), um zu zeigen, wer ihn ausgestellt hat.
 - **Den Standard mitgestalten:** Offene Fragen und vorgeschlagene Änderungen werden als
   [RFC-Issues](https://github.com/openintentschema/openintentschema/issues?q=label%3Arfc)
   diskutiert. Erkenntnisse aus echten Pipelines haben das grösste Gewicht.
