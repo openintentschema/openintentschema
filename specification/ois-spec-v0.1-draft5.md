@@ -23,7 +23,7 @@ Sections marked *normative* define requirements for conforming implementations. 
 | 0.1-draft.2 | 2026-10-25 | Finding record (first named observation); context recorded by the runtime and attestation rule; evidence revocation; gate registry; targets for non-functional criteria; language tags; passport bundles and scope; build inputs; reference method for intent coverage; carry-over fix in R4; forward-compatibility rule; change history. |
 | 0.1-draft.3 | 2026-10-25 | Actor identity for signature attribution; subject digests on decisions; Level 3 aligned with R12; observation renamed to finding; validator report levels; releases with several builds; R14 clarified; example completed with build artifact and signed bundle. |
 | 0.1-draft.4 | 2026-10-25 | Intent digest excludes status; R10 compares content without status; Level 3 wording for multi-signature bundles; pseudonymous identities for humans; R15 for withdrawn intents; diverse coverage variant; quick start for Level 1. |
-| 0.1-draft.5 | in progress | Appendix A uses intent version 1, so the example carries no history it does not show (R10); A.2 names all four records the passport adds, including the QE lead; rule identifier `schema` for Appendix B (RFC #1); R16, release decision in a passport (RFC #2); R17, intent and criterion digests, with computed digests in Appendix A (RFC #3); the R10 exception limited to intents (RFC #5); identifiers under openintentschema.io (RFC #6); coverage over several intents (RFC #7); signature verification, key ids and the rule identifier `signature` (RFC #8). |
+| 0.1-draft.5 | in progress | Appendix A uses intent version 1, so the example carries no history it does not show (R10); A.2 names all four records the passport adds, including the QE lead; rule identifier `schema` for Appendix B (RFC #1); R16, release decision in a passport (RFC #2); R17, intent and criterion digests, with computed digests in Appendix A (RFC #3); the R10 exception limited to intents (RFC #5); identifiers under openintentschema.io (RFC #6); coverage over several intents (RFC #7); signature verification, key ids and the rule identifier `signature` (RFC #8); Appendix C notes the outcome of the first design partner round. |
 
 ## 1. Introduction (informative)
 
@@ -1102,23 +1102,23 @@ The schema below is normative and is also published as a separate file at its `$
 
 ## Appendix C: Open questions
 
-These questions are open for v0.1 and are the main topics for the first design partner rounds.
+These questions are open for v0.1. Two teams answered them in the first design partner round (November 2026); each question notes the outcome. A ticked question is settled for v0.1.
 
-- [ ] **Non-functional requirements:** is `kind: non-functional` enough, or do NFRs need structured, measurable thresholds such as a latency budget?
-- [ ] **One evidence per criterion:** v0.1 binds each evidence record to one criterion, so a test run covering three criteria produces three records. Is that practical?
-- [ ] **Actor granularity:** v0.1 treats the model as an attribute of the actor and requires a new actor version when it changes. Should the model be an actor of its own?
-- [ ] **Human approval:** should the core require a human actor for `intent-approval` and `release` decisions, or only regulated profiles?
-- [ ] **Proof of derivation:** `derivedFrom: intent` relies on a complete `context`. How can producers show completeness beyond declaring it?
-- [ ] **Evidence across versions:** is the digest-based rule in section 6.3 workable in practice?
-- [ ] **Git digests:** `gitCommit` is SHA-1 in most repositories. Should a `sha256` value be required as well?
-- [ ] **Autonomy levels:** do the four levels belong in the core or in a profile?
+- [ ] **Non-functional requirements:** is `kind: non-functional` enough, or do NFRs need structured, measurable thresholds such as a latency budget? Draft 2 added `target`. *Round 1:* one target per criterion is enough for limits such as a request size or a timeout. For performance and availability, one team also needs the percentile, the measurement window and the environment as data. Open: whether these belong in `target` or in the `method` of the measure.
+- [x] **One evidence per criterion:** v0.1 binds each evidence record to one criterion, so a test run covering three criteria produces three records. Is that practical? *Round 1:* yes. A test rarely covers more than one criterion, and tools write the records from the test report.
+- [ ] **Actor granularity:** v0.1 treats the model as an attribute of the actor and requires a new actor version when it changes. Should the model be an actor of its own? *Round 1:* one team changed model and reasoning settings several times within two months and runs different models per role; it prefers a record per model, with the actor version standing for the agent's configuration. The other team pins its models. Open.
+- [x] **Human approval:** should the core require a human actor for `intent-approval` and `release` decisions, or only regulated profiles? *Round 1:* the profile is enough. The core recommends a human (R1, R9) and records who decided; a profile requires it.
+- [ ] **Proof of derivation:** `derivedFrom: intent` relies on a complete `context`. How can producers show completeness beyond declaring it? *Round 1:* not at all today, where a test agent works in the same directory as the code. Named as a way forward: a workspace that holds only the criterion, with a hashed and signed log of every input and tool call.
+- [ ] **Evidence across versions:** is the digest-based rule in section 6.3 workable in practice? *Round 1:* the teams differ. One wants every change of a criterion tested again, as the rule requires. The other loses evidence to edits that change no meaning, such as a format migration that touches every file. Open: a normal form of `statement` (white space, line endings, Unicode form) before the digest is computed. A reworded criterion stays a changed criterion.
+- [x] **Git digests:** `gitCommit` is SHA-1 in most repositories. Should a `sha256` value be required as well? *Round 1:* no. Neither team uses SHA-256 repositories; a `sha256` of the files stays optional. What matters to them is the `sha256` of the released build, which R16 binds.
+- [ ] **Autonomy levels:** do the four levels belong in the core or in a profile? *Round 1:* in a profile, say both teams. The core should record who decided and under which delegation. Open: moving `autonomyLevel` to a profile, and a field for the delegation a decision rests on.
 - [ ] **Identifiers:** IANA registration of the media type `application/vnd.ois+json` and a possible URN namespace.
-- [ ] **Name:** "Open Intent Schema" is a working title and needs a trademark check.
-- [ ] **Foundation:** which neutral home fits best, for example the Linux Foundation, CNCF or OpenSSF?
+- [ ] **Name:** "Open Intent Schema" is a working title and needs a trademark check. *Round 1:* the name is understood; neither team knows of a conflicting mark.
+- [ ] **Foundation:** which neutral home fits best, for example the Linux Foundation, CNCF or OpenSSF? *Round 1:* the Linux Foundation and OpenSSF were named, OpenSSF because Sigstore and SLSA are hosted there.
 
-* [ ] **Runtime attestation:** partly addressed in draft 2 by R12 and the actor `identity`. Still open: how a runtime proves that it recorded `context` faithfully, for example through sandbox attestation or signed session logs.
-* [ ] **IPR policy:** which patent covenant should cover the specification text and the schema?
-* [ ] **Reference method:** Appendix D now defines an informative method. Should it become normative in 1.0?
+* [ ] **Runtime attestation:** partly addressed in draft 2 by R12 and the actor `identity`. Still open: how a runtime proves that it recorded `context` faithfully, for example through sandbox attestation or signed session logs. *Round 1:* coding agents run on developer machines without a sandbox and sign nothing. A gateway that already logs model requests is the nearest place to record a context; signing would have to be added.
+* [ ] **IPR policy:** which patent covenant should cover the specification text and the schema? *Round 1:* one team needs a patent commitment before it can adopt OIS.
+* [ ] **Reference method:** Appendix D now defines an informative method. Should it become normative in 1.0? *Round 1:* one team would report coverage per intent as well and gate a release on the intent with the lowest value, not on the pooled figure.
 
 ## Appendix D: Reference method for intent coverage (informative)
 
